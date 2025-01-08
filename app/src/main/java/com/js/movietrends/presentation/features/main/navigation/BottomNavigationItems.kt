@@ -19,9 +19,9 @@ data class BottomNavigationItem(
 fun getBottomNavigationItems(context: Context): List<BottomNavigationItem> {
     return listOf(
         BottomNavigationItem(
-            title = context.getString(R.string.common_currently_playing),
+            title = context.getString(R.string.common_now_playing),
             icon = Icons.Filled.DateRange,
-            screenRoute = NavigationScreens.CurrentPlaying.screenRoute
+            screenRoute = NavigationScreens.NowPlaying.screenRoute
         ),
         BottomNavigationItem(
             title = context.getString(R.string.common_upcoming),
@@ -37,7 +37,7 @@ fun getBottomNavigationItems(context: Context): List<BottomNavigationItem> {
 }
 
 sealed class NavigationScreens(val screenRoute: String) {
-    data object CurrentPlaying : NavigationScreens(Constants.CURRENTLY_PLAYING_ROUTE)
+    data object NowPlaying : NavigationScreens(Constants.NOW_PLAYING_ROUTE)
     data object Upcoming : NavigationScreens(Constants.UPCOMING_ROUTE)
     data object POPULAR : NavigationScreens(Constants.POPULAR_ROUTE)
 }

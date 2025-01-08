@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">Movie Trends</string>
     <string name="title_activity_intro">IntroActivity</string>
-    <string name="common_currently_playing">Currently Playing</string>
+    <string name="common_now_playing">Now Playing</string>
     <string name="common_upcoming">Upcoming</string>
     <string name="common_popular">Popular</string>
+    <string name="title_activity_main">MainActivity</string>
 </resources>

@@ -1,7 +1,15 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
 }
+
+// stream local properties
+val localProperties = Properties().apply {
+    load(rootProject.file("local.properties").inputStream())
+}
+val apiKey: String = localProperties.getProperty("TMDB_API_KEY") ?: ""
 
 android {
     namespace = "com.js.movietrends.data"
@@ -12,6 +20,13 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        buildConfigField("String", "TMDB_API_KEY", apiKey)
+    }
+
+    // enable BuildConfig
+    buildFeatures {
+        buildConfig = true
     }
 
     buildTypes {
@@ -43,5 +58,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation(libs.retrofit) // Retrofit
-    implementation(libs.converter.gson) // Converter for JSON
+    implementation(libs.converter.gson)
+    androidTestImplementation(project(":domain")) // Converter for JSON
+
+    implementation(libs.androidx.paging.common)
 }

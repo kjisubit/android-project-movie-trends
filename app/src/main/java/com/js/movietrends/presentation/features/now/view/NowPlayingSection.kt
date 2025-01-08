@@ -1,4 +1,4 @@
-package com.js.movietrends.presentation.features.current.view
+package com.js.movietrends.presentation.features.now.view
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,7 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun CurrentlyPlayingSection() {
+fun NowPlayingSection() {
     Column(
         modifier = Modifier
             .fillMaxSize(),

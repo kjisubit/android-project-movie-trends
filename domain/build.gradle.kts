@@ -13,3 +13,10 @@ kotlin {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11
     }
 }
+
+dependencies {
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.androidx.paging.common)
+
+    implementation(libs.converter.gson)
+}

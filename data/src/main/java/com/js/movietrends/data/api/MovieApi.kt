@@ -1,4 +1,4 @@
-package com.js.movietrends.data
+package com.js.movietrends.data.api
 
 import com.js.movietrends.domain.model.MovieList
 import retrofit2.Response
@@ -14,21 +14,21 @@ interface MovieApi {
     ): Response<MovieList>
 
     @GET("movie/now_playing")
-    suspend fun getNowPlaying(
+    suspend fun getNowPlayingMovies(
         @Query("api_key") apiKey: String,
         @Query("language") language: String,
         @Query("page") page: Int = 1
     ): Response<MovieList>
 
     @GET("movie/top_rated")
-    suspend fun getTopRated(
+    suspend fun getTopRatedMovies(
         @Query("api_key") apiKey: String,
         @Query("language") language: String,
         @Query("page") page: Int = 1
     ): Response<MovieList>
 
     @GET("movie/upcoming")
-    suspend fun getUpcoming(
+    suspend fun getUpcomingMovies(
         @Query("api_key") apiKey: String,
         @Query("language") language: String,
         @Query("page") page: Int = 1
