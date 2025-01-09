@@ -8,7 +8,8 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.js.movietrends.R
-import com.js.movietrends.utils.Constants
+import com.js.movietrends.domain.core.Constants
+
 
 data class BottomNavigationItem(
     val title: String = "",

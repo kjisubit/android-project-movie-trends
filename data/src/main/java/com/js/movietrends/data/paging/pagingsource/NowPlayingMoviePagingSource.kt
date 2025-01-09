@@ -5,6 +5,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.js.movietrends.data.BuildConfig
 import com.js.movietrends.data.api.MovieApi
+import com.js.movietrends.domain.core.AppInfoManager
 import com.js.movietrends.domain.model.Movie
 import retrofit2.HttpException
 
@@ -15,7 +16,7 @@ class NowPlayingMoviePagingSource(private val movieApi: MovieApi) : PagingSource
             val response =
                 movieApi.getNowPlayingMovies(
                     apiKey = BuildConfig.TMDB_API_KEY,
-                    language = "ko-KR",
+                    language = AppInfoManager.localeCode,
                     page = page
                 )
             if (response.isSuccessful) {
