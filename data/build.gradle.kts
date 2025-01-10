@@ -3,6 +3,9 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 // stream local properties
@@ -13,7 +16,7 @@ val apiKey: String = localProperties.getProperty("TMDB_API_KEY") ?: ""
 
 android {
     namespace = "com.js.movietrends.data"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24
@@ -62,4 +65,13 @@ dependencies {
     androidTestImplementation(project(":domain")) // Converter for JSON
 
     implementation(libs.androidx.paging.common)
+
+    // hilt
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
+}
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes = true
 }
