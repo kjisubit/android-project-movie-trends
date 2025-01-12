@@ -1,4 +1,4 @@
-package com.js.movietrends.presentation.features.now.view
+package com.js.movietrends.presentation.features.main.popular
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,13 +9,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun NowPlayingSection() {
+fun PopularSection() {
     Column(
         modifier = Modifier
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Text("Currently playing movies")
+        Column {
+            Text("Popular movies")
+        }
     }
 }

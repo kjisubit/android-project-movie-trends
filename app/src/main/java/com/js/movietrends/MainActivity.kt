@@ -1,10 +1,10 @@
-package com.js.movietrends.presentation.features.main
+package com.js.movietrends
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.js.movietrends.presentation.features.main.view.MainScreen
+import com.js.movietrends.presentation.features.main.MainScreen
 import com.js.movietrends.presentation.theme.movietrendsTheme
 
 class MainActivity : ComponentActivity() {

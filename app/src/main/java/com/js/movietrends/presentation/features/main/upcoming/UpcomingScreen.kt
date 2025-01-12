@@ -1,4 +1,4 @@
-package com.js.movietrends.presentation.features.popular.view
+package com.js.movietrends.presentation.features.main.upcoming
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,7 +9,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun PopularSection() {
+fun UpcomingSection() {
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -17,7 +17,7 @@ fun PopularSection() {
         verticalArrangement = Arrangement.Center
     ) {
         Column {
-            Text("Popular movies")
+            Text("upcoming movies")
         }
     }
 }

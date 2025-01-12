@@ -1,4 +1,4 @@
-package com.js.movietrends.presentation.features.upcoming.view
+package com.js.movietrends.presentation.features.main.nowplaying
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -9,15 +9,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun UpcomingSection() {
+fun NowPlayingSection() {
     Column(
         modifier = Modifier
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        Column {
-            Text("upcoming movies")
-        }
+        Text("Currently playing movies")
     }
 }

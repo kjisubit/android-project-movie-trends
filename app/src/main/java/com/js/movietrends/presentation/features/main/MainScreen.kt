@@ -1,4 +1,4 @@
-package com.js.movietrends.presentation.features.main.view
+package com.js.movietrends.presentation.features.main
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -23,9 +23,9 @@ import androidx.navigation.compose.rememberNavController
 import com.js.movietrends.R
 import com.js.movietrends.presentation.features.main.navigation.NavigationScreens
 import com.js.movietrends.presentation.features.main.navigation.getBottomNavigationItems
-import com.js.movietrends.presentation.features.now.view.NowPlayingSection
-import com.js.movietrends.presentation.features.popular.view.PopularSection
-import com.js.movietrends.presentation.features.upcoming.view.UpcomingSection
+import com.js.movietrends.presentation.features.main.nowplaying.NowPlayingSection
+import com.js.movietrends.presentation.features.main.popular.PopularSection
+import com.js.movietrends.presentation.features.main.upcoming.UpcomingSection
 
 @Composable
 fun MainScreen() {
