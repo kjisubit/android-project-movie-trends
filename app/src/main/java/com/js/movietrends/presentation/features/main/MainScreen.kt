@@ -30,58 +30,56 @@ import com.js.movietrends.presentation.features.main.upcoming.UpcomingSection
 @Composable
 fun MainScreen() {
     val context = LocalContext.current
+    val navController = rememberNavController()
     var navigationSelectedItem by remember {
         mutableIntStateOf(0)
     }
-    val navController = rememberNavController()
-    Scaffold(
-        bottomBar = {
-            NavigationBar(
-                containerColor = colorResource(id = R.color.white),
-                contentColor = colorResource(id = R.color.black)
-            ) {
-                getBottomNavigationItems(context).forEachIndexed { index, navigationItem ->
-                    NavigationBarItem(
-                        selected = index == navigationSelectedItem,
-                        label = {
-                            Text(
-                                text = navigationItem.title,
-                                fontWeight = FontWeight.Bold,
-                                color = colorResource(id = R.color.black)
-                            )
-                        },
-                        icon = {
-                            Icon(
-                                navigationItem.icon,
-                                contentDescription = navigationItem.title,
-                                tint = if (index == navigationSelectedItem) colorResource(id = R.color.black)
-                                else colorResource(id = R.color.quick_silver),
-                            )
-                        },
-                        onClick = {
-                            navigationSelectedItem = index
-                            navController.navigate(navigationItem.screenRoute) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
+    Scaffold(bottomBar = {
+        NavigationBar(
+            containerColor = colorResource(id = R.color.white),
+            contentColor = colorResource(id = R.color.black)
+        ) {
+            getBottomNavigationItems(context).forEachIndexed { index, navigationItem ->
+                NavigationBarItem(
+                    selected = index == navigationSelectedItem,
+                    label = {
+                        Text(
+                            text = navigationItem.title,
+                            fontWeight = FontWeight.Bold,
+                            color = colorResource(id = R.color.black)
+                        )
+                    },
+                    icon = {
+                        Icon(
+                            navigationItem.icon,
+                            contentDescription = navigationItem.title,
+                            tint = if (index == navigationSelectedItem) colorResource(id = R.color.black)
+                            else colorResource(id = R.color.quick_silver),
+                        )
+                    },
+                    onClick = {
+                        navigationSelectedItem = index
+                        navController.navigate(navigationItem.screenRoute) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
                             }
-                        },
-                        colors = NavigationBarItemColors(
-                            selectedIconColor = colorResource(id = R.color.transparent),
-                            selectedTextColor = colorResource(id = R.color.transparent),
-                            selectedIndicatorColor = colorResource(id = R.color.transparent),
-                            unselectedIconColor = colorResource(id = R.color.transparent),
-                            unselectedTextColor = colorResource(id = R.color.transparent),
-                            disabledIconColor = colorResource(id = R.color.transparent),
-                            disabledTextColor = colorResource(id = R.color.transparent),
-                        ),
-                    )
-                }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                    colors = NavigationBarItemColors(
+                        selectedIconColor = colorResource(id = R.color.transparent),
+                        selectedTextColor = colorResource(id = R.color.transparent),
+                        selectedIndicatorColor = colorResource(id = R.color.transparent),
+                        unselectedIconColor = colorResource(id = R.color.transparent),
+                        unselectedTextColor = colorResource(id = R.color.transparent),
+                        disabledIconColor = colorResource(id = R.color.transparent),
+                        disabledTextColor = colorResource(id = R.color.transparent),
+                    ),
+                )
             }
         }
-    ) {
+    }) {
         NavHost(
             navController = navController,
             startDestination = NavigationScreens.NowPlaying.screenRoute,
