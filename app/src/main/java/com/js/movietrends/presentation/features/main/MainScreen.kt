@@ -21,11 +21,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.js.movietrends.R
-import com.js.movietrends.presentation.features.main.navigation.NavigationScreens
-import com.js.movietrends.presentation.features.main.navigation.getBottomNavigationItems
-import com.js.movietrends.presentation.features.main.nowplaying.NowPlayingSection
-import com.js.movietrends.presentation.features.main.popular.PopularSection
-import com.js.movietrends.presentation.features.main.upcoming.UpcomingSection
+import com.js.movietrends.presentation.features.main.nowplaying.NowPlayingScreen
+import com.js.movietrends.presentation.features.main.popular.PopularScreen
+import com.js.movietrends.presentation.features.main.upcoming.UpcomingScreen
 
 @Composable
 fun MainScreen() {
@@ -86,13 +84,13 @@ fun MainScreen() {
             modifier = Modifier.padding(paddingValues = it)
         ) {
             composable(NavigationScreens.NowPlaying.screenRoute) {
-                NowPlayingSection()
+                NowPlayingScreen()
             }
             composable(NavigationScreens.Upcoming.screenRoute) {
-                UpcomingSection()
+                UpcomingScreen()
             }
             composable(NavigationScreens.POPULAR.screenRoute) {
-                PopularSection()
+                PopularScreen()
             }
         }
     }

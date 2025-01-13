@@ -60,11 +60,10 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation(libs.retrofit) // Retrofit
-    implementation(libs.converter.gson)
-    androidTestImplementation(project(":domain")) // Converter for JSON
-
+    androidTestImplementation(project(":domain"))
     implementation(libs.androidx.paging.common)
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 
     // hilt
     implementation(libs.hilt.android)

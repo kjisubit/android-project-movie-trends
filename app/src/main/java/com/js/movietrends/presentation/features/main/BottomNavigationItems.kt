@@ -1,4 +1,4 @@
-package com.js.movietrends.presentation.features.main.navigation
+package com.js.movietrends.presentation.features.main
 
 import android.content.Context
 import androidx.compose.material.icons.Icons

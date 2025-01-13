@@ -7,9 +7,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.collectAsLazyPagingItems
 
 @Composable
-fun UpcomingSection() {
+fun UpcomingScreen(viewModel: UpcomingViewModel = hiltViewModel()) {
+    val popularViewModel = viewModel.getUpcomingMovies.collectAsLazyPagingItems()
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -17,7 +20,7 @@ fun UpcomingSection() {
         verticalArrangement = Arrangement.Center
     ) {
         Column {
-            Text("upcoming movies")
+            Text("Upcoming movies")
         }
     }
 }

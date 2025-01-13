@@ -7,9 +7,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.paging.compose.collectAsLazyPagingItems
 
 @Composable
-fun NowPlayingSection() {
+fun NowPlayingScreen(viewModel: NowPlayingViewModel = hiltViewModel()) {
+    val nowPlayingMovies = viewModel.getNowPlayingMovies.collectAsLazyPagingItems()
     Column(
         modifier = Modifier
             .fillMaxSize(),

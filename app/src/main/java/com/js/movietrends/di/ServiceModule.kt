@@ -1,5 +1,6 @@
-package com.js.movietrends.data.di
+package com.js.movietrends.di
 
+import com.js.movietrends.data.api.MovieApi
 import com.js.movietrends.domain.core.Constants
 import dagger.Module
 import dagger.Provides
@@ -32,5 +33,11 @@ object ServiceModule {
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideMovieApi(retrofit: Retrofit): MovieApi {
+        return retrofit.create(MovieApi::class.java)
     }
 }
