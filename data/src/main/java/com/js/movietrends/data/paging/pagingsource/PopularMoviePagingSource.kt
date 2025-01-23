@@ -5,12 +5,13 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.js.movietrends.data.BuildConfig
 import com.js.movietrends.data.api.MovieApi
+import com.js.movietrends.data.model.MovieResponse
 import com.js.movietrends.domain.core.AppInfoManager
-import com.js.movietrends.domain.model.Movie
 import retrofit2.HttpException
 
-class PopularMoviePagingSource(private val movieApi: MovieApi) : PagingSource<Int, Movie>() {
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
+class PopularMoviePagingSource(private val movieApi: MovieApi) :
+    PagingSource<Int, MovieResponse>() {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieResponse> {
         val page = params.key ?: 1
         try {
             val response = movieApi.getPopularMovies(
@@ -34,7 +35,7 @@ class PopularMoviePagingSource(private val movieApi: MovieApi) : PagingSource<In
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, Movie>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, MovieResponse>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
             val anchorPage = state.closestPageToPosition(anchorPosition)
             anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)

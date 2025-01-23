@@ -1,13 +1,50 @@
 package com.js.movietrends.data.repository
 
+import androidx.paging.PagingData
+import androidx.paging.map
 import com.js.movietrends.data.datasource.RemoteDataSource
+import com.js.movietrends.data.mapper.MovieMapper
+import com.js.movietrends.domain.model.Movie
 import com.js.movietrends.domain.repository.MovieRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class MovieRepositoryImpl(
     private val remoteDataSource: RemoteDataSource,
 ) : MovieRepository {
-    override fun getNowPlayingMovies() = remoteDataSource.getNowPlayingMovies()
-    override fun getPopularMovies() = remoteDataSource.getPopularMovies()
-    override fun getTopRatedMovies() = remoteDataSource.getTopRatedMovies()
-    override fun getUpcomingMovies() = remoteDataSource.getUpcomingMovies()
+    override fun getNowPlayingMovies(): Flow<PagingData<Movie>> {
+        return remoteDataSource.getNowPlayingMovies()
+            .map { pagingData ->
+                pagingData.map { movieResponse ->
+                    MovieMapper.mapToDomain(movieResponse)
+                }
+            }
+    }
+
+    override fun getPopularMovies(): Flow<PagingData<Movie>> {
+        return remoteDataSource.getPopularMovies()
+            .map { pagingData ->
+                pagingData.map { movieResponse ->
+                    MovieMapper.mapToDomain(movieResponse)
+                }
+            }
+    }
+
+    override fun getTopRatedMovies(): Flow<PagingData<Movie>> {
+        return remoteDataSource.getTopRatedMovies()
+            .map { pagingData ->
+                pagingData.map { movieResponse ->
+                    MovieMapper.mapToDomain(movieResponse)
+                }
+            }
+    }
+
+    override fun getUpcomingMovies(): Flow<PagingData<Movie>> {
+        return remoteDataSource.getUpcomingMovies()
+            .map { pagingData ->
+                pagingData.map { movieResponse ->
+                    MovieMapper.mapToDomain(movieResponse)
+                }
+            }
+    }
 }

@@ -14,7 +14,7 @@ import com.js.movietrends.presentation.components.MovieListStaggeredGrid
 
 @Composable
 fun NowPlayingScreen(viewModel: NowPlayingViewModel = hiltViewModel()) {
-    val nowPlayingMovies = viewModel.getNowPlayingMovies.collectAsLazyPagingItems()
+    val nowPlayingMovies = viewModel.nowPlayingMovies.collectAsLazyPagingItems()
 
     when (nowPlayingMovies.loadState.refresh) {
         is LoadState.Loading -> {
@@ -39,5 +39,4 @@ fun NowPlayingScreen(viewModel: NowPlayingViewModel = hiltViewModel()) {
             MovieListStaggeredGrid(movies = nowPlayingMovies)
         }
     }
-
 }

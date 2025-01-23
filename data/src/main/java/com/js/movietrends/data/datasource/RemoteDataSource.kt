@@ -1,12 +1,12 @@
 package com.js.movietrends.data.datasource
 
 import androidx.paging.PagingData
-import com.js.movietrends.domain.model.Movie
+import com.js.movietrends.data.model.MovieResponse
 import kotlinx.coroutines.flow.Flow
 
 interface RemoteDataSource {
-    fun getNowPlayingMovies(): Flow<PagingData<Movie>>
-    fun getPopularMovies(): Flow<PagingData<Movie>>
-    fun getTopRatedMovies(): Flow<PagingData<Movie>>
-    fun getUpcomingMovies(): Flow<PagingData<Movie>>
+    fun getNowPlayingMovies(): Flow<PagingData<MovieResponse>>
+    fun getPopularMovies(): Flow<PagingData<MovieResponse>>
+    fun getTopRatedMovies(): Flow<PagingData<MovieResponse>>
+    fun getUpcomingMovies(): Flow<PagingData<MovieResponse>>
 }

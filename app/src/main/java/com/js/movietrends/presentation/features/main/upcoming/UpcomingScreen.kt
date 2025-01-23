@@ -14,7 +14,8 @@ import com.js.movietrends.presentation.components.MovieListColumn
 
 @Composable
 fun UpcomingScreen(viewModel: UpcomingViewModel = hiltViewModel()) {
-    val upcomingMovies = viewModel.getUpcomingMovies.collectAsLazyPagingItems()
+    val upcomingMovies = viewModel.upcomingMovies.collectAsLazyPagingItems()
+
     when (upcomingMovies.loadState.refresh) {
         is LoadState.Loading -> {
             Box(

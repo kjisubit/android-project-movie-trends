@@ -14,7 +14,7 @@ import com.js.movietrends.presentation.components.MovieListGrid
 
 @Composable
 fun PopularScreen(viewModel: PopularViewModel = hiltViewModel()) {
-    val popularMovies = viewModel.getPopularMovies.collectAsLazyPagingItems()
+    val popularMovies = viewModel.popularMovies.collectAsLazyPagingItems()
 
     when (popularMovies.loadState.refresh) {
         is LoadState.Loading -> {
