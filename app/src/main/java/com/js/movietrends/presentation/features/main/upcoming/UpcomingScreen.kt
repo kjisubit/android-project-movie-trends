@@ -16,27 +16,22 @@ import com.js.movietrends.presentation.components.MovieListColumn
 fun UpcomingScreen(viewModel: UpcomingViewModel = hiltViewModel()) {
     val upcomingMovies = viewModel.upcomingMovies.collectAsLazyPagingItems()
 
-    when (upcomingMovies.loadState.refresh) {
-        is LoadState.Loading -> {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        when (upcomingMovies.loadState.refresh) {
+            is LoadState.Loading -> {
                 CircularProgressIndicator()
             }
-        }
 
-        is LoadState.Error -> {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
+            is LoadState.Error -> {
                 Text("Error")
             }
-        }
 
-        else -> {
-            MovieListColumn(movies = upcomingMovies)
+            else -> {
+                MovieListColumn(movies = upcomingMovies)
+            }
         }
     }
 }

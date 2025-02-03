@@ -1,22 +1,33 @@
-package com.js.movietrends.data.datasourceimpl
+package com.js.movietrends.data.datasource
 
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.js.movietrends.data.api.MovieApi
-import com.js.movietrends.data.datasource.RemoteDataSource
+import com.js.movietrends.data.database.MovieDb
+import com.js.movietrends.data.database.entity.MovieEntity
 import com.js.movietrends.data.model.MovieResponse
-import com.js.movietrends.data.paging.pagingsource.NowPlayingMoviePagingSource
+import com.js.movietrends.data.paging.NowPlayingRemoteMediator
 import com.js.movietrends.data.paging.pagingsource.PopularMoviePagingSource
 import com.js.movietrends.data.paging.pagingsource.TopRatedMoviePagingSource
 import com.js.movietrends.data.paging.pagingsource.UpcomingMoviePagingSource
 import kotlinx.coroutines.flow.Flow
 
-class RemoteDataSourceImpl(private val movieApi: MovieApi) : RemoteDataSource {
-    override fun getNowPlayingMovies(): Flow<PagingData<MovieResponse>> {
+class RemoteDataSourceImpl(private val movieApi: MovieApi, private val movieDb: MovieDb) :
+    RemoteDataSource {
+    private val movieDao = movieDb.movieDao()
+
+    @OptIn(ExperimentalPagingApi::class)
+    override fun getNowPlayingMovies(): Flow<PagingData<MovieEntity>> {
+        val pagingSourceFactory = { movieDao.getAllMovies() }
         return Pager(
             config = PagingConfig(pageSize = 20),
-            pagingSourceFactory = { NowPlayingMoviePagingSource(movieApi) }
+            remoteMediator = NowPlayingRemoteMediator(
+                movieApi,
+                movieDb
+            ),
+            pagingSourceFactory = pagingSourceFactory
         ).flow
     }
 

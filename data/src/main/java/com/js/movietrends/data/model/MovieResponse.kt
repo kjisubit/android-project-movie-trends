@@ -10,7 +10,7 @@ data class MovieResponse(
     @SerializedName("genre_ids")
     val genreIds: List<Int?>? = null,
     @SerializedName("id")
-    val id: Int? = null,
+    val id: Int,
     @SerializedName("original_language")
     val originalLanguage: String? = null,
     @SerializedName("original_title")

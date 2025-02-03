@@ -16,27 +16,23 @@ import com.js.movietrends.presentation.components.MovieListGrid
 fun PopularScreen(viewModel: PopularViewModel = hiltViewModel()) {
     val popularMovies = viewModel.popularMovies.collectAsLazyPagingItems()
 
-    when (popularMovies.loadState.refresh) {
-        is LoadState.Loading -> {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        when (popularMovies.loadState.refresh) {
+            is LoadState.Loading -> {
                 CircularProgressIndicator()
             }
-        }
 
-        is LoadState.Error -> {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
+            is LoadState.Error -> {
                 Text("Error")
             }
-        }
 
-        else -> {
-            MovieListGrid(movies = popularMovies)
+            else -> {
+                MovieListGrid(movies = popularMovies)
+            }
         }
     }
+
 }

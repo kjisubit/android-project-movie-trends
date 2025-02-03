@@ -15,8 +15,8 @@ class MovieRepositoryImpl(
     override fun getNowPlayingMovies(): Flow<PagingData<Movie>> {
         return remoteDataSource.getNowPlayingMovies()
             .map { pagingData ->
-                pagingData.map { movieResponse ->
-                    MovieMapper.mapToDomain(movieResponse)
+                pagingData.map { movieEntity ->
+                    MovieMapper.mapEntityToDomain(movieEntity)
                 }
             }
     }
@@ -25,7 +25,7 @@ class MovieRepositoryImpl(
         return remoteDataSource.getPopularMovies()
             .map { pagingData ->
                 pagingData.map { movieResponse ->
-                    MovieMapper.mapToDomain(movieResponse)
+                    MovieMapper.mapDtoToDomain(movieResponse)
                 }
             }
     }
@@ -34,7 +34,7 @@ class MovieRepositoryImpl(
         return remoteDataSource.getTopRatedMovies()
             .map { pagingData ->
                 pagingData.map { movieResponse ->
-                    MovieMapper.mapToDomain(movieResponse)
+                    MovieMapper.mapDtoToDomain(movieResponse)
                 }
             }
     }
@@ -43,7 +43,7 @@ class MovieRepositoryImpl(
         return remoteDataSource.getUpcomingMovies()
             .map { pagingData ->
                 pagingData.map { movieResponse ->
-                    MovieMapper.mapToDomain(movieResponse)
+                    MovieMapper.mapDtoToDomain(movieResponse)
                 }
             }
     }

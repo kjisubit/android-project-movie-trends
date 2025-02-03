@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
 
     id("kotlin-kapt")
+    id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
 }
 
@@ -64,6 +65,12 @@ dependencies {
     implementation(libs.androidx.paging.common)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
+
+    // room
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.paging)
 
     // hilt
     implementation(libs.hilt.android)
