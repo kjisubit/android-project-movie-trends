@@ -8,10 +8,9 @@ import com.js.movietrends.data.api.MovieApi
 import com.js.movietrends.data.database.MovieDb
 import com.js.movietrends.data.database.entity.MovieEntity
 import com.js.movietrends.data.model.MovieResponse
-import com.js.movietrends.data.paging.NowPlayingRemoteMediator
-import com.js.movietrends.data.paging.pagingsource.PopularMoviePagingSource
 import com.js.movietrends.data.paging.pagingsource.TopRatedMoviePagingSource
 import com.js.movietrends.data.paging.pagingsource.UpcomingMoviePagingSource
+import com.js.movietrends.data.paging.remoteMediator.NowPlayingMovieMediator
 import kotlinx.coroutines.flow.Flow
 
 class RemoteDataSourceImpl(private val movieApi: MovieApi, private val movieDb: MovieDb) :
@@ -23,18 +22,11 @@ class RemoteDataSourceImpl(private val movieApi: MovieApi, private val movieDb: 
         val pagingSourceFactory = { movieDao.getAllMovies() }
         return Pager(
             config = PagingConfig(pageSize = 20),
-            remoteMediator = NowPlayingRemoteMediator(
+            remoteMediator = NowPlayingMovieMediator(
                 movieApi,
                 movieDb
             ),
             pagingSourceFactory = pagingSourceFactory
-        ).flow
-    }
-
-    override fun getPopularMovies(): Flow<PagingData<MovieResponse>> {
-        return Pager(
-            config = PagingConfig(pageSize = 20),
-            pagingSourceFactory = { PopularMoviePagingSource(movieApi) }
         ).flow
     }
 

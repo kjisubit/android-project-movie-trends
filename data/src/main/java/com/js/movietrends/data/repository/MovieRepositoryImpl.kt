@@ -21,15 +21,6 @@ class MovieRepositoryImpl(
             }
     }
 
-    override fun getPopularMovies(): Flow<PagingData<Movie>> {
-        return remoteDataSource.getPopularMovies()
-            .map { pagingData ->
-                pagingData.map { movieResponse ->
-                    MovieMapper.mapDtoToDomain(movieResponse)
-                }
-            }
-    }
-
     override fun getTopRatedMovies(): Flow<PagingData<Movie>> {
         return remoteDataSource.getTopRatedMovies()
             .map { pagingData ->

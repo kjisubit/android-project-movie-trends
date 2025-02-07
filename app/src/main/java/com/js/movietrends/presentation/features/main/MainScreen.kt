@@ -22,7 +22,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.js.movietrends.R
 import com.js.movietrends.presentation.features.main.nowplaying.NowPlayingScreen
-import com.js.movietrends.presentation.features.main.popular.PopularScreen
 import com.js.movietrends.presentation.features.main.upcoming.UpcomingScreen
 
 @Composable
@@ -88,9 +87,6 @@ fun MainScreen() {
             }
             composable(NavigationScreens.Upcoming.screenRoute) {
                 UpcomingScreen()
-            }
-            composable(NavigationScreens.POPULAR.screenRoute) {
-                PopularScreen()
             }
         }
     }

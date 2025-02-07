@@ -1,11 +1,10 @@
-package com.js.movietrends.data.paging
+package com.js.movietrends.data.paging.remoteMediator
 
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
 import androidx.room.withTransaction
-
 import com.js.movietrends.data.BuildConfig
 import com.js.movietrends.data.api.MovieApi
 import com.js.movietrends.data.database.MovieDb
@@ -16,7 +15,7 @@ import retrofit2.HttpException
 import java.io.IOException
 
 @OptIn(ExperimentalPagingApi::class)
-class NowPlayingRemoteMediator(private val movieApi: MovieApi, private val movieDb: MovieDb) :
+class NowPlayingMovieMediator(private val movieApi: MovieApi, private val movieDb: MovieDb) :
     RemoteMediator<Int, MovieEntity>() {
 
     private val movieDao = movieDb.movieDao()
@@ -33,7 +32,9 @@ class NowPlayingRemoteMediator(private val movieApi: MovieApi, private val movie
                 LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
                 LoadType.APPEND -> {
                     val remoteKeyEntity = getRemoteKeyEntityOfLastItem(state)
-                    remoteKeyEntity?.nextPage?.minus(1) ?: 1
+                    val nextPage = remoteKeyEntity?.nextPage
+                        ?: return MediatorResult.Success(endOfPaginationReached = true)
+                    nextPage
                 }
             }
 

@@ -2,7 +2,6 @@ package com.js.movietrends.di
 
 import com.js.movietrends.domain.repository.MovieRepository
 import com.js.movietrends.domain.usecase.GetNowPlayingMoviesUseCase
-import com.js.movietrends.domain.usecase.GetPopularMoviesUseCase
 import com.js.movietrends.domain.usecase.GetTopRatedMoviesUseCase
 import com.js.movietrends.domain.usecase.GetUpcomingMoviesUseCase
 import com.js.movietrends.domain.usecase.UseCases
@@ -18,7 +17,6 @@ object UseCaseModule {
     @Provides
     fun provideUseCases(movieRepository: MovieRepository) = UseCases(
         getNowPlayingMoviesUseCase = GetNowPlayingMoviesUseCase(movieRepository),
-        getPopularMoviesUseCase = GetPopularMoviesUseCase(movieRepository),
         getTopRatedMoviesUseCase = GetTopRatedMoviesUseCase(movieRepository),
         getUpcomingMoviesUseCase = GetUpcomingMoviesUseCase(movieRepository)
     )

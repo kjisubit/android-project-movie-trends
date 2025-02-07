@@ -3,7 +3,6 @@ package com.js.movietrends.presentation.features.main
 import android.content.Context
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -29,16 +28,10 @@ fun getBottomNavigationItems(context: Context): List<BottomNavigationItem> {
             icon = Icons.Filled.Star,
             screenRoute = NavigationScreens.Upcoming.screenRoute
         ),
-        BottomNavigationItem(
-            title = context.getString(R.string.common_popular),
-            icon = Icons.Filled.Favorite,
-            screenRoute = NavigationScreens.POPULAR.screenRoute
-        ),
     )
 }
 
 sealed class NavigationScreens(val screenRoute: String) {
     data object NowPlaying : NavigationScreens(Constants.NOW_PLAYING_ROUTE)
     data object Upcoming : NavigationScreens(Constants.UPCOMING_ROUTE)
-    data object POPULAR : NavigationScreens(Constants.POPULAR_ROUTE)
 }

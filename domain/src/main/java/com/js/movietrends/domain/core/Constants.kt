@@ -14,6 +14,5 @@ object Constants {
     const val INTRO_ROUTE: String = "intro_route"
     const val MAIN_ROUTE: String = "main_route"
     const val NOW_PLAYING_ROUTE: String = "now_playing_route"
-    const val POPULAR_ROUTE: String = "popular_route"
     const val UPCOMING_ROUTE: String = "upcoming_route"
 }

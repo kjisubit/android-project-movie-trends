@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface RemoteDataSource {
     fun getNowPlayingMovies(): Flow<PagingData<MovieEntity>>
-    fun getPopularMovies(): Flow<PagingData<MovieResponse>>
     fun getTopRatedMovies(): Flow<PagingData<MovieResponse>>
     fun getUpcomingMovies(): Flow<PagingData<MovieResponse>>
 }
