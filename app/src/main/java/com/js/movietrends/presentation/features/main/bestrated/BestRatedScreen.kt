@@ -1,4 +1,4 @@
-package com.js.movietrends.presentation.features.main.upcoming
+package com.js.movietrends.presentation.features.main.bestrated
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,32 +15,27 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.paging.LoadState
-import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.js.movietrends.R
-import com.js.movietrends.presentation.components.MovieListColumn
+import com.js.movietrends.domain.model.ApiResult
 
 @Composable
-fun UpcomingScreen(viewModel: UpcomingViewModel = hiltViewModel()) {
-    val upcomingMovies = viewModel.upcomingMovies.collectAsLazyPagingItems()
+fun BestRatedScreen(viewModel: BestRatedViewModel = hiltViewModel()) {
+    val bestRatedMovie = viewModel.bestRatedMovie.collectAsStateWithLifecycle()
 
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        when (val refreshState = upcomingMovies.loadState.refresh) {
-            is LoadState.Loading -> {
+
+        when (val result = bestRatedMovie.value) {
+            is ApiResult.Loading -> {
                 CircularProgressIndicator()
             }
 
-            is LoadState.Error -> {
-                if (upcomingMovies.itemCount > 0) {
-                    MovieListColumn(movies = upcomingMovies)
-                }
-
+            is ApiResult.Error -> {
                 Text(
-                    text = refreshState.error.localizedMessage
-                        ?: stringResource(id = R.string.error_unknown),
+                    text = result.exception.message ?: stringResource(id = R.string.error_unknown),
                     color = Color.White,
                     fontSize = 20.sp,
                     modifier = Modifier
@@ -51,8 +46,8 @@ fun UpcomingScreen(viewModel: UpcomingViewModel = hiltViewModel()) {
                 )
             }
 
-            else -> {
-                MovieListColumn(movies = upcomingMovies)
+            is ApiResult.Success -> {
+                Text(text = "Best Rated Movie: ${result.data.title}")
             }
         }
     }

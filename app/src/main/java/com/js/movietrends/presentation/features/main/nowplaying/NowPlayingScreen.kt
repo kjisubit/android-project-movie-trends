@@ -11,11 +11,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
+import com.js.movietrends.R
 import com.js.movietrends.presentation.components.MovieListStaggeredGrid
 
 @Composable
@@ -26,15 +28,19 @@ fun NowPlayingScreen(viewModel: NowPlayingViewModel = hiltViewModel()) {
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        when (nowPlayingMovies.loadState.refresh) {
+        when (val refreshState = nowPlayingMovies.loadState.refresh) {
             is LoadState.Loading -> {
                 CircularProgressIndicator()
             }
 
             is LoadState.Error -> {
-                MovieListStaggeredGrid(movies = nowPlayingMovies)
+                if (nowPlayingMovies.itemCount > 0) {
+                    MovieListStaggeredGrid(movies = nowPlayingMovies) // 캐시된 데이터
+                }
+
                 Text(
-                    text = "Cached",
+                    text = refreshState.error.localizedMessage
+                        ?: stringResource(id = R.string.error_unknown),
                     color = Color.White,
                     fontSize = 20.sp,
                     modifier = Modifier
@@ -50,6 +56,4 @@ fun NowPlayingScreen(viewModel: NowPlayingViewModel = hiltViewModel()) {
             }
         }
     }
-
-
 }

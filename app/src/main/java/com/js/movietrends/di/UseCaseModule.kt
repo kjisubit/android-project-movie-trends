@@ -1,8 +1,8 @@
 package com.js.movietrends.di
 
 import com.js.movietrends.domain.repository.MovieRepository
+import com.js.movietrends.domain.usecase.GetBestRatedMovieUseCase
 import com.js.movietrends.domain.usecase.GetNowPlayingMoviesUseCase
-import com.js.movietrends.domain.usecase.GetTopRatedMoviesUseCase
 import com.js.movietrends.domain.usecase.GetUpcomingMoviesUseCase
 import com.js.movietrends.domain.usecase.UseCases
 import dagger.Module
@@ -16,8 +16,8 @@ object UseCaseModule {
 
     @Provides
     fun provideUseCases(movieRepository: MovieRepository) = UseCases(
+        getBestRatedMovieUseCase = GetBestRatedMovieUseCase(movieRepository),
         getNowPlayingMoviesUseCase = GetNowPlayingMoviesUseCase(movieRepository),
-        getTopRatedMoviesUseCase = GetTopRatedMoviesUseCase(movieRepository),
         getUpcomingMoviesUseCase = GetUpcomingMoviesUseCase(movieRepository)
     )
 }
