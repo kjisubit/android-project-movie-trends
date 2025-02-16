@@ -1,4 +1,4 @@
-package com.js.movietrends.ui
+package com.js.movietrends
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
