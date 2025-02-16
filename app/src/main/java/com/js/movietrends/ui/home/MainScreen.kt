@@ -1,4 +1,4 @@
-package com.js.movietrends.presentation.features.main
+package com.js.movietrends.ui.home
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -18,9 +18,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.js.movietrends.R
-import com.js.movietrends.presentation.features.main.bestrated.BestRatedScreen
-import com.js.movietrends.presentation.features.main.nowplaying.NowPlayingScreen
-import com.js.movietrends.presentation.features.main.upcoming.UpcomingScreen
+import com.js.movietrends.ui.home.dailyspotlight.DailySpotlight
+import com.js.movietrends.ui.home.nowplaying.NowPlaying
+import com.js.movietrends.ui.home.upcoming.Upcoming
 
 @Composable
 fun MainScreen() {
@@ -78,13 +78,13 @@ fun MainScreen() {
             modifier = Modifier.padding(paddingValues)
         ) {
             composable(NavigationScreens.BestRated.screenRoute) {
-                BestRatedScreen()
+                DailySpotlight()
             }
             composable(NavigationScreens.NowPlaying.screenRoute) {
-                NowPlayingScreen()
+                NowPlaying()
             }
             composable(NavigationScreens.Upcoming.screenRoute) {
-                UpcomingScreen()
+                Upcoming()
             }
         }
     }

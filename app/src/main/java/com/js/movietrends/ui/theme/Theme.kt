@@ -1,4 +1,4 @@
-package com.js.movietrends.presentation.theme
+package com.js.movietrends.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

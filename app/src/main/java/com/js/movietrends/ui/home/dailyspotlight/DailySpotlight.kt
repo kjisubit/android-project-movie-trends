@@ -1,4 +1,4 @@
-package com.js.movietrends.presentation.features.main.bestrated
+package com.js.movietrends.ui.home.dailyspotlight
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -20,7 +20,7 @@ import com.js.movietrends.R
 import com.js.movietrends.domain.model.ApiResult
 
 @Composable
-fun BestRatedScreen(viewModel: BestRatedViewModel = hiltViewModel()) {
+fun DailySpotlight(viewModel: DailySpotlightViewModel = hiltViewModel()) {
     val bestRatedMovie = viewModel.bestRatedMovie.collectAsStateWithLifecycle()
 
     Box(

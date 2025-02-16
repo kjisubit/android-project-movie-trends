@@ -1,4 +1,4 @@
-package com.js.movietrends.presentation.features.intro.components
+package com.js.movietrends.ui.intro.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,7 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.js.movietrends.domain.core.Constants
-import com.js.movietrends.presentation.theme.movietrendsTheme
+import com.js.movietrends.ui.theme.movietrendsTheme
 
 @Composable
 fun CenteredButtonWithText(modifier: Modifier = Modifier, navController: NavHostController) {

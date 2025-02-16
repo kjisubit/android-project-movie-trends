@@ -1,4 +1,4 @@
-package com.js.movietrends.presentation.features.main.nowplaying
+package com.js.movietrends.ui.home.nowplaying
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

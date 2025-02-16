@@ -1,4 +1,4 @@
-package com.js.movietrends.presentation.features.main.bestrated
+package com.js.movietrends.ui.home.dailyspotlight
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class BestRatedViewModel @Inject constructor(private val useCases: UseCases) : ViewModel() {
+class DailySpotlightViewModel @Inject constructor(private val useCases: UseCases) : ViewModel() {
     private val _bestRatedMovie = MutableStateFlow<ApiResult<Movie>>(ApiResult.Loading)
     val bestRatedMovie: StateFlow<ApiResult<Movie>> = _bestRatedMovie
 

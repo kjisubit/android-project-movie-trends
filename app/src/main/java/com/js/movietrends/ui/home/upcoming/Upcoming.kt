@@ -1,4 +1,4 @@
-package com.js.movietrends.presentation.features.main.upcoming
+package com.js.movietrends.ui.home.upcoming
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,10 +18,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.js.movietrends.R
-import com.js.movietrends.presentation.components.MovieListColumn
+import com.js.movietrends.ui.components.MovieListColumn
 
 @Composable
-fun UpcomingScreen(viewModel: UpcomingViewModel = hiltViewModel()) {
+fun Upcoming(viewModel: UpcomingViewModel = hiltViewModel()) {
     val upcomingMovies = viewModel.upcomingMovies.collectAsLazyPagingItems()
 
     Box(

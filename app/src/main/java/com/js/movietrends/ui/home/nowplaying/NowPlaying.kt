@@ -1,4 +1,4 @@
-package com.js.movietrends.presentation.features.main.nowplaying
+package com.js.movietrends.ui.home.nowplaying
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -18,10 +18,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.js.movietrends.R
-import com.js.movietrends.presentation.components.MovieListStaggeredGrid
+import com.js.movietrends.ui.components.MovieListStaggeredGrid
 
 @Composable
-fun NowPlayingScreen(viewModel: NowPlayingViewModel = hiltViewModel()) {
+fun NowPlaying(viewModel: NowPlayingViewModel = hiltViewModel()) {
     val nowPlayingMovies = viewModel.nowPlayingMovies.collectAsLazyPagingItems()
 
     Box(

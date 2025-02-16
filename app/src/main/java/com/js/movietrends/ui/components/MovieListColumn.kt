@@ -1,4 +1,4 @@
-package com.js.movietrends.presentation.components
+package com.js.movietrends.ui.components
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row

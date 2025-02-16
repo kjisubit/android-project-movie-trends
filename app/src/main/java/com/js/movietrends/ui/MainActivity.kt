@@ -1,12 +1,11 @@
-package com.js.movietrends
+package com.js.movietrends.ui
 
-import NavGraph
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.navigation.compose.rememberNavController
-import com.js.movietrends.presentation.theme.movietrendsTheme
+import com.js.movietrends.ui.theme.movietrendsTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

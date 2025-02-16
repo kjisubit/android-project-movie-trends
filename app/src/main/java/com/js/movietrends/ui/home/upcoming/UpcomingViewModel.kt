@@ -1,4 +1,4 @@
-package com.js.movietrends.presentation.features.main.upcoming
+package com.js.movietrends.ui.home.upcoming
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
