@@ -13,11 +13,13 @@ interface MovieApi {
         @Query("page") page: Int = 1
     ): Response<MovieListResponse>
 
-    @GET("movie/top_rated")
-    suspend fun getTopRatedMovies(
+    @GET("discover/movie")
+    suspend fun getDiscoveredMovies(
         @Query("api_key") apiKey: String,
         @Query("language") language: String,
-        @Query("page") page: Int = 1
+        @Query("page") page: Int = 1,
+        @Query("primary_release_date.gte") primaryReleaseDateGte: String,
+        @Query("primary_release_date.lte") primaryReleaseDateLte: String,
     ): Response<MovieListResponse>
 
     @GET("movie/upcoming")

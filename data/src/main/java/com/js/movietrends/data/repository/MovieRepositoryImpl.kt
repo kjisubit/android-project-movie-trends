@@ -19,12 +19,11 @@ class MovieRepositoryImpl(
         private const val TAG = "MovieRepository"
     }
 
-    override fun getBestRatedMovieOfToday(): Flow<ApiResult<Movie>> {
-        return remoteDataSource.getBestRatedMovieOfToday().map { apiResult ->
+    override fun getWeeklySpotlightedMovie(): Flow<ApiResult<Movie>> {
+        return remoteDataSource.getWeeklySpotlightedMovie().map { apiResult ->
             when (apiResult) {
                 is ApiResult.Success -> try {
-                    // 영화 리스트 최상위 아이템 하나만 사용
-                    val bestRatedMovie = apiResult.data.results!![0]
+                    val bestRatedMovie = apiResult.data.results!![0] // 가장 평가가 좋은 무비 데이터
                     ApiResult.Success(ModelMapper.mapMovieResponseToDomain(bestRatedMovie))
                 } catch (e: Exception) {
                     Log.e(TAG, e.message ?: "", e)

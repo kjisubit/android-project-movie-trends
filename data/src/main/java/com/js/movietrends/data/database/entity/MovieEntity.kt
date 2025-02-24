@@ -8,6 +8,10 @@ data class MovieEntity(
     @PrimaryKey(autoGenerate = true)
     var pk: Long = 0,
     val id: Int,
+    val overview: String?,
+    val popularity: Double?,
     val posterPath: String?,
     val title: String?,
+    val voteAverage: Double?,
+    val voteCount: Int?
 )

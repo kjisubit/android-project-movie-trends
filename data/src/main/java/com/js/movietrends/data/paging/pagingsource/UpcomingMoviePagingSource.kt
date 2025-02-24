@@ -14,18 +14,16 @@ class UpcomingMoviePagingSource(private val movieApi: MovieApi) :
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieResponse> {
         val page = params.key ?: 1
         try {
-            val response =
-                movieApi.getUpcomingMovies(
-                    apiKey = BuildConfig.TMDB_API_KEY,
-                    language = AppInfoManager.localeCode,
-                    page = page
-                )
+            val response = movieApi.getUpcomingMovies(
+                apiKey = BuildConfig.TMDB_API_KEY,
+                language = AppInfoManager.localeCode,
+                page = page
+            )
             if (response.isSuccessful) {
-                val movieList = response.body()?.results?.filterNotNull() ?: emptyList()
+                val movieList = response.body()?.results ?: emptyList()
                 return LoadResult.Page(
                     data = movieList,
-                    prevKey = null, // Only paging forward.
-                    //prevKey = if (page == 1) null else page - 1,
+                    prevKey = null,
                     nextKey = if (movieList.isEmpty()) null else page + 1
                 )
             } else {

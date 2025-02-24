@@ -18,24 +18,29 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.js.movietrends.R
+import com.js.movietrends.domain.model.Movie
 import com.js.movietrends.ui.components.MovieListStaggeredGrid
 
 @Composable
-fun NowPlaying(viewModel: NowPlayingViewModel = hiltViewModel()) {
-    val nowPlayingMovies = viewModel.nowPlayingMovies.collectAsLazyPagingItems()
+fun NowPlayingScreen(
+    viewModel: NowPlayingViewModel = hiltViewModel(),
+    onNavigationToMovieDetail: (Movie) -> Unit
+) {
+    val nowPlayingUiState = viewModel.nowPlayingUiState.collectAsLazyPagingItems()
 
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
     ) {
-        when (val refreshState = nowPlayingMovies.loadState.refresh) {
+        when (val refreshState = nowPlayingUiState.loadState.refresh) {
             is LoadState.Loading -> {
                 CircularProgressIndicator()
             }
 
             is LoadState.Error -> {
-                if (nowPlayingMovies.itemCount > 0) {
-                    MovieListStaggeredGrid(movies = nowPlayingMovies) // 캐시된 데이터
+                if (nowPlayingUiState.itemCount > 0) { // 캐시에 저장된 데이터 노출
+                    MovieListStaggeredGrid(movies = nowPlayingUiState, onItemClick = { movie ->
+                        onNavigationToMovieDetail(movie)
+                    })
                 }
 
                 Text(
@@ -52,7 +57,9 @@ fun NowPlaying(viewModel: NowPlayingViewModel = hiltViewModel()) {
             }
 
             else -> {
-                MovieListStaggeredGrid(movies = nowPlayingMovies)
+                MovieListStaggeredGrid(movies = nowPlayingUiState, onItemClick = { movie ->
+                    onNavigationToMovieDetail(movie)
+                })
             }
         }
     }

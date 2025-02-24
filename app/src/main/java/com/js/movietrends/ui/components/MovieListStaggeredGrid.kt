@@ -1,6 +1,7 @@
 package com.js.movietrends.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
@@ -20,27 +21,31 @@ import com.js.movietrends.domain.core.Constants
 import com.js.movietrends.domain.model.Movie
 
 @Composable
-fun MovieListStaggeredGrid(movies: LazyPagingItems<Movie>) {
+fun MovieListStaggeredGrid(
+    movies: LazyPagingItems<Movie>,
+    onItemClick: (Movie) -> Unit,
+    modifier: Modifier = Modifier
+) {
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(3),
         verticalItemSpacing = 4.dp,
         horizontalArrangement = Arrangement.spacedBy(4.dp),
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier,
     ) {
         items(count = movies.itemCount) { index ->
             val movie = movies[index]
             movie?.let {
-                MovieListStaggeredGridItem(movie)
+                MovieListStaggeredGridItem(movie, onItemClick)
             }
         }
     }
 }
 
 @Composable
-fun MovieListStaggeredGridItem(movie: Movie) {
-    val posterUrl =
-        movie.posterPath?.let { "${Constants.POSTER_URL}${Constants.POSTER_XXLARGE}$it" }
-
+fun MovieListStaggeredGridItem(
+    movie: Movie,
+    onItemClick: (Movie) -> Unit
+) {
     // 영화 id 값으로 포스터 이미지 화면비 결정
     val movieId = (movie.id ?: 0)
     val aspectRatioVariant = 5 // 화면비 종류
@@ -50,11 +55,15 @@ fun MovieListStaggeredGridItem(movie: Movie) {
     val aspectRatio = (minAspectRatio + movieId % aspectRatioVariant * ratioInterval).toFloat()
 
     SubcomposeAsyncImage(
-        model = posterUrl,
-        contentDescription = "Movie Poster",
+        model = movie.posterPath
+            ?.let { "${Constants.POSTER_URL}${Constants.POSTER_XLARGE}$it" },
+        contentDescription = movie.title,
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(aspectRatio),
+            .aspectRatio(aspectRatio)
+            .clickable {
+                onItemClick(movie)
+            },
         contentScale = ContentScale.Crop,
         loading = {
             Box(
@@ -67,5 +76,4 @@ fun MovieListStaggeredGridItem(movie: Movie) {
             error.result.throwable.message?.let { Text(it) }
         },
     )
-
 }

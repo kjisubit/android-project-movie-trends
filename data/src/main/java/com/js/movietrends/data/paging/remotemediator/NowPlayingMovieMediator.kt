@@ -26,7 +26,6 @@ class NowPlayingMovieMediator(private val movieApi: MovieApi, private val movieD
         state: PagingState<Int, MovieEntity>
     ): MediatorResult {
         return try {
-            // api 호출부에 넘길 page 결정
             val page = when (loadType) {
                 LoadType.REFRESH -> 1
                 LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
@@ -76,7 +75,11 @@ class NowPlayingMovieMediator(private val movieApi: MovieApi, private val movieD
                         MovieEntity(
                             id = movieResponse.id,
                             posterPath = movieResponse.posterPath,
-                            title = movieResponse.title
+                            title = movieResponse.title,
+                            overview = movieResponse.overview,
+                            popularity = movieResponse.popularity,
+                            voteAverage = movieResponse.voteAverage,
+                            voteCount = movieResponse.voteCount,
                         )
                     }?.let { movieDao.addMovies(movies = it) }
                 }

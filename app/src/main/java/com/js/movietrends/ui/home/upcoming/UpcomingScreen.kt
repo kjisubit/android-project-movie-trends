@@ -18,24 +18,31 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.js.movietrends.R
+import com.js.movietrends.domain.model.Movie
 import com.js.movietrends.ui.components.MovieListColumn
 
 @Composable
-fun Upcoming(viewModel: UpcomingViewModel = hiltViewModel()) {
-    val upcomingMovies = viewModel.upcomingMovies.collectAsLazyPagingItems()
+fun UpcomingScreen(
+    viewModel: UpcomingViewModel = hiltViewModel(),
+    onNavigationToMovieDetail: (Movie) -> Unit
+) {
+    val upcomingUiState = viewModel.upcomingUiState.collectAsLazyPagingItems()
 
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        when (val refreshState = upcomingMovies.loadState.refresh) {
+        when (val refreshState = upcomingUiState.loadState.refresh) {
             is LoadState.Loading -> {
                 CircularProgressIndicator()
             }
 
             is LoadState.Error -> {
-                if (upcomingMovies.itemCount > 0) {
-                    MovieListColumn(movies = upcomingMovies)
+                // api 호출 실패 시, 캐시 아이템 노출
+                if (upcomingUiState.itemCount > 0) {
+                    MovieListColumn(movies = upcomingUiState, onItemClick = { movie ->
+                        onNavigationToMovieDetail(movie)
+                    })
                 }
 
                 Text(
@@ -52,8 +59,17 @@ fun Upcoming(viewModel: UpcomingViewModel = hiltViewModel()) {
             }
 
             else -> {
-                MovieListColumn(movies = upcomingMovies)
+                MovieListColumn(movies = upcomingUiState, onItemClick = { movie ->
+                    onNavigationToMovieDetail(movie)
+                })
             }
         }
     }
 }
+
+
+//@Preview(showBackground = true)
+//@Composable
+//fun UpcomingScreenPreview() {
+//    UpcomingScreen()
+//}

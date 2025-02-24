@@ -9,7 +9,11 @@ object ModelMapper {
         return Movie(
             id = movieResponse.id,
             posterPath = movieResponse.posterPath,
-            title = movieResponse.title
+            title = movieResponse.title,
+            overview = movieResponse.overview,
+            popularity = movieResponse.popularity,
+            voteAverage = movieResponse.voteAverage,
+            voteCount = movieResponse.voteCount
         )
     }
 
@@ -17,7 +21,11 @@ object ModelMapper {
         return Movie(
             id = movieEntity.id,
             posterPath = movieEntity.posterPath,
-            title = movieEntity.title
+            title = movieEntity.title,
+            overview = movieEntity.overview,
+            popularity = movieEntity.popularity,
+            voteAverage = movieEntity.voteAverage,
+            voteCount = movieEntity.voteCount
         )
     }
 }

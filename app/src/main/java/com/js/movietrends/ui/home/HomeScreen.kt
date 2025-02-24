@@ -12,24 +12,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.js.movietrends.R
-import com.js.movietrends.ui.home.dailyspotlight.DailySpotlight
-import com.js.movietrends.ui.home.nowplaying.NowPlaying
-import com.js.movietrends.ui.home.upcoming.Upcoming
+import com.js.movietrends.domain.model.Movie
+import com.js.movietrends.ui.home.nowplaying.NowPlayingScreen
+import com.js.movietrends.ui.home.upcoming.UpcomingScreen
+import com.js.movietrends.ui.home.weeklyspotlight.WeeklySpotlightScreen
 
 @Composable
-fun MainScreen() {
+fun HomeScreen(onNavigationToMovieDetail: (Movie) -> Unit) {
     val context = LocalContext.current
-    val navController = rememberNavController()
+    val bottomNavController = rememberNavController()
 
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val navBackStackEntry by bottomNavController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination?.route
-
     val navigationItems = getBottomNavigationItems(context)
     val navigationSelectedItem =
         navigationItems.indexOfFirst { it.screenRoute == currentDestination }
@@ -60,8 +61,8 @@ fun MainScreen() {
                             )
                         },
                         onClick = {
-                            navController.navigate(navigationItem.screenRoute) {
-                                popUpTo(navController.graph.findStartDestination().id) {
+                            bottomNavController.navigate(navigationItem.screenRoute) {
+                                popUpTo(bottomNavController.graph.findStartDestination().id) {
                                     saveState = true
                                 }
                                 launchSingleTop = true
@@ -73,19 +74,25 @@ fun MainScreen() {
             }
         }) { paddingValues ->
         NavHost(
-            navController = navController,
-            startDestination = NavigationScreens.BestRated.screenRoute,
+            navController = bottomNavController,
+            startDestination = NavigationScreens.WeeklySpotlight.screenRoute,
             modifier = Modifier.padding(paddingValues)
         ) {
-            composable(NavigationScreens.BestRated.screenRoute) {
-                DailySpotlight()
+            composable(NavigationScreens.WeeklySpotlight.screenRoute) {
+                WeeklySpotlightScreen(onNavigationToMovieDetail = onNavigationToMovieDetail)
             }
             composable(NavigationScreens.NowPlaying.screenRoute) {
-                NowPlaying()
+                NowPlayingScreen(onNavigationToMovieDetail = onNavigationToMovieDetail)
             }
             composable(NavigationScreens.Upcoming.screenRoute) {
-                Upcoming()
+                UpcomingScreen(onNavigationToMovieDetail = onNavigationToMovieDetail)
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HomeScreenPreview() {
+    HomeScreen(onNavigationToMovieDetail = {})
 }

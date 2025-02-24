@@ -18,6 +18,8 @@ import com.js.movietrends.domain.core.AppInfoManager
 import com.js.movietrends.domain.model.ApiResult
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class RemoteDataSourceImpl(private val movieApi: MovieApi, private val movieDb: MovieDb) :
     RemoteDataSource {
@@ -28,14 +30,23 @@ class RemoteDataSourceImpl(private val movieApi: MovieApi, private val movieDb: 
 
     private val movieDao = movieDb.movieDao()
 
-    override fun getBestRatedMovieOfToday(): Flow<ApiResult<MovieListResponse>> {
+    override fun getWeeklySpotlightedMovie(): Flow<ApiResult<MovieListResponse>> {
         return flow {
             emit(ApiResult.Loading)
             try {
-                val response = movieApi.getTopRatedMovies(
+
+                // 비교적 최근 일주일 동안 개봉한 영화의 경우, 상세 정보가 존재하지 않는 관계로, 1~2 주 전에 개봉한 작품 위주로 검색
+                val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                //val today = LocalDate.now().format(dateTimeFormatter) //
+                val oneWeekAgo = LocalDate.now().minusWeeks(1).format(dateTimeFormatter)
+                val twoWeeksAgo = LocalDate.now().minusWeeks(2).format(dateTimeFormatter)
+
+                val response = movieApi.getDiscoveredMovies(
                     apiKey = BuildConfig.TMDB_API_KEY,
                     language = AppInfoManager.localeCode,
-                    page = 1
+                    page = 1,
+                    primaryReleaseDateGte = twoWeeksAgo,
+                    primaryReleaseDateLte = oneWeekAgo,
                 )
                 val result = ApiResponseHandler.handleApiResponse(response)
                 emit(result)

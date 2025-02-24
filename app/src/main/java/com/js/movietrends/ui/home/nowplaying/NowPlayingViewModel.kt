@@ -15,8 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NowPlayingViewModel @Inject constructor(private val useCases: UseCases) : ViewModel() {
-    private val _nowPlayingMovies = MutableStateFlow<PagingData<Movie>>(PagingData.empty())
-    val nowPlayingMovies: StateFlow<PagingData<Movie>> = _nowPlayingMovies
+    private val _nowPlayingUiState = MutableStateFlow<PagingData<Movie>>(PagingData.empty())
+    val nowPlayingUiState: StateFlow<PagingData<Movie>> = _nowPlayingUiState
 
     init {
         fetchNowPlayingMovies()
@@ -27,7 +27,7 @@ class NowPlayingViewModel @Inject constructor(private val useCases: UseCases) : 
             useCases.getNowPlayingMoviesUseCase()
                 .cachedIn(viewModelScope)
                 .collectLatest {
-                    _nowPlayingMovies.value = it
+                    _nowPlayingUiState.value = it
                 }
         }
     }

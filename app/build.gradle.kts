@@ -5,6 +5,7 @@ plugins {
 
     id("kotlin-kapt")
     id("com.google.dagger.hilt.android")
+    kotlin("plugin.serialization") version "2.1.10"
 }
 
 android {
@@ -13,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId = "com.js.movietrends"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
@@ -67,6 +68,7 @@ dependencies {
     implementation(libs.androidx.paging.common)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
+    implementation(libs.kotlinx.serialization.json.v180)
 
     // hilt
     implementation(libs.hilt.android)

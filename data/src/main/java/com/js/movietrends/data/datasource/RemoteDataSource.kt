@@ -8,7 +8,7 @@ import com.js.movietrends.domain.model.ApiResult
 import kotlinx.coroutines.flow.Flow
 
 interface RemoteDataSource {
-    fun getBestRatedMovieOfToday(): Flow<ApiResult<MovieListResponse>>
+    fun getWeeklySpotlightedMovie(): Flow<ApiResult<MovieListResponse>>
     fun getNowPlayingMovies(): Flow<PagingData<MovieEntity>>
     fun getUpcomingMovies(): Flow<PagingData<MovieResponse>>
 }

@@ -16,6 +16,9 @@ object RemoteDataSourceModule {
 
     @Provides
     @Singleton
-    fun provideRemoteDataSource(movieApi: MovieApi, movieDb: MovieDb):
-            RemoteDataSource = RemoteDataSourceImpl(movieApi = movieApi, movieDb)
+    fun provideRemoteDataSource(
+        movieApi: MovieApi, movieDb: MovieDb
+    ): RemoteDataSource = RemoteDataSourceImpl(
+        movieApi = movieApi, movieDb = movieDb
+    )
 }

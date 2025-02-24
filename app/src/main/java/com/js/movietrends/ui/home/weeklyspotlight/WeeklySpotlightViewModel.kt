@@ -1,4 +1,4 @@
-package com.js.movietrends.ui.home.dailyspotlight
+package com.js.movietrends.ui.home.weeklyspotlight
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,9 +13,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class DailySpotlightViewModel @Inject constructor(private val useCases: UseCases) : ViewModel() {
-    private val _bestRatedMovie = MutableStateFlow<ApiResult<Movie>>(ApiResult.Loading)
-    val bestRatedMovie: StateFlow<ApiResult<Movie>> = _bestRatedMovie
+class WeeklySpotlightViewModel @Inject constructor(private val useCases: UseCases) : ViewModel() {
+    private val _weeklySpotlightUiState = MutableStateFlow<ApiResult<Movie>>(ApiResult.Loading)
+    val weeklySpotlightUiState: StateFlow<ApiResult<Movie>> = _weeklySpotlightUiState
 
     init {
         fetchFetchBestRatedMovie()
@@ -25,7 +25,7 @@ class DailySpotlightViewModel @Inject constructor(private val useCases: UseCases
         viewModelScope.launch {
             useCases.getBestRatedMovieUseCase()
                 .collectLatest {
-                    _bestRatedMovie.value = it
+                    _weeklySpotlightUiState.value = it
                 }
         }
     }

@@ -15,8 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UpcomingViewModel @Inject constructor(private val useCases: UseCases) : ViewModel() {
-    private val _upcomingMovies = MutableStateFlow<PagingData<Movie>>(PagingData.empty())
-    val upcomingMovies: StateFlow<PagingData<Movie>> = _upcomingMovies
+    private val _upcomingUiState = MutableStateFlow<PagingData<Movie>>(PagingData.empty())
+    val upcomingUiState: StateFlow<PagingData<Movie>> = _upcomingUiState
 
     init {
         fetchUpcomingMovies()
@@ -27,7 +27,7 @@ class UpcomingViewModel @Inject constructor(private val useCases: UseCases) : Vi
             useCases.getUpcomingMoviesUseCase()
                 .cachedIn(viewModelScope)
                 .collectLatest {
-                    _upcomingMovies.value = it
+                    _upcomingUiState.value = it
                 }
         }
     }

@@ -1,8 +1,12 @@
 package com.js.movietrends.ui.components
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -19,37 +23,61 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.paging.compose.LazyPagingItems
-import coil3.compose.AsyncImage
+import coil3.compose.SubcomposeAsyncImage
+import com.js.movietrends.domain.core.Constants
 import com.js.movietrends.domain.model.Movie
 
 @Composable
-fun MovieListColumn(movies: LazyPagingItems<Movie>) {
-    LazyColumn(contentPadding = PaddingValues(horizontal = 10.dp, vertical = 10.dp)) {
+fun MovieListColumn(
+    movies: LazyPagingItems<Movie>,
+    modifier: Modifier = Modifier,
+    onItemClick: (Movie) -> Unit
+) {
+    LazyColumn(
+        contentPadding = PaddingValues(
+            horizontal = 10.dp,
+            vertical = 10.dp
+        ),
+        modifier = modifier
+    ) {
         items(count = movies.itemCount) { index ->
             val movie = movies[index]
             movie?.let {
-                MovieListColumnItem(movie)
+                MovieListColumnItem(movie, onItemClick)
             }
         }
     }
 }
 
-
 @Composable
-fun MovieListColumnItem(movie: Movie) {
+fun MovieListColumnItem(
+    movie: Movie,
+    onItemClick: (Movie) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .padding(vertical = 8.dp)
+            .clickable {
+                onItemClick(movie)
+            },
         verticalAlignment = Alignment.CenterVertically
     ) {
-        AsyncImage(
-            model = "https://image.tmdb.org/t/p/w500${movie.posterPath}",
-            contentDescription = "Movie Poster",
+        SubcomposeAsyncImage(
+            model = movie.posterPath
+                ?.let { "${Constants.POSTER_URL}${Constants.POSTER_XLARGE}$it" },
+            contentDescription = movie.title,
             modifier = Modifier
                 .size(100.dp)
                 .clip(RoundedCornerShape(100.dp)),
-            contentScale = ContentScale.FillWidth
+            contentScale = ContentScale.FillWidth,
+            loading = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.LightGray)
+                )
+            }
         )
         Spacer(modifier = Modifier.width(16.dp))
         Text(

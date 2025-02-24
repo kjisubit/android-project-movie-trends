@@ -19,9 +19,9 @@ data class BottomNavigationItem(
 fun getBottomNavigationItems(context: Context): List<BottomNavigationItem> {
     return listOf(
         BottomNavigationItem(
-            title = context.getString(R.string.common_best_rated),
+            title = context.getString(R.string.common_weekly_spotlight),
             icon = Icons.Filled.Star,
-            screenRoute = NavigationScreens.BestRated.screenRoute
+            screenRoute = NavigationScreens.WeeklySpotlight.screenRoute
         ),
         BottomNavigationItem(
             title = context.getString(R.string.common_now_playing),
@@ -37,7 +37,7 @@ fun getBottomNavigationItems(context: Context): List<BottomNavigationItem> {
 }
 
 sealed class NavigationScreens(val screenRoute: String) {
-    data object BestRated : NavigationScreens(Constants.BEST_RATED_ROUTE)
+    data object WeeklySpotlight : NavigationScreens(Constants.WEEKLY_SPOTLIGHT_ROUTE)
     data object NowPlaying : NavigationScreens(Constants.NOW_PLAYING_ROUTE)
     data object Upcoming : NavigationScreens(Constants.UPCOMING_ROUTE)
 }

@@ -1,6 +1,7 @@
 plugins {
     id("java-library")
     alias(libs.plugins.jetbrains.kotlin.jvm)
+    kotlin("plugin.serialization") version "2.1.10"
 }
 
 java {
@@ -18,4 +19,6 @@ dependencies {
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.paging.common)
     implementation(libs.converter.gson)
+
+    implementation(libs.kotlinx.serialization.json.v180)
 }
