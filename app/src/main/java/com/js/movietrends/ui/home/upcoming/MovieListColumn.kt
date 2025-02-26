@@ -1,4 +1,4 @@
-package com.js.movietrends.ui.components
+package com.js.movietrends.ui.home.upcoming
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

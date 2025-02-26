@@ -29,7 +29,6 @@ import com.js.movietrends.R
 import com.js.movietrends.domain.core.Constants
 import com.js.movietrends.domain.model.ApiResult
 import com.js.movietrends.domain.model.Movie
-import com.js.movietrends.ui.components.AnimatedDonutChart
 
 @Composable
 fun WeeklySpotlightScreen(
@@ -108,9 +107,10 @@ fun WeeklySpotlightContent(movie: Movie, modifier: Modifier = Modifier) {
 
         if (imageLoaded) {
             AnimatedDonutChart(
-                progress = 0.5f,
+                value = (movie.voteAverage ?: 0).toFloat(),
+                maxValue = 10,
                 modifier = Modifier.size(200.dp),
-                durationMillis = 500
+                durationMillis = 1000
             )
         }
     }

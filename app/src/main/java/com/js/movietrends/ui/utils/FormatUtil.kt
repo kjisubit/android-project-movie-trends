@@ -1,4 +1,4 @@
-package com.js.movietrends.ui.util
+package com.js.movietrends.ui.utils
 
 import java.text.DecimalFormat
 

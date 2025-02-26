@@ -19,7 +19,6 @@ import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.js.movietrends.R
 import com.js.movietrends.domain.model.Movie
-import com.js.movietrends.ui.components.MovieListColumn
 
 @Composable
 fun UpcomingScreen(
@@ -46,8 +45,7 @@ fun UpcomingScreen(
                 }
 
                 Text(
-                    text = refreshState.error.localizedMessage
-                        ?: stringResource(id = R.string.error_unknown),
+                    text = refreshState.error.localizedMessage ?: stringResource(id = R.string.error_unknown),
                     color = Color.White,
                     fontSize = 20.sp,
                     modifier = Modifier

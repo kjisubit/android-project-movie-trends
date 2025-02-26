@@ -20,6 +20,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.js.movietrends.R
 import com.js.movietrends.domain.model.Movie
+import com.js.movietrends.ui.components.MovieTrendsScaffold
 import com.js.movietrends.ui.home.nowplaying.NowPlayingScreen
 import com.js.movietrends.ui.home.upcoming.UpcomingScreen
 import com.js.movietrends.ui.home.weeklyspotlight.WeeklySpotlightScreen
@@ -32,11 +33,10 @@ fun HomeScreen(onNavigationToMovieDetail: (Movie) -> Unit) {
     val navBackStackEntry by bottomNavController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination?.route
     val navigationItems = getBottomNavigationItems(context)
-    val navigationSelectedItem =
-        navigationItems.indexOfFirst { it.screenRoute == currentDestination }
-            .takeIf { it != -1 } ?: 0
+    val navigationSelectedItem = navigationItems.indexOfFirst { it.screenRoute == currentDestination }
+        .takeIf { it != -1 } ?: 0
 
-    Scaffold(
+    MovieTrendsScaffold(
         bottomBar = {
             NavigationBar(
                 containerColor = colorResource(id = R.color.white),

@@ -1,4 +1,4 @@
-package com.js.movietrends.ui.components
+package com.js.movietrends.ui.home.weeklyspotlight
 
 import android.text.TextPaint
 import androidx.compose.animation.core.LinearEasing
@@ -20,22 +20,23 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.sp
-import com.js.movietrends.ui.util.FormatUtil
+import com.js.movietrends.ui.utils.FormatUtil
 
 @Composable
 fun AnimatedDonutChart(
-    progress: Float,
+    value: Float,
+    maxValue: Int,
     modifier: Modifier = Modifier,
     durationMillis: Int = 3000
 ) {
-    var animatedProgress by remember { mutableFloatStateOf(0.0f) }
+    var valueState by remember { mutableFloatStateOf(0.0f) }
 
-    LaunchedEffect(progress) {
-        animatedProgress = progress
+    LaunchedEffect(value) {
+        valueState = value
     }
 
     val targetProgressState by animateFloatAsState(
-        targetValue = animatedProgress,
+        targetValue = valueState,
         animationSpec = tween(
             durationMillis = durationMillis,
             easing = LinearEasing
@@ -44,14 +45,16 @@ fun AnimatedDonutChart(
     )
 
     DonutChart(
-        progress = targetProgressState,
+        value = targetProgressState,
+        maxValue = maxValue,
         modifier = modifier,
     )
 }
 
 @Composable
 fun DonutChart(
-    progress: Float,
+    value: Float,
+    maxValue: Int,
     modifier: Modifier = Modifier,
     chartColor: Color = Color.Green
 ) {
@@ -59,8 +62,14 @@ fun DonutChart(
         val size = size.minDimension
         val strokeWidth = size * 0.05f
         val radius = size / 2
-        val backgroundAlpha = 0.2f
-        val contentAlpha = 0.7f
+        val backgroundAlpha = 0.5f
+        val contentAlpha = 0.5f
+
+        // 백그라운드
+        drawCircle(
+            color = Color.Black.copy(alpha = backgroundAlpha),
+            radius = radius - strokeWidth,
+        )
 
         // 백그라운드 트랙
         drawCircle(
@@ -76,7 +85,7 @@ fun DonutChart(
         drawArc(
             color = chartColor.copy(alpha = contentAlpha),
             startAngle = -90f,
-            sweepAngle = progress * 360f,
+            sweepAngle = value / maxValue * 360f,
             useCenter = false,
             style = Stroke(width = strokeWidth, cap = StrokeCap.Butt),
             size = Size(size - strokeWidth, size - strokeWidth),
@@ -87,7 +96,7 @@ fun DonutChart(
         )
 
         // 텍스트
-        val rateString = "★ ${FormatUtil.formatToOneDecimal(progress)}/10"
+        val rateString = "★ ${FormatUtil.formatToOneDecimal(value)}/$maxValue"
         val textPaint = TextPaint().apply {
             color = Color.White.toArgb()
             textSize = 30.sp.toPx()

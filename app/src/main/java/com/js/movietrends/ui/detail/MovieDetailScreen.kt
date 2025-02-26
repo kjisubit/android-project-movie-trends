@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -25,83 +24,78 @@ import coil3.compose.SubcomposeAsyncImage
 import com.js.movietrends.R
 import com.js.movietrends.domain.core.Constants
 import com.js.movietrends.domain.model.Movie
-import com.js.movietrends.ui.util.FormatUtil
+import com.js.movietrends.ui.utils.FormatUtil
 
 @Composable
 fun MovieDetailScreen(movie: Movie) {
     val scrollState = rememberScrollState()
-
-    Scaffold(
-        modifier = Modifier.fillMaxSize()
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize()
-                .verticalScroll(scrollState)
-        ) {
-            if (!movie.posterPath.isNullOrEmpty()) {
-                SubcomposeAsyncImage(model = movie.posterPath?.let { "${Constants.POSTER_URL}${Constants.POSTER_XXLARGE}$it" },
-                    contentDescription = movie.title,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1f),
-                    contentScale = ContentScale.Crop,
-                    loading = {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(Color.LightGray)
-                        )
-                    },
-                    error = { error ->
-                        error.result.throwable.message?.let { Text(it) }
-                    })
-            } else {
-                Image(
-                    painter = painterResource(id = R.drawable.ic_launcher_background), // 로컬 디폴트 이미지 리소스 ID
-                    contentDescription = movie.title,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(1f),
-                    contentScale = ContentScale.FillWidth
-                )
-            }
-            Spacer(
-                modifier = Modifier.height(10.dp)
-            )
-            Text(
-                text = movie.title ?: "Unknown Title",
-                fontSize = 20.sp,
-                color = Color.Black,
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState)
+    ) {
+        if (!movie.posterPath.isNullOrEmpty()) {
+            SubcomposeAsyncImage(model = movie.posterPath?.let { "${Constants.POSTER_URL}${Constants.POSTER_XXLARGE}$it" },
+                contentDescription = movie.title,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 10.dp)
-            )
-            Spacer(
-                modifier = Modifier.height(10.dp)
-            )
-            Text(
-                text = "★ ${FormatUtil.formatToOneDecimal(movie.voteAverage ?: 0.0)}/10",
-                fontSize = 20.sp,
-                color = Color.Black,
+                    .aspectRatio(1f),
+                contentScale = ContentScale.Crop,
+                loading = {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(Color.LightGray)
+                    )
+                },
+                error = { error ->
+                    error.result.throwable.message?.let { Text(it) }
+                })
+        } else {
+            Image(
+                painter = painterResource(id = R.drawable.ic_launcher_background), // 로컬 디폴트 이미지 리소스 ID
+                contentDescription = movie.title,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 10.dp)
-            )
-            Spacer(
-                modifier = Modifier.height(10.dp)
-            )
-            Text(
-                text = movie.overview ?: "No description available.",
-                fontSize = 20.sp,
-                color = Color.Black,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 10.dp)
+                    .aspectRatio(1f),
+                contentScale = ContentScale.FillWidth
             )
         }
+        Spacer(
+            modifier = Modifier.height(10.dp)
+        )
+        Text(
+            text = movie.title ?: "Unknown Title",
+            fontSize = 20.sp,
+            color = Color.Black,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp)
+        )
+        Spacer(
+            modifier = Modifier.height(10.dp)
+        )
+        Text(
+            text = "★ ${FormatUtil.formatToOneDecimal(movie.voteAverage ?: 0.0)}/10",
+            fontSize = 20.sp,
+            color = Color.Black,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp)
+        )
+        Spacer(
+            modifier = Modifier.height(10.dp)
+        )
+        Text(
+            text = movie.overview ?: "No description available.",
+            fontSize = 20.sp,
+            color = Color.Black,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp)
+        )
     }
+
 }
 
 //@Preview(showBackground = true)
