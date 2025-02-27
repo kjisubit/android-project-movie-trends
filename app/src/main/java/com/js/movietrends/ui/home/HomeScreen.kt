@@ -4,11 +4,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
@@ -44,6 +45,9 @@ fun HomeScreen(onNavigationToMovieDetail: (Movie) -> Unit) {
             ) {
                 navigationItems.forEachIndexed { index, navigationItem ->
                     NavigationBarItem(
+                        colors = NavigationBarItemDefaults.colors(
+                            indicatorColor = Color.Transparent
+                        ),
                         selected = index == navigationSelectedItem,
                         label = {
                             Text(
@@ -76,16 +80,24 @@ fun HomeScreen(onNavigationToMovieDetail: (Movie) -> Unit) {
         NavHost(
             navController = bottomNavController,
             startDestination = NavigationScreens.WeeklySpotlight.screenRoute,
-            modifier = Modifier.padding(paddingValues)
         ) {
             composable(NavigationScreens.WeeklySpotlight.screenRoute) {
-                WeeklySpotlightScreen(onNavigationToMovieDetail = onNavigationToMovieDetail)
+                WeeklySpotlightScreen(
+                    modifier = Modifier.padding(paddingValues),
+                    onNavigationToMovieDetail = onNavigationToMovieDetail
+                )
             }
             composable(NavigationScreens.NowPlaying.screenRoute) {
-                NowPlayingScreen(onNavigationToMovieDetail = onNavigationToMovieDetail)
+                NowPlayingScreen(
+                    modifier = Modifier.padding(paddingValues),
+                    onNavigationToMovieDetail = onNavigationToMovieDetail
+                )
             }
             composable(NavigationScreens.Upcoming.screenRoute) {
-                UpcomingScreen(onNavigationToMovieDetail = onNavigationToMovieDetail)
+                UpcomingScreen(
+                    modifier = Modifier.padding(paddingValues),
+                    onNavigationToMovieDetail = onNavigationToMovieDetail
+                )
             }
         }
     }

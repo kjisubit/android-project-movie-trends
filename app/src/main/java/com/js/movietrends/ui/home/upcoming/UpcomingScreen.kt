@@ -22,6 +22,7 @@ import com.js.movietrends.domain.model.Movie
 
 @Composable
 fun UpcomingScreen(
+    modifier: Modifier = Modifier,
     viewModel: UpcomingViewModel = hiltViewModel(),
     onNavigationToMovieDetail: (Movie) -> Unit
 ) {

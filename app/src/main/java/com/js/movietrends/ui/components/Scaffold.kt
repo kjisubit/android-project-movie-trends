@@ -15,8 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import com.js.movietrends.ui.theme.MovieTrendsTheme
 import com.js.movietrends.model.SnackbarManager
+import com.js.movietrends.ui.theme.MovieTrendsTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
