@@ -1,8 +1,9 @@
 <resources>
     <string name="app_name">MovieTrends</string>
-    <string name="common_weekly_spotlight">추천 영화</string>
+    <string name="common_details">상세 정보 보기</string>
     <string name="common_now_playing">상영 중</string>
     <string name="common_upcoming">개봉 예정</string>
+    <string name="common_weekly_spotlight">주간 추천 영화</string>
     <string name="error_unknown">Unknown Error</string>
     <string name="title_activity_intro">IntroActivity</string>
     <string name="title_activity_main">MainActivity</string>

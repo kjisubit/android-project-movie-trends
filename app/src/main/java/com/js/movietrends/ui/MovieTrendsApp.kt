@@ -1,13 +1,11 @@
 package com.js.movietrends.ui
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.js.movietrends.domain.model.Movie
-import com.js.movietrends.domain.model.SampleData
 import com.js.movietrends.ui.detail.MovieDetailScreen
 import com.js.movietrends.ui.home.HomeScreen
 import com.js.movietrends.ui.intro.IntroScreen
@@ -53,26 +51,4 @@ fun MovieTrendsNavHost() {
             MovieDetailScreen(movie)
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HomeScreenPreview() {
-    HomeScreen(
-        onNavigationToMovieDetail = {}
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun IntroScreenPreview() {
-    IntroScreen(
-        onNavigationToHome = { }
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun MovieDetailScreenPreview() {
-    MovieDetailScreen(movie = SampleData.movie)
 }

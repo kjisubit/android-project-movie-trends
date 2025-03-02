@@ -1,48 +1,21 @@
-package com.js.movietrends.ui.home.nowplaying
+package com.js.movietrends.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.unit.dp
-import androidx.paging.compose.LazyPagingItems
 import coil3.compose.SubcomposeAsyncImage
 import com.js.movietrends.domain.core.Constants
 import com.js.movietrends.domain.model.Movie
 
 @Composable
-fun MovieListStaggeredGrid(
-    movies: LazyPagingItems<Movie>,
-    onItemClick: (Movie) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    LazyVerticalStaggeredGrid(
-        columns = StaggeredGridCells.Fixed(3),
-        verticalItemSpacing = 4.dp,
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
-        modifier = modifier,
-    ) {
-        items(count = movies.itemCount) { index ->
-            val movie = movies[index]
-            movie?.let {
-                MovieListStaggeredGridItem(movie, onItemClick)
-            }
-        }
-    }
-}
-
-@Composable
-fun MovieListStaggeredGridItem(
+fun NowPlayingGridCell(
     movie: Movie,
     onItemClick: (Movie) -> Unit
 ) {
@@ -67,13 +40,14 @@ fun MovieListStaggeredGridItem(
         contentScale = ContentScale.Crop,
         loading = {
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.LightGray)
+                modifier = Modifier.background(Color.LightGray)
             )
         },
         error = { error ->
+            Box(
+                modifier = Modifier.background(Color.Black)
+            )
             error.result.throwable.message?.let { Text(it) }
-        },
+        }
     )
 }

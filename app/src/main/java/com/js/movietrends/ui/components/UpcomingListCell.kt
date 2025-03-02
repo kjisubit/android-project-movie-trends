@@ -1,9 +1,8 @@
-package com.js.movietrends.ui.home.upcoming
+package com.js.movietrends.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,35 +20,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.paging.compose.LazyPagingItems
 import coil3.compose.SubcomposeAsyncImage
 import com.js.movietrends.domain.core.Constants
 import com.js.movietrends.domain.model.Movie
 
 @Composable
-fun MovieListColumn(
-    movies: LazyPagingItems<Movie>,
-    modifier: Modifier = Modifier,
-    onItemClick: (Movie) -> Unit
-) {
-    LazyColumn(
-        contentPadding = PaddingValues(
-            horizontal = 10.dp,
-            vertical = 10.dp
-        ),
-        modifier = modifier
-    ) {
-        items(count = movies.itemCount) { index ->
-            val movie = movies[index]
-            movie?.let {
-                MovieListColumnItem(movie, onItemClick)
-            }
-        }
-    }
-}
-
-@Composable
-fun MovieListColumnItem(
+fun UpcomingListCell(
     movie: Movie,
     onItemClick: (Movie) -> Unit
 ) {
@@ -77,6 +52,12 @@ fun MovieListColumnItem(
                         .fillMaxSize()
                         .background(Color.LightGray)
                 )
+            },
+            error = { error ->
+                Box(
+                    modifier = Modifier.background(Color.Black)
+                )
+                error.result.throwable.message?.let { Text(it) }
             }
         )
         Spacer(modifier = Modifier.width(16.dp))

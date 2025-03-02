@@ -2,9 +2,12 @@ package com.js.movietrends.ui.home.nowplaying
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -12,13 +15,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
+import androidx.paging.LoadStates
+import androidx.paging.PagingData
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.js.movietrends.R
 import com.js.movietrends.domain.model.Movie
+import com.js.movietrends.domain.model.SampleData
+import com.js.movietrends.ui.components.NowPlayingGridCell
+import com.js.movietrends.ui.theme.MovieTrendsTheme
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlin.random.Random
 
 @Composable
 fun NowPlayingScreen(
@@ -27,24 +39,43 @@ fun NowPlayingScreen(
     onNavigationToMovieDetail: (Movie) -> Unit
 ) {
     val nowPlayingUiState = viewModel.nowPlayingUiState.collectAsLazyPagingItems()
+    NowPlayingScreen(
+        modifier = modifier,
+        nowPlayingUiState = nowPlayingUiState,
+        onNavigationToMovieDetail = onNavigationToMovieDetail
+    )
+}
 
+/**
+ * state hoisting 적용한 screen composable
+ */
+@Composable
+fun NowPlayingScreen(
+    modifier: Modifier = Modifier,
+    nowPlayingUiState: LazyPagingItems<Movie>,
+    onNavigationToMovieDetail: (Movie) -> Unit
+) {
     Box(
-        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
+        modifier = modifier,
+        contentAlignment = Alignment.Center
     ) {
         when (val refreshState = nowPlayingUiState.loadState.refresh) {
             is LoadState.Loading -> {
-                CircularProgressIndicator()
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
 
             is LoadState.Error -> {
                 if (nowPlayingUiState.itemCount > 0) { // 캐시에 저장된 데이터 노출
-                    MovieListStaggeredGrid(movies = nowPlayingUiState, onItemClick = { movie ->
-                        onNavigationToMovieDetail(movie)
-                    })
+                    MovieListStaggeredGrid(movies = nowPlayingUiState,
+                        onItemClick = { movie ->
+                            onNavigationToMovieDetail(movie)
+                        })
                 }
 
+                // todo - 커스텀 텍스트 컴포넌트 대체 필요
                 Text(
-                    text = refreshState.error.localizedMessage ?: stringResource(id = R.string.error_unknown),
+                    text = refreshState.error.localizedMessage
+                        ?: stringResource(id = R.string.error_unknown),
                     color = Color.White,
                     fontSize = 20.sp,
                     modifier = Modifier
@@ -56,10 +87,86 @@ fun NowPlayingScreen(
             }
 
             else -> {
-                MovieListStaggeredGrid(movies = nowPlayingUiState, onItemClick = { movie ->
-                    onNavigationToMovieDetail(movie)
-                })
+                MovieListStaggeredGrid(
+                    movies = nowPlayingUiState,
+                    onItemClick = { movie ->
+                        onNavigationToMovieDetail(movie)
+                    }
+                )
             }
         }
+    }
+}
+
+@Composable
+fun MovieListStaggeredGrid(
+    movies: LazyPagingItems<Movie>,
+    onItemClick: (Movie) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    LazyVerticalStaggeredGrid(
+        columns = StaggeredGridCells.Fixed(3),
+        verticalItemSpacing = 4.dp,
+        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        modifier = modifier,
+    ) {
+        items(count = movies.itemCount) { index ->
+            val movie = movies[index]
+            movie?.let {
+                NowPlayingGridCell(movie, onItemClick)
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun NowPlayingScreenErrorPreview() {
+    val size = 20
+    val fakeMovies = List(size) {
+        SampleData.createDummyMovie(id = Random.nextInt(0, size))
+    }
+    val nowPlayingUiState = MutableStateFlow(
+        PagingData.from(fakeMovies)
+    )
+
+    MovieTrendsTheme {
+        NowPlayingScreen(
+            modifier = Modifier.fillMaxSize(),
+            nowPlayingUiState = nowPlayingUiState.collectAsLazyPagingItems(),
+            onNavigationToMovieDetail = {},
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun NowPlayingScreenContentPreview() {
+    val fakeMovies = List(0) { index ->
+        SampleData.createDummyMovie(id = index)
+    }
+    val nowPlayingUiState = MutableStateFlow(
+        PagingData.from(
+            fakeMovies,
+            sourceLoadStates = LoadStates(
+                refresh = LoadState.Error(
+                    error = Throwable("Paging Failure")
+                ),
+                append = LoadState.Error(
+                    error = Throwable("Paging Failure")
+                ),
+                prepend = LoadState.Error(
+                    error = Throwable("Paging Failure")
+                ),
+            ),
+        )
+    )
+
+    MovieTrendsTheme {
+        NowPlayingScreen(
+            modifier = Modifier.fillMaxSize(),
+            nowPlayingUiState = nowPlayingUiState.collectAsLazyPagingItems(),
+            onNavigationToMovieDetail = {},
+        )
     }
 }

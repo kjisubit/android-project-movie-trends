@@ -1,11 +1,12 @@
 package com.js.movietrends.ui.home.weeklyspotlight
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
@@ -20,8 +21,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,6 +34,8 @@ import com.js.movietrends.domain.core.Constants
 import com.js.movietrends.domain.model.ApiResult
 import com.js.movietrends.domain.model.Movie
 import com.js.movietrends.domain.model.SampleData
+import com.js.movietrends.ui.components.MovieTrendsButton
+import com.js.movietrends.ui.theme.MovieTrendsTheme
 
 @Composable
 fun WeeklySpotlightScreen(
@@ -40,32 +43,38 @@ fun WeeklySpotlightScreen(
     viewModel: WeeklySpotlightViewModel = hiltViewModel(),
     onNavigationToMovieDetail: (Movie) -> Unit
 ) {
-    val weeklySpotlightUiState = viewModel.weeklySpotlightUiState.collectAsStateWithLifecycle()
+    val weeklySpotlightUiState: State<ApiResult<Movie>> =
+        viewModel.weeklySpotlightUiState.collectAsStateWithLifecycle()
     WeeklySpotlightScreen(
         modifier = modifier,
-        stateApiResult = weeklySpotlightUiState,
+        weeklySpotlightUiState = weeklySpotlightUiState,
         onNavigationToMovieDetail = onNavigationToMovieDetail
     )
 }
 
+/**
+ * state hoisting 적용한 screen composable
+ */
 @Composable
 fun WeeklySpotlightScreen(
     modifier: Modifier = Modifier,
-    stateApiResult: State<ApiResult<Movie>>,
+    weeklySpotlightUiState: State<ApiResult<Movie>>,
     onNavigationToMovieDetail: (Movie) -> Unit
 ) {
+    var isImageLoaded by remember { mutableStateOf(false) }
+
     Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        modifier = modifier,
     ) {
-        when (val result = stateApiResult.value) {
+        when (val apiResult = weeklySpotlightUiState.value) {
             is ApiResult.Loading -> {
-                CircularProgressIndicator()
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
 
             is ApiResult.Error -> {
+                // todo - 커스텀 텍스트 컴포넌트 대체 필요
                 Text(
-                    text = result.exception.message
+                    text = apiResult.exception.message
                         ?: stringResource(id = R.string.error_unknown),
                     color = Color.White,
                     fontSize = 20.sp,
@@ -78,9 +87,14 @@ fun WeeklySpotlightScreen(
             }
 
             is ApiResult.Success -> {
-                val movieData = result.data
+                val movieData = apiResult.data
                 WeeklySpotlightContent(
+                    modifier = Modifier.fillMaxSize(),
                     movie = movieData,
+                    isImageLoaded = isImageLoaded,
+                    onImageLoaded = {
+                        isImageLoaded = it
+                    },
                     onNavigationToMovieDetail = {
                         onNavigationToMovieDetail(movieData)
                     },
@@ -91,22 +105,21 @@ fun WeeklySpotlightScreen(
 }
 
 @Composable
-fun WeeklySpotlightContent(modifier: Modifier = Modifier, movie: Movie, onNavigationToMovieDetail: (Movie) -> Unit) {
-    var isImageLoaded by remember { mutableStateOf(false) }
-
+fun WeeklySpotlightContent(
+    modifier: Modifier = Modifier,
+    movie: Movie,
+    isImageLoaded: Boolean,
+    onImageLoaded: (Boolean) -> Unit,
+    onNavigationToMovieDetail: (Movie) -> Unit
+) {
     Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier
+        modifier = modifier,
     ) {
         SubcomposeAsyncImage(
             model = movie.posterPath
                 ?.let { "${Constants.POSTER_URL}${Constants.POSTER_FULL}$it" },
             contentDescription = movie.title,
-            modifier = Modifier
-                .fillMaxSize()
-                .clickable(enabled = isImageLoaded) {
-                    onNavigationToMovieDetail(movie)
-                },
+            modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop,
             loading = {
                 Box(
@@ -114,36 +127,67 @@ fun WeeklySpotlightContent(modifier: Modifier = Modifier, movie: Movie, onNaviga
                 )
             },
             error = { error ->
-                Image(
-                    painter = painterResource(id = R.drawable.ic_launcher_background),
-                    contentDescription = "Default Image",
-                    contentScale = ContentScale.Crop
+                Box(
+                    modifier = Modifier.background(Color.Black)
                 )
-                error.result.throwable.message?.let { Text(it) }
+                error.result.throwable.message?.let {
+                    Text(it)
+                }
+                onImageLoaded(false)
             },
             onSuccess = {
-                isImageLoaded = true
+                onImageLoaded(true)
             }
         )
 
-        AnimatedDonutChart(
-            value = (movie.voteAverage ?: 0).toFloat(),
-            maxValue = 10,
-            modifier = Modifier.size(200.dp),
-            durationMillis = 1000
+        // 이미지 로드 완료 후 차트 노출
+        if (isImageLoaded) {
+            Column(
+                modifier = Modifier.align(Alignment.Center),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                AnimatedDonutChart(
+                    modifier = Modifier.size(200.dp),
+                    value = (movie.voteAverage ?: 0).toFloat(),
+                    maxValue = 10,
+                    durationMillis = 1000
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                MovieTrendsButton(
+                    onClick = {
+                        onNavigationToMovieDetail(movie)
+                    }) {
+                    Text(
+                        text = stringResource(id = R.string.common_details),
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun WeeklySpotlightScreenContentPreview() {
+    MovieTrendsTheme {
+        WeeklySpotlightContent(
+            movie = SampleData.createDummyMovie(),
+            isImageLoaded = true,
+            onImageLoaded = {},
+            onNavigationToMovieDetail = {}
         )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun WeeklySpotlightScreenPreview() {
-    val previewState = remember {
-        mutableStateOf(ApiResult.Success(SampleData.movie))
+fun WeeklySpotlightScreenErrorPreview() {
+    MovieTrendsTheme {
+        WeeklySpotlightScreen(
+            modifier = Modifier.fillMaxSize(),
+            weeklySpotlightUiState = remember { mutableStateOf(ApiResult.Error(Exception("Error Message"))) },
+            onNavigationToMovieDetail = {},
+        )
     }
-
-    WeeklySpotlightScreen(
-        stateApiResult = previewState,
-        onNavigationToMovieDetail = {},
-    )
 }

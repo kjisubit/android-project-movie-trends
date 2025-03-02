@@ -1,5 +1,6 @@
 package com.js.movietrends.ui.home
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -83,19 +84,25 @@ fun HomeScreen(onNavigationToMovieDetail: (Movie) -> Unit) {
         ) {
             composable(NavigationScreens.WeeklySpotlight.screenRoute) {
                 WeeklySpotlightScreen(
-                    modifier = Modifier.padding(paddingValues),
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .fillMaxSize(),
                     onNavigationToMovieDetail = onNavigationToMovieDetail
                 )
             }
             composable(NavigationScreens.NowPlaying.screenRoute) {
                 NowPlayingScreen(
-                    modifier = Modifier.padding(paddingValues),
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .fillMaxSize(),
                     onNavigationToMovieDetail = onNavigationToMovieDetail
                 )
             }
             composable(NavigationScreens.Upcoming.screenRoute) {
                 UpcomingScreen(
-                    modifier = Modifier.padding(paddingValues),
+                    modifier = Modifier
+                        .padding(paddingValues)
+                        .fillMaxSize(),
                     onNavigationToMovieDetail = onNavigationToMovieDetail
                 )
             }
