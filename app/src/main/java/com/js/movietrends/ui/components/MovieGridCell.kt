@@ -10,12 +10,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.SubcomposeAsyncImage
 import com.js.movietrends.domain.core.Constants
 import com.js.movietrends.domain.model.Movie
+import com.js.movietrends.domain.model.SampleData
+import com.js.movietrends.ui.theme.MovieTrendsTheme
 
 @Composable
-fun NowPlayingGridCell(
+fun MovieGridCell(
     movie: Movie,
     onItemClick: (Movie) -> Unit
 ) {
@@ -50,4 +53,15 @@ fun NowPlayingGridCell(
             error.result.throwable.message?.let { Text(it) }
         }
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MovieGridCellPreview() {
+    MovieTrendsTheme {
+        MovieGridCell(
+            movie = SampleData.createDummyMovie(),
+            onItemClick = {}
+        )
+    }
 }

@@ -60,9 +60,10 @@ fun rememberMovieTrendsScaffoldState(
     snackbarManager: SnackbarManager = SnackbarManager,
     resources: Resources = resources(),
     coroutineScope: CoroutineScope = rememberCoroutineScope()
-): MovieTrendsScaffoldState = remember(snackBarHostState, snackbarManager, resources, coroutineScope) {
-    MovieTrendsScaffoldState(snackBarHostState, snackbarManager, resources, coroutineScope)
-}
+): MovieTrendsScaffoldState =
+    remember(snackBarHostState, snackbarManager, resources, coroutineScope) {
+        MovieTrendsScaffoldState(snackBarHostState, snackbarManager, resources, coroutineScope)
+    }
 
 /**
  * ScaffoldState의 홀딩 및 Snackbar 메시지를 표시하는 로직을 처리.

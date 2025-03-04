@@ -18,14 +18,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.SubcomposeAsyncImage
 import com.js.movietrends.domain.core.Constants
 import com.js.movietrends.domain.model.Movie
+import com.js.movietrends.domain.model.SampleData
+import com.js.movietrends.ui.theme.MovieTrendsTheme
 
 @Composable
-fun UpcomingListCell(
+fun MovieListCell(
     movie: Movie,
     onItemClick: (Movie) -> Unit
 ) {
@@ -66,6 +69,17 @@ fun UpcomingListCell(
             fontSize = 20.sp,
             color = Color.Black,
             modifier = Modifier.weight(1f)
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MovieListCellPreview() {
+    MovieTrendsTheme {
+        MovieListCell(
+            movie = SampleData.createDummyMovie(),
+            onItemClick = {}
         )
     }
 }

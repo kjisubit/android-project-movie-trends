@@ -64,7 +64,7 @@ fun WeeklySpotlightScreen(
     var isImageLoaded by remember { mutableStateOf(false) }
 
     Box(
-        modifier = modifier,
+        modifier = modifier.fillMaxSize(),
     ) {
         when (val apiResult = weeklySpotlightUiState.value) {
             is ApiResult.Loading -> {

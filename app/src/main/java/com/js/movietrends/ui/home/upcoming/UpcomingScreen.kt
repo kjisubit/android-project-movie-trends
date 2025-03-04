@@ -26,7 +26,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.js.movietrends.R
 import com.js.movietrends.domain.model.Movie
 import com.js.movietrends.domain.model.SampleData
-import com.js.movietrends.ui.components.UpcomingListCell
+import com.js.movietrends.ui.components.MovieListCell
 import com.js.movietrends.ui.theme.MovieTrendsTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.random.Random
@@ -52,7 +52,7 @@ fun UpcomingScreen(
     onNavigationToMovieDetail: (Movie) -> Unit
 ) {
     Box(
-        modifier = modifier,
+        modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         when (val refreshState = upcomingPagingItems.loadState.refresh) {
@@ -109,7 +109,7 @@ fun MovieListColumn(
         items(count = movies.itemCount) { index ->
             val movie = movies[index]
             movie?.let {
-                UpcomingListCell(movie, onItemClick)
+                MovieListCell(movie, onItemClick)
             }
         }
     }

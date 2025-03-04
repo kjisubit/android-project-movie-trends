@@ -1,6 +1,6 @@
 package com.js.movietrends.ui.home
 
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -35,48 +35,25 @@ fun HomeScreen(onNavigationToMovieDetail: (Movie) -> Unit) {
     val navBackStackEntry by bottomNavController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination?.route
     val navigationItems = getBottomNavigationItems(context)
-    val navigationSelectedItem = navigationItems.indexOfFirst { it.screenRoute == currentDestination }
+    val navigationSelectedItem = navigationItems
+        .indexOfFirst { it.screenRoute == currentDestination }
         .takeIf { it != -1 } ?: 0
 
     MovieTrendsScaffold(
         bottomBar = {
-            NavigationBar(
-                containerColor = colorResource(id = R.color.white),
-                contentColor = colorResource(id = R.color.black)
-            ) {
-                navigationItems.forEachIndexed { index, navigationItem ->
-                    NavigationBarItem(
-                        colors = NavigationBarItemDefaults.colors(
-                            indicatorColor = Color.Transparent
-                        ),
-                        selected = index == navigationSelectedItem,
-                        label = {
-                            Text(
-                                text = navigationItem.title,
-                                fontWeight = FontWeight.Bold,
-                                color = colorResource(id = R.color.black)
-                            )
-                        },
-                        icon = {
-                            Icon(
-                                navigationItem.icon,
-                                contentDescription = navigationItem.title,
-                                tint = if (index == navigationSelectedItem) colorResource(id = R.color.black)
-                                else colorResource(id = R.color.quick_silver),
-                            )
-                        },
-                        onClick = {
-                            bottomNavController.navigate(navigationItem.screenRoute) {
-                                popUpTo(bottomNavController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                                restoreState = true
-                            }
+            BottomNavigationBar(
+                navigationItems = navigationItems,
+                navigationSelectedItem = navigationSelectedItem,
+                onClick = { index ->
+                    bottomNavController.navigate(navigationItems[index].screenRoute) {
+                        popUpTo(bottomNavController.graph.findStartDestination().id) {
+                            saveState = true
                         }
-                    )
+                        launchSingleTop = true
+                        restoreState = true
+                    }
                 }
-            }
+            )
         }) { paddingValues ->
         NavHost(
             navController = bottomNavController,
@@ -86,7 +63,7 @@ fun HomeScreen(onNavigationToMovieDetail: (Movie) -> Unit) {
                 WeeklySpotlightScreen(
                     modifier = Modifier
                         .padding(paddingValues)
-                        .fillMaxSize(),
+                        .consumeWindowInsets(paddingValues),
                     onNavigationToMovieDetail = onNavigationToMovieDetail
                 )
             }
@@ -94,7 +71,7 @@ fun HomeScreen(onNavigationToMovieDetail: (Movie) -> Unit) {
                 NowPlayingScreen(
                     modifier = Modifier
                         .padding(paddingValues)
-                        .fillMaxSize(),
+                        .consumeWindowInsets(paddingValues),
                     onNavigationToMovieDetail = onNavigationToMovieDetail
                 )
             }
@@ -102,7 +79,7 @@ fun HomeScreen(onNavigationToMovieDetail: (Movie) -> Unit) {
                 UpcomingScreen(
                     modifier = Modifier
                         .padding(paddingValues)
-                        .fillMaxSize(),
+                        .consumeWindowInsets(paddingValues),
                     onNavigationToMovieDetail = onNavigationToMovieDetail
                 )
             }
@@ -110,8 +87,55 @@ fun HomeScreen(onNavigationToMovieDetail: (Movie) -> Unit) {
     }
 }
 
+@Composable
+fun BottomNavigationBar(
+    navigationItems: List<BottomNavigationItem>,
+    navigationSelectedItem: Int,
+    onClick: (Int) -> Unit
+) {
+    NavigationBar(
+        containerColor = colorResource(id = R.color.white),
+        contentColor = colorResource(id = R.color.black)
+    ) {
+        navigationItems.forEachIndexed { index, navigationItem ->
+            NavigationBarItem(
+                colors = NavigationBarItemDefaults.colors(
+                    indicatorColor = Color.Transparent
+                ),
+                selected = index == navigationSelectedItem,
+                label = {
+                    Text(
+                        text = navigationItem.title,
+                        fontWeight = FontWeight.Bold,
+                        color = colorResource(id = R.color.black)
+                    )
+                },
+                icon = {
+                    Icon(
+                        navigationItem.icon,
+                        contentDescription = navigationItem.title,
+                        tint = if (index == navigationSelectedItem) colorResource(id = R.color.black)
+                        else colorResource(id = R.color.quick_silver),
+                    )
+                },
+                onClick = {
+                    onClick(index)
+                }
+            )
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
-    HomeScreen(onNavigationToMovieDetail = {})
+    val context = LocalContext.current
+    val navigationItems = getBottomNavigationItems(context)
+    val navigationSelectedItem = 0
+
+    BottomNavigationBar(
+        navigationItems = navigationItems,
+        navigationSelectedItem = navigationSelectedItem,
+        onClick = { }
+    )
 }

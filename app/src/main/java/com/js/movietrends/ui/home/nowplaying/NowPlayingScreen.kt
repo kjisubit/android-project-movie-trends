@@ -27,7 +27,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import com.js.movietrends.R
 import com.js.movietrends.domain.model.Movie
 import com.js.movietrends.domain.model.SampleData
-import com.js.movietrends.ui.components.NowPlayingGridCell
+import com.js.movietrends.ui.components.MovieGridCell
 import com.js.movietrends.ui.theme.MovieTrendsTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.random.Random
@@ -56,7 +56,7 @@ fun NowPlayingScreen(
     onNavigationToMovieDetail: (Movie) -> Unit
 ) {
     Box(
-        modifier = modifier,
+        modifier = modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         when (val refreshState = nowPlayingUiState.loadState.refresh) {
@@ -113,7 +113,7 @@ fun MovieListStaggeredGrid(
         items(count = movies.itemCount) { index ->
             val movie = movies[index]
             movie?.let {
-                NowPlayingGridCell(movie, onItemClick)
+                MovieGridCell(movie, onItemClick)
             }
         }
     }

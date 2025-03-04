@@ -1,6 +1,6 @@
 package com.js.movietrends.ui.detail
 
-import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,60 +10,92 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.SubcomposeAsyncImage
 import com.js.movietrends.R
 import com.js.movietrends.domain.core.Constants
 import com.js.movietrends.domain.model.Movie
+import com.js.movietrends.domain.model.SampleData
+import com.js.movietrends.ui.theme.MovieTrendsTheme
+import com.js.movietrends.ui.theme.Neutral8
 import com.js.movietrends.ui.utils.FormatUtil
 
 @Composable
 fun MovieDetailScreen(movie: Movie) {
     val scrollState = rememberScrollState()
+    MovieDetailScreen(
+        movie = movie,
+        scrollState = scrollState
+    )
+}
+
+/**
+ * state hoisting 적용한 screen composable
+ */
+@Composable
+fun MovieDetailScreen(movie: Movie, scrollState: ScrollState) {
+    MovieDetailContent(
+        modifier = Modifier.fillMaxSize(),
+        movie = movie,
+        scrollState = scrollState
+    )
+}
+
+@Composable
+fun MovieDetailContent(
+    modifier: Modifier = Modifier,
+    movie: Movie,
+    scrollState: ScrollState
+) {
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(scrollState)
+        modifier = modifier.verticalScroll(scrollState)
     ) {
-        if (!movie.posterPath.isNullOrEmpty()) {
-            SubcomposeAsyncImage(model = movie.posterPath?.let { "${Constants.POSTER_URL}${Constants.POSTER_XXLARGE}$it" },
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(1f),
+        ) {
+            SubcomposeAsyncImage(
+                model = movie.posterPath?.let { "${Constants.POSTER_URL}${Constants.POSTER_XXLARGE}$it" },
                 contentDescription = movie.title,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1f),
+                modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop,
                 loading = {
                     Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color.LightGray)
+                        modifier = Modifier.background(Color.LightGray)
                     )
                 },
                 error = { error ->
-                    error.result.throwable.message?.let { Text(it) }
-                })
-        } else {
-            Image(
-                painter = painterResource(id = R.drawable.ic_launcher_background), // 로컬 디폴트 이미지 리소스 ID
-                contentDescription = movie.title,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1f),
-                contentScale = ContentScale.FillWidth
+                    Box(
+                        modifier = Modifier.background(Color.Black)
+                    )
+                    error.result.throwable.message?.let {
+                        Text(it)
+                    }
+                },
+            )
+            BackButton(
+                upPress = {}
             )
         }
-        Spacer(
-            modifier = Modifier.height(10.dp)
-        )
+        Spacer(modifier = Modifier.height(10.dp))
         Text(
             text = movie.title ?: "Unknown Title",
             fontSize = 20.sp,
@@ -72,9 +104,7 @@ fun MovieDetailScreen(movie: Movie) {
                 .fillMaxWidth()
                 .padding(horizontal = 10.dp)
         )
-        Spacer(
-            modifier = Modifier.height(10.dp)
-        )
+        Spacer(modifier = Modifier.height(10.dp))
         Text(
             text = "★ ${FormatUtil.formatToOneDecimal(movie.voteAverage ?: 0.0)}/10",
             fontSize = 20.sp,
@@ -83,9 +113,7 @@ fun MovieDetailScreen(movie: Movie) {
                 .fillMaxWidth()
                 .padding(horizontal = 10.dp)
         )
-        Spacer(
-            modifier = Modifier.height(10.dp)
-        )
+        Spacer(modifier = Modifier.height(10.dp))
         Text(
             text = movie.overview ?: "No description available.",
             fontSize = 20.sp,
@@ -95,20 +123,36 @@ fun MovieDetailScreen(movie: Movie) {
                 .padding(horizontal = 10.dp)
         )
     }
-
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//fun DetailPreview() {
-//    val movie = Movie(
-//        id = 123,
-//        title = "Title",
-//        posterPath = "https://image.tmdb.org/t/p/w500/zfbjgQE1uSd9wiPTX4VzsLi0rGG.jpg",
-//        voteAverage = 8.9,
-//        overview = "Overview",
-//        popularity = 2.2,
-//        voteCount = 3
-//    )
-//    MovieDetailScreen(movie = movie)
-//}
+
+@Composable
+private fun BackButton(upPress: () -> Unit) {
+    IconButton(
+        onClick = upPress,
+        modifier = Modifier
+            .statusBarsPadding()
+            .padding(horizontal = 20.dp, vertical = 20.dp)
+            .size(36.dp)
+            .background(
+                color = Neutral8.copy(alpha = 0.32f),
+                shape = CircleShape
+            )
+    ) {
+        Icon(
+            imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
+            tint = MovieTrendsTheme.colors.iconInteractive,
+            contentDescription = stringResource(R.string.label_back),
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun MovieDetailScreenPreview() {
+    MovieTrendsTheme {
+        MovieDetailScreen(
+            movie = SampleData.createDummyMovie()
+        )
+    }
+}
