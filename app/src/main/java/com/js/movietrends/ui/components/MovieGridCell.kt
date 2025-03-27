@@ -19,27 +19,14 @@ import com.js.movietrends.ui.theme.MovieTrendsTheme
 
 @Composable
 fun MovieGridCell(
+    modifier: Modifier = Modifier,
     movie: Movie,
-    onItemClick: (Movie) -> Unit
 ) {
-    // 영화 id 값으로 포스터 이미지 화면비 결정
-    val movieId = (movie.id ?: 0)
-    val aspectRatioVariant = 5 // 화면비 종류
-    val minAspectRatio = 0.5
-    val maxAspectRatio = 0.7
-    val ratioInterval = (maxAspectRatio - minAspectRatio) / aspectRatioVariant
-    val aspectRatio = (minAspectRatio + movieId % aspectRatioVariant * ratioInterval).toFloat()
-
     SubcomposeAsyncImage(
         model = movie.posterPath
             ?.let { "${Constants.POSTER_URL}${Constants.POSTER_XLARGE}$it" },
         contentDescription = movie.title,
-        modifier = Modifier
-            .fillMaxWidth()
-            .aspectRatio(aspectRatio)
-            .clickable {
-                onItemClick(movie)
-            },
+        modifier = modifier,
         contentScale = ContentScale.Crop,
         loading = {
             Box(
@@ -59,9 +46,21 @@ fun MovieGridCell(
 @Composable
 fun MovieGridCellPreview() {
     MovieTrendsTheme {
+        val movieId = (0)
+        val aspectRatioVariant = 5 // 화면비 종류
+        val minAspectRatio = 0.5 // 최소 화면비
+        val maxAspectRatio = 0.7 // 최대 화면비
+        val ratioInterval = (maxAspectRatio - minAspectRatio) / aspectRatioVariant
+        val aspectRatio =
+            (minAspectRatio + movieId % aspectRatioVariant * ratioInterval).toFloat()
+
         MovieGridCell(
+            modifier = Modifier
+                .fillMaxWidth()
+                .aspectRatio(aspectRatio)
+                .clickable {
+                },
             movie = SampleData.createDummyMovie(),
-            onItemClick = {}
         )
     }
 }

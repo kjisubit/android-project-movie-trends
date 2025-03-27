@@ -48,7 +48,12 @@ fun MovieTrendsNavHost() {
         composable<MovieDetail> { backStackEntry ->
             val movieDetail: MovieDetail = backStackEntry.toRoute()
             val movie = Json.decodeFromString<Movie>(movieDetail.movieJson)
-            MovieDetailScreen(movie)
+            MovieDetailScreen(
+                movie = movie,
+                upPress = {
+                    navController.navigateUp()
+                }
+            )
         }
     }
 }

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,6 +37,7 @@ import com.js.movietrends.domain.model.Movie
 import com.js.movietrends.domain.model.SampleData
 import com.js.movietrends.ui.components.MovieTrendsButton
 import com.js.movietrends.ui.theme.MovieTrendsTheme
+import kotlinx.coroutines.delay
 
 @Composable
 fun WeeklySpotlightScreen(
@@ -50,6 +52,20 @@ fun WeeklySpotlightScreen(
         weeklySpotlightUiState = weeklySpotlightUiState,
         onNavigationToMovieDetail = onNavigationToMovieDetail
     )
+}
+
+@Composable
+fun WeeklySpotlightScreen() {
+    var visible by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        delay(2000)
+        visible = true
+    }
+
+    if (visible) {
+        Text("텍스트")
+    }
 }
 
 /**
@@ -158,7 +174,7 @@ fun WeeklySpotlightContent(
                         onNavigationToMovieDetail(movie)
                     }) {
                     Text(
-                        text = stringResource(id = R.string.common_details),
+                        text = stringResource(id = R.string.details),
                         textAlign = TextAlign.Center
                     )
                 }

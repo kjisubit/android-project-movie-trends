@@ -23,7 +23,7 @@ class WeeklySpotlightViewModel @Inject constructor(private val useCases: UseCase
 
     private fun fetchFetchBestRatedMovie() {
         viewModelScope.launch {
-            useCases.getBestRatedMovieUseCase()
+            useCases.getWeeklySpotlightedMovieUseCase()
                 .collectLatest {
                     _weeklySpotlightUiState.value = it
                 }

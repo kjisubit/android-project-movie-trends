@@ -2,9 +2,11 @@ package com.js.movietrends.ui.home.upcoming
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CircularProgressIndicator
@@ -13,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -63,10 +66,12 @@ fun UpcomingScreen(
             is LoadState.Error -> {
                 // api 호출 실패 시, 캐시 아이템 노출
                 if (upcomingPagingItems.itemCount > 0) {
-                    MovieListColumn(movies = upcomingPagingItems,
+                    MovieListColumn(
+                        movies = upcomingPagingItems,
                         onItemClick = { movie ->
                             onNavigationToMovieDetail(movie)
-                        })
+                        }
+                    )
                 }
 
                 // todo - 커스텀 텍스트 컴포넌트 대체 필요
@@ -84,7 +89,8 @@ fun UpcomingScreen(
             }
 
             else -> {
-                MovieListColumn(movies = upcomingPagingItems,
+                MovieListColumn(
+                    movies = upcomingPagingItems,
                     onItemClick = { movie ->
                         onNavigationToMovieDetail(movie)
                     })
@@ -104,12 +110,20 @@ fun MovieListColumn(
             horizontal = 10.dp,
             vertical = 10.dp
         ),
-        modifier = modifier
+        modifier = modifier.testTag("upcoming:movies")
     ) {
         items(count = movies.itemCount) { index ->
             val movie = movies[index]
             movie?.let {
-                MovieListCell(movie, onItemClick)
+                MovieListCell(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp)
+                        .clickable {
+                            onItemClick(movie)
+                        },
+                    movie = movie
+                )
             }
         }
     }

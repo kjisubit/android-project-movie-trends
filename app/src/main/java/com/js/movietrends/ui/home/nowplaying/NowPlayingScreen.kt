@@ -2,9 +2,12 @@ package com.js.movietrends.ui.home.nowplaying
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
@@ -66,7 +69,8 @@ fun NowPlayingScreen(
 
             is LoadState.Error -> {
                 if (nowPlayingUiState.itemCount > 0) { // 캐시에 저장된 데이터 노출
-                    MovieListStaggeredGrid(movies = nowPlayingUiState,
+                    MovieListStaggeredGrid(
+                        movies = nowPlayingUiState,
                         onItemClick = { movie ->
                             onNavigationToMovieDetail(movie)
                         })
@@ -111,9 +115,28 @@ fun MovieListStaggeredGrid(
         modifier = modifier,
     ) {
         items(count = movies.itemCount) { index ->
+            /**
+             * 영화 id 값으로 포스터 이미지 화면비 결정
+             */
             val movie = movies[index]
+            val movieId = (movie?.id ?: 0)
+            val aspectRatioVariant = 5 // 화면비 종류
+            val minAspectRatio = 0.5 // 최소 화면비
+            val maxAspectRatio = 0.7 // 최대 화면비
+            val ratioInterval = (maxAspectRatio - minAspectRatio) / aspectRatioVariant
+            val aspectRatio =
+                (minAspectRatio + movieId % aspectRatioVariant * ratioInterval).toFloat()
+
             movie?.let {
-                MovieGridCell(movie, onItemClick)
+                MovieGridCell(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(aspectRatio)
+                        .clickable {
+                            onItemClick(movie)
+                        },
+                    movie = movie
+                )
             }
         }
     }

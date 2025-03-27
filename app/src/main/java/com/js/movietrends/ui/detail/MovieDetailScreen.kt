@@ -33,16 +33,21 @@ import com.js.movietrends.R
 import com.js.movietrends.domain.core.Constants
 import com.js.movietrends.domain.model.Movie
 import com.js.movietrends.domain.model.SampleData
+import com.js.movietrends.ui.components.MovieTrendsScaffold
 import com.js.movietrends.ui.theme.MovieTrendsTheme
 import com.js.movietrends.ui.theme.Neutral8
 import com.js.movietrends.ui.utils.FormatUtil
 
 @Composable
-fun MovieDetailScreen(movie: Movie) {
+fun MovieDetailScreen(
+    movie: Movie,
+    upPress: () -> Unit
+) {
     val scrollState = rememberScrollState()
     MovieDetailScreen(
         movie = movie,
-        scrollState = scrollState
+        scrollState = scrollState,
+        upPress = upPress
     )
 }
 
@@ -50,19 +55,29 @@ fun MovieDetailScreen(movie: Movie) {
  * state hoisting 적용한 screen composable
  */
 @Composable
-fun MovieDetailScreen(movie: Movie, scrollState: ScrollState) {
-    MovieDetailContent(
-        modifier = Modifier.fillMaxSize(),
-        movie = movie,
-        scrollState = scrollState
-    )
+fun MovieDetailScreen(
+    movie: Movie,
+    scrollState: ScrollState,
+    upPress: () -> Unit
+) {
+    MovieTrendsScaffold { paddingValues ->
+        MovieDetailContent(
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxSize(),
+            movie = movie,
+            scrollState = scrollState,
+            upPress = upPress
+        )
+    }
 }
 
 @Composable
 fun MovieDetailContent(
     modifier: Modifier = Modifier,
     movie: Movie,
-    scrollState: ScrollState
+    scrollState: ScrollState,
+    upPress: () -> Unit
 ) {
     Column(
         modifier = modifier.verticalScroll(scrollState)
@@ -92,7 +107,7 @@ fun MovieDetailContent(
                 },
             )
             BackButton(
-                upPress = {}
+                upPress = upPress
             )
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -152,7 +167,8 @@ private fun BackButton(upPress: () -> Unit) {
 fun MovieDetailScreenPreview() {
     MovieTrendsTheme {
         MovieDetailScreen(
-            movie = SampleData.createDummyMovie()
+            movie = SampleData.createDummyMovie(),
+            upPress = {}
         )
     }
 }

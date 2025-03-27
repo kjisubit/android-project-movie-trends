@@ -19,17 +19,17 @@ data class BottomNavigationItem(
 fun getBottomNavigationItems(context: Context): List<BottomNavigationItem> {
     return listOf(
         BottomNavigationItem(
-            title = context.getString(R.string.common_weekly_spotlight),
+            title = context.getString(R.string.weekly_spotlight),
             icon = Icons.Filled.Star,
             screenRoute = NavigationScreens.WeeklySpotlight.screenRoute
         ),
         BottomNavigationItem(
-            title = context.getString(R.string.common_now_playing),
+            title = context.getString(R.string.now_playing),
             icon = Icons.Filled.PlayArrow,
             screenRoute = NavigationScreens.NowPlaying.screenRoute
         ),
         BottomNavigationItem(
-            title = context.getString(R.string.common_upcoming),
+            title = context.getString(R.string.upcoming),
             icon = Icons.Filled.DateRange,
             screenRoute = NavigationScreens.Upcoming.screenRoute
         ),

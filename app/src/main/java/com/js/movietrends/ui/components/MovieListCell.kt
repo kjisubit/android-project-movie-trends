@@ -1,7 +1,6 @@
 package com.js.movietrends.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -29,16 +29,11 @@ import com.js.movietrends.ui.theme.MovieTrendsTheme
 
 @Composable
 fun MovieListCell(
+    modifier: Modifier = Modifier,
     movie: Movie,
-    onItemClick: (Movie) -> Unit
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp)
-            .clickable {
-                onItemClick(movie)
-            },
+        modifier = modifier.testTag("movieListItem:${movie.id}"),
         verticalAlignment = Alignment.CenterVertically
     ) {
         SubcomposeAsyncImage(
@@ -47,7 +42,9 @@ fun MovieListCell(
             contentDescription = movie.title,
             modifier = Modifier
                 .size(100.dp)
-                .clip(RoundedCornerShape(100.dp)),
+                .clip(
+                    RoundedCornerShape(100.dp)
+                ),
             contentScale = ContentScale.FillWidth,
             loading = {
                 Box(
@@ -78,8 +75,10 @@ fun MovieListCell(
 fun MovieListCellPreview() {
     MovieTrendsTheme {
         MovieListCell(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
             movie = SampleData.createDummyMovie(),
-            onItemClick = {}
         )
     }
 }

@@ -16,7 +16,7 @@ object UseCaseModule {
 
     @Provides
     fun provideUseCases(movieRepository: MovieRepository) = UseCases(
-        getBestRatedMovieUseCase = GetWeeklySpotlightedMovieUseCase(movieRepository),
+        getWeeklySpotlightedMovieUseCase = GetWeeklySpotlightedMovieUseCase(movieRepository),
         getNowPlayingMoviesUseCase = GetNowPlayingMoviesUseCase(movieRepository),
         getUpcomingMoviesUseCase = GetUpcomingMoviesUseCase(movieRepository)
     )
