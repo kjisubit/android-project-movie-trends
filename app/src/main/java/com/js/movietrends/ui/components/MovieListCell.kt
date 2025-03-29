@@ -1,13 +1,15 @@
 package com.js.movietrends.ui.components
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -30,55 +32,52 @@ import com.js.movietrends.ui.theme.MovieTrendsTheme
 @Composable
 fun MovieListCell(
     modifier: Modifier = Modifier,
-    movie: Movie,
+    movie: Movie
 ) {
-    Row(
-        modifier = modifier.testTag("movieListItem:${movie.id}"),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        SubcomposeAsyncImage(
-            model = movie.posterPath
-                ?.let { "${Constants.POSTER_URL}${Constants.POSTER_XLARGE}$it" },
-            contentDescription = movie.title,
-            modifier = Modifier
-                .size(100.dp)
-                .clip(
-                    RoundedCornerShape(100.dp)
-                ),
-            contentScale = ContentScale.FillWidth,
-            loading = {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.LightGray)
-                )
-            },
-            error = { error ->
-                Box(
-                    modifier = Modifier.background(Color.Black)
-                )
-                error.result.throwable.message?.let { Text(it) }
-            }
-        )
-        Spacer(modifier = Modifier.width(16.dp))
-        Text(
-            text = "${movie.title}",
-            fontSize = 20.sp,
-            color = Color.Black,
-            modifier = Modifier.weight(1f)
-        )
+    MovieTrendsSurface(modifier = modifier.testTag("movieListItem:${movie.id}")) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(vertical = 3.dp)
+        ) {
+            SubcomposeAsyncImage(
+                model = movie.posterPath?.let { "${Constants.POSTER_URL}${Constants.POSTER_XLARGE}$it" },
+                contentDescription = movie.title,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .aspectRatio(1f)
+                    .clip(shape = RoundedCornerShape(100.dp)),
+                contentScale = ContentScale.FillWidth,
+                loading = {
+                    Box(modifier = Modifier.background(Color.LightGray))
+                },
+                error = { error ->
+                    Box(modifier = Modifier.background(Color.Black))
+                    error.result.throwable.message?.let {
+                        Text(it)
+                    }
+                }
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(
+                text = "${movie.title}",
+                fontSize = 20.sp,
+                modifier = Modifier.weight(1f)
+            )
+        }
     }
 }
 
-@Preview(showBackground = true)
+@Preview("default")
+@Preview("dark theme", uiMode = UI_MODE_NIGHT_YES)
+@Preview("large font", fontScale = 2f)
 @Composable
 fun MovieListCellPreview() {
     MovieTrendsTheme {
         MovieListCell(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp),
-            movie = SampleData.createDummyMovie(),
+                .height(100.dp),
+            movie = SampleData.createDummyMovie()
         )
     }
 }

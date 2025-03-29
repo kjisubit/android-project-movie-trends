@@ -32,7 +32,7 @@ fun getBottomNavigationItems(context: Context): List<BottomNavigationItem> {
             title = context.getString(R.string.upcoming),
             icon = Icons.Filled.DateRange,
             screenRoute = NavigationScreens.Upcoming.screenRoute
-        ),
+        )
     )
 }
 

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.CircularProgressIndicator
@@ -93,7 +94,8 @@ fun UpcomingScreen(
                     movies = upcomingPagingItems,
                     onItemClick = { movie ->
                         onNavigationToMovieDetail(movie)
-                    })
+                    }
+                )
             }
         }
     }
@@ -118,7 +120,7 @@ fun MovieListColumn(
                 MovieListCell(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 8.dp)
+                        .height(100.dp)
                         .clickable {
                             onItemClick(movie)
                         },
@@ -131,7 +133,7 @@ fun MovieListColumn(
 
 @Preview(showBackground = true)
 @Composable
-fun UpcomingScreenErrorPreview() {
+fun UpcomingScreenContentPreview() {
     val size = 20
     val fakeMovies = List(size) {
         SampleData.createDummyMovie(id = Random.nextInt(0, size))
@@ -144,14 +146,14 @@ fun UpcomingScreenErrorPreview() {
         UpcomingScreen(
             modifier = Modifier.fillMaxSize(),
             upcomingPagingItems = upcomingUiState.collectAsLazyPagingItems(),
-            onNavigationToMovieDetail = {},
+            onNavigationToMovieDetail = {}
         )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun UpcomingScreenContentPreview() {
+fun UpcomingScreenErrorPreview() {
     val fakeMovies = List(0) { index ->
         SampleData.createDummyMovie(id = index)
     }
@@ -167,8 +169,8 @@ fun UpcomingScreenContentPreview() {
                 ),
                 prepend = LoadState.Error(
                     error = Throwable("Paging Failure")
-                ),
-            ),
+                )
+            )
         )
     )
 
@@ -176,7 +178,7 @@ fun UpcomingScreenContentPreview() {
         UpcomingScreen(
             modifier = Modifier.fillMaxSize(),
             upcomingPagingItems = upcomingUiState.collectAsLazyPagingItems(),
-            onNavigationToMovieDetail = {},
+            onNavigationToMovieDetail = {}
         )
     }
 }

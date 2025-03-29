@@ -52,7 +52,7 @@ fun MovieTrendsScaffold(
 }
 
 /**
- * MovieTrendsScaffoldState의 인스턴스를 생성하고 기억
+ * MovieTrendsScaffoldState 인스턴스를 생성하고 기억
  */
 @Composable
 fun rememberMovieTrendsScaffoldState(
@@ -66,7 +66,7 @@ fun rememberMovieTrendsScaffoldState(
     }
 
 /**
- * ScaffoldState의 홀딩 및 Snackbar 메시지를 표시하는 로직을 처리.
+ * ScaffoldState 홀딩 및 Snackbar 메시지 표시 로직 처리.
  */
 @Stable
 class MovieTrendsScaffoldState(
@@ -90,8 +90,8 @@ class MovieTrendsScaffoldState(
 }
 
 /**
- * 현재 앱의 리소스를 반환하는 Composable 함수
- * Configuration 업데이트 시, LocalConfiguration.current가 변경되면서 다시 컴포즈된다.
+ * 현재 앱의 리소스 반환하는 Composable 함수
+ * Configuration 업데이트 시, LocalConfiguration.current가 변경되면서 다시 컴포즈
  */
 @Composable
 @ReadOnlyComposable

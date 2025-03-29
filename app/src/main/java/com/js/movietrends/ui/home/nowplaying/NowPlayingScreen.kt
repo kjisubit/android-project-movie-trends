@@ -70,10 +70,12 @@ fun NowPlayingScreen(
             is LoadState.Error -> {
                 if (nowPlayingUiState.itemCount > 0) { // 캐시에 저장된 데이터 노출
                     MovieListStaggeredGrid(
+                        modifier = Modifier.padding(horizontal = 3.dp),
                         movies = nowPlayingUiState,
                         onItemClick = { movie ->
                             onNavigationToMovieDetail(movie)
-                        })
+                        }
+                    )
                 }
 
                 // todo - 커스텀 텍스트 컴포넌트 대체 필요
@@ -92,6 +94,7 @@ fun NowPlayingScreen(
 
             else -> {
                 MovieListStaggeredGrid(
+                    modifier = Modifier.padding(horizontal = 3.dp),
                     movies = nowPlayingUiState,
                     onItemClick = { movie ->
                         onNavigationToMovieDetail(movie)
@@ -104,14 +107,13 @@ fun NowPlayingScreen(
 
 @Composable
 fun MovieListStaggeredGrid(
+    modifier: Modifier = Modifier,
     movies: LazyPagingItems<Movie>,
-    onItemClick: (Movie) -> Unit,
-    modifier: Modifier = Modifier
+    onItemClick: (Movie) -> Unit
 ) {
     LazyVerticalStaggeredGrid(
         columns = StaggeredGridCells.Fixed(3),
-        verticalItemSpacing = 4.dp,
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(0.dp),
         modifier = modifier,
     ) {
         items(count = movies.itemCount) { index ->

@@ -72,11 +72,11 @@ dependencies {
 
     // Test
     testImplementation(libs.mockito.core)
-    testImplementation (libs.kotlinx.coroutines.test)
-    testImplementation (libs.mockito.kotlin)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockito.kotlin)
     androidTestImplementation(libs.hilt.android.testing)
     kaptAndroidTest(libs.hilt.android.compiler)
-    androidTestImplementation (libs.androidx.paging.testing)
+    androidTestImplementation(libs.androidx.paging.testing)
 
     // hilt
     implementation(libs.hilt.android)

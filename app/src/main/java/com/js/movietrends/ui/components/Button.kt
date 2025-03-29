@@ -66,9 +66,7 @@ fun MovieTrendsButton(
                 indication = null
             )
     ) {
-        ProvideTextStyle(
-            value = MaterialTheme.typography.labelLarge
-        ) {
+        ProvideTextStyle(value = MaterialTheme.typography.labelLarge) {
             Row(
                 Modifier
                     .defaultMinSize(
@@ -106,7 +104,8 @@ private fun ButtonPreview() {
 private fun RectangleButtonPreview() {
     MovieTrendsTheme {
         MovieTrendsButton(
-            onClick = {}, shape = RectangleShape
+            onClick = {},
+            shape = RectangleShape
         ) {
             Text(text = "Demo")
         }

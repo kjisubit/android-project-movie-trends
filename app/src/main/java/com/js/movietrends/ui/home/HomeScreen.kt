@@ -1,5 +1,6 @@
 package com.js.movietrends.ui.home
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
@@ -26,6 +27,7 @@ import com.js.movietrends.ui.components.MovieTrendsScaffold
 import com.js.movietrends.ui.home.nowplaying.NowPlayingScreen
 import com.js.movietrends.ui.home.upcoming.UpcomingScreen
 import com.js.movietrends.ui.home.weeklyspotlight.WeeklySpotlightScreen
+import com.js.movietrends.ui.theme.MovieTrendsTheme
 
 @Composable
 fun HomeScreen(onNavigationToMovieDetail: (Movie) -> Unit) {
@@ -54,10 +56,11 @@ fun HomeScreen(onNavigationToMovieDetail: (Movie) -> Unit) {
                     }
                 }
             )
-        }) { paddingValues ->
+        }
+    ) { paddingValues ->
         NavHost(
             navController = bottomNavController,
-            startDestination = NavigationScreens.WeeklySpotlight.screenRoute,
+            startDestination = NavigationScreens.WeeklySpotlight.screenRoute
         ) {
             composable(NavigationScreens.WeeklySpotlight.screenRoute) {
                 WeeklySpotlightScreen(
@@ -94,28 +97,27 @@ fun BottomNavigationBar(
     onClick: (Int) -> Unit
 ) {
     NavigationBar(
-        containerColor = colorResource(id = R.color.white),
-        contentColor = colorResource(id = R.color.black)
+        containerColor = MovieTrendsTheme.colors.uiBackground,
+        contentColor = MovieTrendsTheme.colors.textSecondary
     ) {
         navigationItems.forEachIndexed { index, navigationItem ->
             NavigationBarItem(
-                colors = NavigationBarItemDefaults.colors(
-                    indicatorColor = Color.Transparent
-                ),
+                colors = NavigationBarItemDefaults.colors(indicatorColor = Color.Transparent),
                 selected = index == navigationSelectedItem,
                 label = {
                     Text(
                         text = navigationItem.title,
                         fontWeight = FontWeight.Bold,
-                        color = colorResource(id = R.color.black)
+                        color = if (index == navigationSelectedItem) MovieTrendsTheme.colors.textSecondary
+                        else colorResource(id = R.color.quick_silver)
                     )
                 },
                 icon = {
                     Icon(
                         navigationItem.icon,
                         contentDescription = navigationItem.title,
-                        tint = if (index == navigationSelectedItem) colorResource(id = R.color.black)
-                        else colorResource(id = R.color.quick_silver),
+                        tint = if (index == navigationSelectedItem) MovieTrendsTheme.colors.textSecondary
+                        else colorResource(id = R.color.quick_silver)
                     )
                 },
                 onClick = {
@@ -126,16 +128,19 @@ fun BottomNavigationBar(
     }
 }
 
-@Preview(showBackground = true)
+@Preview("default")
+@Preview("dark theme", uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun HomeScreenPreview() {
     val context = LocalContext.current
     val navigationItems = getBottomNavigationItems(context)
     val navigationSelectedItem = 0
 
-    BottomNavigationBar(
-        navigationItems = navigationItems,
-        navigationSelectedItem = navigationSelectedItem,
-        onClick = { }
-    )
+    MovieTrendsTheme {
+        BottomNavigationBar(
+            navigationItems = navigationItems,
+            navigationSelectedItem = navigationSelectedItem,
+            onClick = { }
+        )
+    }
 }

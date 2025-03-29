@@ -104,7 +104,7 @@ fun MovieDetailContent(
                     error.result.throwable.message?.let {
                         Text(it)
                     }
-                },
+                }
             )
             BackButton(
                 upPress = upPress
@@ -157,7 +157,7 @@ private fun BackButton(upPress: () -> Unit) {
         Icon(
             imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
             tint = MovieTrendsTheme.colors.iconInteractive,
-            contentDescription = stringResource(R.string.label_back),
+            contentDescription = stringResource(R.string.label_back)
         )
     }
 }
