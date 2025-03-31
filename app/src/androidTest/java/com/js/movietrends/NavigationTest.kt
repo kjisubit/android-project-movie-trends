@@ -1,6 +1,5 @@
 package com.js.movietrends
 
-import android.util.Log
 import androidx.compose.ui.semantics.SemanticsActions.ScrollBy
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsSelected
@@ -9,10 +8,8 @@ import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
-import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToNode
-import androidx.compose.ui.test.printToLog
 import androidx.paging.testing.asSnapshot
 import com.js.movietrends.domain.model.ApiResult
 import com.js.movietrends.domain.model.Movie
@@ -62,7 +59,6 @@ class NavigationTest {
         }
     }
 
-
     @OptIn(ExperimentalTestApi::class)
     @Test
     fun homeScreen_showWeeklySpotlightedDetails() {
@@ -85,7 +81,7 @@ class NavigationTest {
             onNodeWithText(goToHome).performClick()
 
             // Then: 이미지 포스터 다운로드 후, 상세 보기 버튼 노출되는 것 확인
-            waitUntilNodeCount(timeoutMillis = 5000, matcher = hasText(details), count = 1)
+            waitUntilNodeCount(timeoutMillis = 10000, matcher = hasText(details), count = 1)
 
             // When: 상세 보기 버튼 클릭
             onNodeWithText(details).assertExists().performClick()
@@ -95,14 +91,12 @@ class NavigationTest {
         }
     }
 
+    @OptIn(ExperimentalTestApi::class)
     @Test
-    fun homeScreen_showUpcomingMovieList() {
+    fun homeScreen_scrollUpcomingMovieList_navigateToDetail() {
         composeTestRule.apply {
-            // Given: 인트로 화면 진입 여부 확인
-            onNodeWithText(goToHome).assertExists()
-
             // Given: 영화 목록에서 특정 인덱스에 위치한 데이터 확인
-            val itemIndex = 19
+            val itemIndex = 99
             val movieSnapshot = runBlocking {
                 val upcomingMovies = movieRepository.getUpcomingMovies()
                 upcomingMovies.asSnapshot {
@@ -112,8 +106,18 @@ class NavigationTest {
             val movieId = movieSnapshot[itemIndex].id
             val movieTitle = movieSnapshot[itemIndex].title.toString()
 
+            // Given: 인트로 화면 진입 여부 확인
+            onNodeWithText(goToHome).assertExists()
+
             // When: 홈 화면 이동 버튼 클릭
             onNodeWithText(goToHome).performClick()
+
+            // Then: 이미지 포스터 다운로드 후, 상세 보기 버튼 노출되는 것 확인
+            waitUntilNodeCount(
+                timeoutMillis = 10000,
+                matcher = hasText(details),
+                count = 1
+            )
 
             // And: 개봉 예정 영화 이동 버튼 클릭
             onNodeWithText(upcoming).performClick()
@@ -133,7 +137,6 @@ class NavigationTest {
                 }
 
             // Then: 아이템 영화 제목의 노출 확인
-            Log.d("homeScreen_showUpcomingMovieList", movieTitle)
             onNodeWithText(movieTitle).assertExists()
 
             // When: 아이템 클릭

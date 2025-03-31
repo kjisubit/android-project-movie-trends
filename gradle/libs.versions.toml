@@ -1,5 +1,5 @@
 [versions]
-agp = "8.7.2"
+agp = "8.9.1"
 coilCompose = "3.0.4"
 converterGson = "2.9.0"
 core = "1.6.1"
@@ -26,6 +26,7 @@ pagingCommon = "3.3.5"
 pagingTesting = "3.3.6"
 retrofit = "2.9.0"
 navigationCompose = "2.8.5"
+robolectric = "4.14.1"
 roomRuntime = "2.6.1"
 uiTestJunit4Android = "1.7.8"
 
@@ -70,6 +71,7 @@ mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 androidx-ui-test-junit4-android = { group = "androidx.compose.ui", name = "ui-test-junit4-android", version.ref = "uiTestJunit4Android" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -1,5 +1,6 @@
 package com.js.movietrends.ui.detail
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -34,8 +35,8 @@ import com.js.movietrends.domain.core.Constants
 import com.js.movietrends.domain.model.Movie
 import com.js.movietrends.domain.model.SampleData
 import com.js.movietrends.ui.components.MovieTrendsScaffold
+import com.js.movietrends.ui.components.MovieTrendsSurface
 import com.js.movietrends.ui.theme.MovieTrendsTheme
-import com.js.movietrends.ui.theme.Neutral8
 import com.js.movietrends.ui.utils.FormatUtil
 
 @Composable
@@ -82,61 +83,78 @@ fun MovieDetailContent(
     Column(
         modifier = modifier.verticalScroll(scrollState)
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .aspectRatio(1f),
-        ) {
-            SubcomposeAsyncImage(
-                model = movie.posterPath?.let { "${Constants.POSTER_URL}${Constants.POSTER_XXLARGE}$it" },
-                contentDescription = movie.title,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop,
-                loading = {
-                    Box(
-                        modifier = Modifier.background(Color.LightGray)
-                    )
-                },
-                error = { error ->
-                    Box(
-                        modifier = Modifier.background(Color.Black)
-                    )
-                    error.result.throwable.message?.let {
-                        Text(it)
-                    }
+        Header(
+            movie = movie,
+            upPress = upPress
+        )
+        Spacer(modifier = Modifier.height(10.dp))
+        Body(movie = movie)
+    }
+}
+
+@Composable
+private fun Header(
+    movie: Movie,
+    upPress: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(1f),
+    ) {
+        SubcomposeAsyncImage(
+            model = movie.posterPath?.let { "${Constants.POSTER_URL}${Constants.POSTER_XXLARGE}$it" },
+            contentDescription = movie.title,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop,
+            loading = {
+                Box(
+                    modifier = Modifier.background(Color.LightGray)
+                )
+            },
+            error = { error ->
+                Box(
+                    modifier = Modifier.background(Color.Black)
+                )
+                error.result.throwable.message?.let {
+                    Text(it)
                 }
+            }
+        )
+        BackButton(
+            upPress = upPress
+        )
+    }
+}
+
+@Composable
+private fun Body(movie: Movie) {
+    MovieTrendsSurface {
+        Column {
+            Text(
+                text = movie.title ?: "Unknown Title",
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp)
             )
-            BackButton(
-                upPress = upPress
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = "★ ${FormatUtil.formatToOneDecimal(movie.voteAverage ?: 0.0)}/10",
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp)
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text = movie.overview ?: stringResource(R.string.no_description_available),
+                fontSize = 20.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 10.dp)
             )
         }
-        Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            text = movie.title ?: "Unknown Title",
-            fontSize = 20.sp,
-            color = Color.Black,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 10.dp)
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            text = "★ ${FormatUtil.formatToOneDecimal(movie.voteAverage ?: 0.0)}/10",
-            fontSize = 20.sp,
-            color = Color.Black,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 10.dp)
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            text = movie.overview ?: "No description available.",
-            fontSize = 20.sp,
-            color = Color.Black,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 10.dp)
-        )
     }
 }
 
@@ -150,19 +168,21 @@ private fun BackButton(upPress: () -> Unit) {
             .padding(horizontal = 20.dp, vertical = 20.dp)
             .size(36.dp)
             .background(
-                color = Neutral8.copy(alpha = 0.32f),
+                color = MovieTrendsTheme.colors.uiBackground.copy(alpha = 0.32f),
                 shape = CircleShape
             )
     ) {
         Icon(
             imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-            tint = MovieTrendsTheme.colors.iconInteractive,
+            tint = MovieTrendsTheme.colors.textSecondary,
             contentDescription = stringResource(R.string.label_back)
         )
     }
 }
 
-@Preview(showBackground = true)
+@Preview("default")
+@Preview("dark theme", uiMode = UI_MODE_NIGHT_YES)
+@Preview("large font", fontScale = 2f)
 @Composable
 fun MovieDetailScreenPreview() {
     MovieTrendsTheme {
