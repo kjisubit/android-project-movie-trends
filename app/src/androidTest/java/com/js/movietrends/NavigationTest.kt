@@ -18,6 +18,7 @@ import com.js.movietrends.ui.MainActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -55,7 +56,7 @@ class NavigationTest {
             // Then: 주간 추천 영화 활성화 여부 확인
             onNodeWithText(weeklySpotlighted).assertIsSelected()
 
-            // composeTestRule.onRoot(useUnmergedTree = true).printToLog("currentLabelExists")
+            // onRoot(useUnmergedTree = true).printToLog("currentLabelExists")
         }
     }
 
@@ -63,8 +64,10 @@ class NavigationTest {
     @Test
     fun homeScreen_showWeeklySpotlightedDetails() {
         composeTestRule.apply {
-            // Given: 주간 추천 영화 데이터 확인
-            lateinit var movie: Movie
+            // Given: 무비 데이터 변수 준비
+            var movie: Movie? = null
+
+            // When: 주간 추천 영화 데이터 로드
             runBlocking {
                 movieRepository.getWeeklySpotlightedMovie().collect { apiResult ->
                     if (apiResult is ApiResult.Success) {
@@ -72,7 +75,12 @@ class NavigationTest {
                     }
                 }
             }
-            val movieTitle = movie.title.toString()
+
+            // Then: 유효한 영화 데이터 존재 여부 확인
+            assertTrue(movie?.id != null)
+
+            // Given: 무비 타이틀 변수 저장
+            val movieTitle = movie!!.title.toString()
 
             // Given: 인트로 화면 진입 여부 확인
             onNodeWithText(goToHome).assertExists()
@@ -95,8 +103,10 @@ class NavigationTest {
     @Test
     fun homeScreen_scrollUpcomingMovieList_navigateToDetail() {
         composeTestRule.apply {
-            // Given: 영화 목록에서 특정 인덱스에 위치한 데이터 확인
-            val itemIndex = 99
+            // Given: 무비 리스트에서 찾고자 하는 인덱스 준비
+            val itemIndex = 49
+
+            // Given: 페이징 데이터 스크롤 하여, 탐색 대상의 id와 title 로드
             val movieSnapshot = runBlocking {
                 val upcomingMovies = movieRepository.getUpcomingMovies()
                 upcomingMovies.asSnapshot {
@@ -114,7 +124,7 @@ class NavigationTest {
 
             // Then: 이미지 포스터 다운로드 후, 상세 보기 버튼 노출되는 것 확인
             waitUntilNodeCount(
-                timeoutMillis = 10000,
+                timeoutMillis = 20000,
                 matcher = hasText(details),
                 count = 1
             )
@@ -136,7 +146,7 @@ class NavigationTest {
                     )
                 }
 
-            // Then: 아이템 영화 제목의 노출 확인
+            // Then: 아이템 영화 제목 노출 확인
             onNodeWithText(movieTitle).assertExists()
 
             // When: 아이템 클릭

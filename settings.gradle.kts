@@ -23,3 +23,4 @@ rootProject.name = "Movie Trends"
 include(":app")
 include(":domain")
 include(":data")
+include(":ui-test-hilt-manifest")
