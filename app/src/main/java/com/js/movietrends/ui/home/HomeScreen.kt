@@ -98,7 +98,7 @@ fun BottomNavigationBar(
 ) {
     NavigationBar(
         containerColor = MovieTrendsTheme.colors.uiBackground,
-        contentColor = MovieTrendsTheme.colors.textSecondary
+        contentColor = MovieTrendsTheme.colors.onBrand
     ) {
         navigationItems.forEachIndexed { index, navigationItem ->
             NavigationBarItem(
@@ -108,7 +108,7 @@ fun BottomNavigationBar(
                     Text(
                         text = navigationItem.title,
                         fontWeight = FontWeight.Bold,
-                        color = if (index == navigationSelectedItem) MovieTrendsTheme.colors.textSecondary
+                        color = if (index == navigationSelectedItem) MovieTrendsTheme.colors.onBrand
                         else colorResource(id = R.color.quick_silver)
                     )
                 },
@@ -116,7 +116,7 @@ fun BottomNavigationBar(
                     Icon(
                         navigationItem.icon,
                         contentDescription = navigationItem.title,
-                        tint = if (index == navigationSelectedItem) MovieTrendsTheme.colors.textSecondary
+                        tint = if (index == navigationSelectedItem) MovieTrendsTheme.colors.onBrand
                         else colorResource(id = R.color.quick_silver)
                     )
                 },

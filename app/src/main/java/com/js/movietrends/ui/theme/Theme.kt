@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.Color
 private val LightColorPalette = MovieTrendsColors(
     brand = Shadow5,
     brandSecondary = Ocean3,
+    onBrand = Neutral8,
     uiBackground = Neutral0,
     uiBorder = Neutral4,
     uiFloated = FunctionalGrey,
@@ -59,6 +60,7 @@ private val LightColorPalette = MovieTrendsColors(
 private val DarkColorPalette = MovieTrendsColors(
     brand = Shadow1,
     brandSecondary = Ocean2,
+    onBrand = Neutral0,
     uiBackground = Neutral8,
     uiBorder = Neutral3,
     uiFloated = FunctionalDarkGrey,
@@ -120,6 +122,7 @@ data class MovieTrendsColors(
     val gradient2_3: List<Color>,
     val brand: Color,
     val brandSecondary: Color,
+    val onBrand: Color,
     val uiBackground: Color,
     val uiBorder: Color,
     val uiFloated: Color,

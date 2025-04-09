@@ -33,7 +33,7 @@ fun MovieTrendsScaffold(
     floatingActionButton: @Composable (() -> Unit) = {},
     floatingActionButtonPosition: FabPosition = FabPosition.End,
     backgroundColor: Color = MovieTrendsTheme.colors.uiBackground,
-    contentColor: Color = MovieTrendsTheme.colors.textSecondary,
+    contentColor: Color = MovieTrendsTheme.colors.onBrand,
     content: @Composable (PaddingValues) -> Unit
 ) {
     Scaffold(

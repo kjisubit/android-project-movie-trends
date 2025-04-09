@@ -16,7 +16,7 @@ fun MovieTrendsSnackbar(
     actionOnNewLine: Boolean = false,
     shape: Shape = MaterialTheme.shapes.small,
     backgroundColor: Color = MovieTrendsTheme.colors.uiBackground,
-    contentColor: Color = MovieTrendsTheme.colors.textSecondary,
+    contentColor: Color = MovieTrendsTheme.colors.onBrand,
     actionColor: Color = MovieTrendsTheme.colors.brand
 ) {
     Snackbar(

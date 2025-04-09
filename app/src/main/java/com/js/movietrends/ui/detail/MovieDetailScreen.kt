@@ -25,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -122,6 +123,15 @@ private fun Header(
             }
         )
         BackButton(
+            modifier = Modifier
+                .testTag("back_button")
+                .statusBarsPadding()
+                .padding(horizontal = 20.dp, vertical = 20.dp)
+                .size(36.dp)
+                .background(
+                    color = MovieTrendsTheme.colors.uiBackground.copy(alpha = 0.32f),
+                    shape = CircleShape
+                ),
             upPress = upPress
         )
     }
@@ -160,21 +170,14 @@ private fun Body(movie: Movie) {
 
 
 @Composable
-private fun BackButton(upPress: () -> Unit) {
+private fun BackButton(modifier: Modifier = Modifier, upPress: () -> Unit) {
     IconButton(
         onClick = upPress,
-        modifier = Modifier
-            .statusBarsPadding()
-            .padding(horizontal = 20.dp, vertical = 20.dp)
-            .size(36.dp)
-            .background(
-                color = MovieTrendsTheme.colors.uiBackground.copy(alpha = 0.32f),
-                shape = CircleShape
-            )
+        modifier = modifier
     ) {
         Icon(
             imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
-            tint = MovieTrendsTheme.colors.textSecondary,
+            tint = MovieTrendsTheme.colors.onBrand,
             contentDescription = stringResource(R.string.label_back)
         )
     }

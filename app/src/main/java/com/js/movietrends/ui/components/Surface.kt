@@ -29,7 +29,7 @@ fun MovieTrendsSurface(
     modifier: Modifier = Modifier,
     shape: Shape = RectangleShape,
     color: Color = MovieTrendsTheme.colors.uiBackground,
-    contentColor: Color = MovieTrendsTheme.colors.textSecondary,
+    contentColor: Color = MovieTrendsTheme.colors.onBrand,
     border: BorderStroke? = null,
     elevation: Dp = 0.dp,
     content: @Composable () -> Unit
