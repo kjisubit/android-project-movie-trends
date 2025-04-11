@@ -16,6 +16,9 @@
       <SelectionState runConfigName="homeScreen_showUpcomingMovieList()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
+      <SelectionState runConfigName="homeScreen_scrollUpcomingMovieList_navigateToDetail()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
     </selectionStates>
   </component>
 </project>

@@ -1,8 +1,8 @@
-package com.js.movietrends.data.model
+package com.js.movietrends.data.dto
 
 import com.google.gson.annotations.SerializedName
 
-data class DatesResponse(
+data class DatesResponseDto(
     @SerializedName("maximum")
     val maximum: String? = null,
     @SerializedName("minimum")

@@ -1,79 +1,67 @@
 package com.js.movietrends.data.datasource
 
 import android.util.Log
-import androidx.paging.ExperimentalPagingApi
-import androidx.paging.Pager
-import androidx.paging.PagingConfig
-import androidx.paging.PagingData
 import com.js.movietrends.data.BuildConfig
 import com.js.movietrends.data.api.MovieApi
-import com.js.movietrends.data.database.MovieDb
-import com.js.movietrends.data.database.entity.MovieEntity
-import com.js.movietrends.data.model.MovieListResponse
-import com.js.movietrends.data.model.MovieResponse
-import com.js.movietrends.data.paging.pagingsource.UpcomingMoviePagingSource
-import com.js.movietrends.data.paging.remoteMediator.NowPlayingMovieMediator
+import com.js.movietrends.data.dto.MovieListResponseDto
 import com.js.movietrends.data.utils.ApiResponseHandler
 import com.js.movietrends.domain.core.AppInfoManager
 import com.js.movietrends.domain.model.ApiResult
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class RemoteDataSourceImpl(private val movieApi: MovieApi, private val movieDb: MovieDb) :
-    RemoteDataSource {
+class RemoteDataSourceImpl(private val movieApi: MovieApi) : RemoteDataSource {
 
     companion object {
         private const val TAG = "RemoteDataSourceImpl"
     }
 
-    private val movieDao = movieDb.movieDao()
+    override suspend fun getWeeklySpotlightedMovie(): ApiResult<MovieListResponseDto> {
+        return try {
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+            val oneWeekAgo = LocalDate.now().minusWeeks(1).format(formatter)
+            val twoWeeksAgo = LocalDate.now().minusWeeks(2).format(formatter)
 
-    override fun getWeeklySpotlightedMovie(): Flow<ApiResult<MovieListResponse>> {
-        return flow {
-            emit(ApiResult.Loading)
-            try {
-
-                // 비교적 최근 일주일 동안 개봉한 영화의 경우, 상세 정보가 존재하지 않는 관계로, 1~2 주 전에 개봉한 작품 위주로 검색
-                val dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-                //val today = LocalDate.now().format(dateTimeFormatter) //
-                val oneWeekAgo = LocalDate.now().minusWeeks(1).format(dateTimeFormatter)
-                val twoWeeksAgo = LocalDate.now().minusWeeks(2).format(dateTimeFormatter)
-
-                val response = movieApi.getDiscoveredMovies(
-                    apiKey = BuildConfig.TMDB_API_KEY,
-                    language = AppInfoManager.localeCode,
-                    page = 1,
-                    primaryReleaseDateGte = twoWeeksAgo,
-                    primaryReleaseDateLte = oneWeekAgo,
-                )
-                val result = ApiResponseHandler.handleApiResponse(response)
-                emit(result)
-            } catch (e: Exception) {
-                Log.e(TAG, e.message ?: "", e)
-                emit(ApiResult.Error(e))
-            }
+            val response = movieApi.getDiscoveredMovies(
+                apiKey = BuildConfig.TMDB_API_KEY,
+                language = AppInfoManager.localeCode,
+                page = 1,
+                primaryReleaseDateGte = twoWeeksAgo,
+                primaryReleaseDateLte = oneWeekAgo,
+            )
+            ApiResponseHandler.handleApiResponse(response)
+        } catch (e: Exception) {
+            Log.e(TAG, e.message ?: "", e)
+            ApiResult.Error(e)
         }
     }
 
-    @OptIn(ExperimentalPagingApi::class)
-    override fun getNowPlayingMovies(): Flow<PagingData<MovieEntity>> {
-        val pagingSourceFactory = { movieDao.getAllMovies() }
-        return Pager(
-            config = PagingConfig(pageSize = 20),
-            remoteMediator = NowPlayingMovieMediator(
-                movieApi,
-                movieDb
-            ),
-            pagingSourceFactory = pagingSourceFactory
-        ).flow
+    override suspend fun getNowPlayingMovies(page: Int): ApiResult<MovieListResponseDto> {
+        return try {
+            val response = movieApi.getNowPlayingMovies(
+                apiKey = BuildConfig.TMDB_API_KEY,
+                language = AppInfoManager.localeCode,
+                page = page
+            )
+            ApiResponseHandler.handleApiResponse(response)
+        } catch (e: Exception) {
+            ApiResult.Error(e)
+        }
     }
 
-    override fun getUpcomingMovies(): Flow<PagingData<MovieResponse>> {
-        return Pager(
-            config = PagingConfig(pageSize = 20),
-            pagingSourceFactory = { UpcomingMoviePagingSource(movieApi) }
-        ).flow
+    override suspend fun getUpcomingMovies(page: Int): ApiResult<MovieListResponseDto> {
+        return try {
+            val response = movieApi.getUpcomingMovies(
+                apiKey = BuildConfig.TMDB_API_KEY,
+                language = AppInfoManager.localeCode,
+                page = page
+            )
+            ApiResponseHandler.handleApiResponse(response)
+        } catch (e: Exception) {
+            Log.e(TAG, e.message ?: "", e)
+            ApiResult.Error(e)
+        }
     }
+
+
 }

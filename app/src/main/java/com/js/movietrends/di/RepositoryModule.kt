@@ -1,5 +1,6 @@
 package com.js.movietrends.di
 
+import com.js.movietrends.data.datasource.LocalDataSource
 import com.js.movietrends.data.datasource.RemoteDataSource
 import com.js.movietrends.data.repository.MovieRepositoryImpl
 import com.js.movietrends.domain.repository.MovieRepository
@@ -16,8 +17,10 @@ object RepositoryModule {
     @Provides
     @Singleton
     fun provideRepository(
-        remoteDataSource: RemoteDataSource
+        remoteDataSource: RemoteDataSource,
+        localDataSource: LocalDataSource
     ): MovieRepository = MovieRepositoryImpl(
         remoteDataSource = remoteDataSource,
+        localDataSource = localDataSource
     )
 }

@@ -1,19 +1,19 @@
 package com.js.movietrends.data.utils
 
 import com.js.movietrends.data.database.entity.MovieEntity
-import com.js.movietrends.data.model.MovieResponse
+import com.js.movietrends.data.dto.MovieResponseDto
 import com.js.movietrends.domain.model.Movie
 
 object ModelMapper {
-    fun mapMovieResponseToDomain(movieResponse: MovieResponse): Movie {
+    fun mapMovieResponseToDomain(movieResponseDto: MovieResponseDto): Movie {
         return Movie(
-            id = movieResponse.id,
-            posterPath = movieResponse.posterPath,
-            title = movieResponse.title,
-            overview = movieResponse.overview,
-            popularity = movieResponse.popularity,
-            voteAverage = movieResponse.voteAverage,
-            voteCount = movieResponse.voteCount
+            id = movieResponseDto.id,
+            posterPath = movieResponseDto.posterPath,
+            title = movieResponseDto.title,
+            overview = movieResponseDto.overview,
+            popularity = movieResponseDto.popularity,
+            voteAverage = movieResponseDto.voteAverage,
+            voteCount = movieResponseDto.voteCount
         )
     }
 

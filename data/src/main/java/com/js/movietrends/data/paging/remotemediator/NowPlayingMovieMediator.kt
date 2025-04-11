@@ -4,22 +4,17 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
-import androidx.room.withTransaction
-import com.js.movietrends.data.BuildConfig
-import com.js.movietrends.data.api.MovieApi
-import com.js.movietrends.data.database.MovieDb
 import com.js.movietrends.data.database.entity.MovieEntity
 import com.js.movietrends.data.database.entity.MovieRemoteKeyEntity
-import com.js.movietrends.domain.core.AppInfoManager
-import retrofit2.HttpException
-import java.io.IOException
+import com.js.movietrends.data.datasource.LocalDataSource
+import com.js.movietrends.data.datasource.RemoteDataSource
+import com.js.movietrends.domain.model.ApiResult
 
 @OptIn(ExperimentalPagingApi::class)
-class NowPlayingMovieMediator(private val movieApi: MovieApi, private val movieDb: MovieDb) :
-    RemoteMediator<Int, MovieEntity>() {
-
-    private val movieDao = movieDb.movieDao()
-    private val movieRemoteKeysDao = movieDb.movieRemoteKeysDao()
+class NowPlayingMovieMediator(
+    private val remoteDataSource: RemoteDataSource,
+    private val localDataSource: LocalDataSource
+) : RemoteMediator<Int, MovieEntity>() {
 
     override suspend fun load(
         loadType: LoadType,
@@ -30,64 +25,28 @@ class NowPlayingMovieMediator(private val movieApi: MovieApi, private val movieD
                 LoadType.REFRESH -> 1
                 LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
                 LoadType.APPEND -> {
-                    val remoteKeyEntity = getRemoteKeyEntityOfLastItem(state)
-                    val nextPage = remoteKeyEntity?.nextPage
+                    val remoteKey = getRemoteKeyEntityOfLastItem(state)
+                    remoteKey?.nextPage
                         ?: return MediatorResult.Success(endOfPaginationReached = true)
-                    nextPage
                 }
             }
 
-            val response = movieApi.getNowPlayingMovies(
-                apiKey = BuildConfig.TMDB_API_KEY,
-                language = AppInfoManager.localeCode,
-                page = page
-            )
+            when (val result = remoteDataSource.getNowPlayingMovies(page)) {
+                is ApiResult.Success -> {
+                    localDataSource.saveNowPlayingMovies(loadType, result.data)
+                    MediatorResult.Success(endOfPaginationReached = result.data.results.isNullOrEmpty())
+                }
 
-            var endOfPaginationReached = false
-            if (response.isSuccessful) {
-                val responseData = response.body()
-                endOfPaginationReached = responseData == null
-                responseData?.let {
-                    // db 내부 transaction 수행
-                    movieDb.withTransaction {
-                        if (loadType == LoadType.REFRESH) {
-                            movieDao.deleteAllMovies()
-                            movieRemoteKeysDao.deleteAllMovieRemoteKeys()
-                        }
-                    }
+                is ApiResult.Error -> {
+                    MediatorResult.Error(result.exception)
+                }
 
-                    val currentPage = responseData.page
-                    val nextPage: Int = currentPage + 1
-                    val prevPage: Int? = if (currentPage <= 1) null else currentPage - 1
-
-                    // RemoteKeyEntity 목록 저장
-                    responseData.results?.map { movieResponse ->
-                        MovieRemoteKeyEntity(
-                            id = movieResponse.id,
-                            prevPage = prevPage,
-                            nextPage = nextPage,
-                            lastUpdated = System.currentTimeMillis(),
-                        )
-                    }?.let { movieRemoteKeysDao.addAllMovieRemoteKeys(movieRemoteKeys = it) }
-
-                    // MovieEntity 목록 저장
-                    responseData.results?.map { movieResponse ->
-                        MovieEntity(
-                            id = movieResponse.id,
-                            posterPath = movieResponse.posterPath,
-                            title = movieResponse.title,
-                            overview = movieResponse.overview,
-                            popularity = movieResponse.popularity,
-                            voteAverage = movieResponse.voteAverage,
-                            voteCount = movieResponse.voteCount,
-                        )
-                    }?.let { movieDao.addMovies(movies = it) }
+                is ApiResult.Loading -> {
+                    // 이 케이스는 이론상 발생하지 않지만, 안전하게 처리 가능
+                    MediatorResult.Success(endOfPaginationReached = false)
                 }
             }
-            return MediatorResult.Success(endOfPaginationReached = endOfPaginationReached)
-        } catch (e: IOException) {
-            MediatorResult.Error(e)
-        } catch (e: HttpException) {
+        } catch (e: Exception) {
             MediatorResult.Error(e)
         }
     }
@@ -97,7 +56,7 @@ class NowPlayingMovieMediator(private val movieApi: MovieApi, private val movieD
     ): MovieRemoteKeyEntity? {
         return state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()
             ?.let { movie ->
-                movieRemoteKeysDao.getMovieRemoteKeys(movieId = movie.id)
+                localDataSource.getMovieRemoteKeys(movieId = movie.id)
             }
     }
 }

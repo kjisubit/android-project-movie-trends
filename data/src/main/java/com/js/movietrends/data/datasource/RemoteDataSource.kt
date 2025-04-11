@@ -1,14 +1,12 @@
 package com.js.movietrends.data.datasource
 
-import androidx.paging.PagingData
-import com.js.movietrends.data.database.entity.MovieEntity
-import com.js.movietrends.data.model.MovieListResponse
-import com.js.movietrends.data.model.MovieResponse
+import com.js.movietrends.data.dto.MovieListResponseDto
 import com.js.movietrends.domain.model.ApiResult
-import kotlinx.coroutines.flow.Flow
 
 interface RemoteDataSource {
-    fun getWeeklySpotlightedMovie(): Flow<ApiResult<MovieListResponse>>
-    fun getNowPlayingMovies(): Flow<PagingData<MovieEntity>>
-    fun getUpcomingMovies(): Flow<PagingData<MovieResponse>>
+    suspend fun getWeeklySpotlightedMovie(): ApiResult<MovieListResponseDto>
+
+    suspend fun getNowPlayingMovies(page: Int): ApiResult<MovieListResponseDto>
+
+    suspend fun getUpcomingMovies(page: Int): ApiResult<MovieListResponseDto>
 }

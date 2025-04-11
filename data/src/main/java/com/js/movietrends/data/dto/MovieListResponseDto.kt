@@ -1,14 +1,14 @@
-package com.js.movietrends.data.model
+package com.js.movietrends.data.dto
 
 import com.google.gson.annotations.SerializedName
 
-data class MovieListResponse(
+data class MovieListResponseDto(
     @SerializedName("dates")
-    val datesResponse: DatesResponse? = null,
+    val datesResponseDto: DatesResponseDto? = null,
     @SerializedName("page")
     val page: Int,
     @SerializedName("results")
-    val results: List<MovieResponse>? = null,
+    val results: List<MovieResponseDto>? = null,
     @SerializedName("total_pages")
     val totalPages: Int? = null,
     @SerializedName("total_results")

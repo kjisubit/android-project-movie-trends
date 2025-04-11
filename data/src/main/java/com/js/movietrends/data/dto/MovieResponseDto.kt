@@ -1,8 +1,8 @@
-package com.js.movietrends.data.model
+package com.js.movietrends.data.dto
 
 import com.google.gson.annotations.SerializedName
 
-data class MovieResponse(
+data class MovieResponseDto(
     @SerializedName("adult")
     val adult: Boolean? = null,
     @SerializedName("backdrop_path")
