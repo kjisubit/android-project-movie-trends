@@ -15,6 +15,5 @@ interface LocalDataSource {
     suspend fun addMovies(movies: List<MovieEntity>)
     suspend fun addRemoteKeys(keys: List<MovieRemoteKeyEntity>)
     suspend fun getLastRemoteKey(state: PagingState<Int, MovieEntity>): MovieRemoteKeyEntity?
-    suspend fun getLastRemoteKeyFromDb(): MovieRemoteKeyEntity?
     suspend fun saveNowPlayingMovies(loadType: LoadType, response: MovieListResponseDto)
 }
