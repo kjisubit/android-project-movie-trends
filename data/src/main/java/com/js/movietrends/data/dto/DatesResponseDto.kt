@@ -6,5 +6,5 @@ data class DatesResponseDto(
     @SerializedName("maximum")
     val maximum: String? = null,
     @SerializedName("minimum")
-    val minimum: String? = null
+    val minimum: String? = null,
 )

@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.map
 
 class MovieRepositoryImpl(
     private val remoteDataSource: RemoteDataSource,
-    private val localDataSource: LocalDataSource
+    private val localDataSource: LocalDataSource,
 ) : MovieRepository {
 
     companion object {

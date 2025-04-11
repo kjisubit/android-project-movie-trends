@@ -10,7 +10,7 @@ interface MovieApi {
     suspend fun getNowPlayingMovies(
         @Query("api_key") apiKey: String,
         @Query("language") language: String,
-        @Query("page") page: Int = 1
+        @Query("page") page: Int = 1,
     ): Response<MovieListResponseDto>
 
     @GET("discover/movie")
@@ -26,6 +26,6 @@ interface MovieApi {
     suspend fun getUpcomingMovies(
         @Query("api_key") apiKey: String,
         @Query("language") language: String,
-        @Query("page") page: Int = 1
+        @Query("page") page: Int = 1,
     ): Response<MovieListResponseDto>
 }

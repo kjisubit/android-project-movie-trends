@@ -12,5 +12,5 @@ data class MovieListResponseDto(
     @SerializedName("total_pages")
     val totalPages: Int? = null,
     @SerializedName("total_results")
-    val totalResults: Int? = null
+    val totalResults: Int? = null,
 )

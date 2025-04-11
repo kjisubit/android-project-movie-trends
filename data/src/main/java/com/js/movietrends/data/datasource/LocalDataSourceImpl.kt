@@ -44,6 +44,10 @@ class LocalDataSourceImpl(private val movieDb: MovieDb) : LocalDataSource {
         }
     }
 
+    override suspend fun getLastRemoteKeyFromDb(): MovieRemoteKeyEntity? {
+        return movieRemoteKeysDao.getLastRemoteKey()
+    }
+
     override suspend fun saveNowPlayingMovies(loadType: LoadType, response: MovieListResponseDto) {
         val currentPage = response.page
         val nextPage = currentPage + 1

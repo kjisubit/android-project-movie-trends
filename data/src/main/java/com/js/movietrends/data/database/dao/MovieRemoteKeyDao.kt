@@ -16,4 +16,7 @@ interface MovieRemoteKeyDao {
 
     @Query("DELETE FROM movie_remote_key_entity")
     suspend fun deleteAllMovieRemoteKeys()
+
+    @Query("SELECT * FROM movie_remote_key_entity ORDER BY id DESC LIMIT 1")
+    suspend fun getLastRemoteKey(): MovieRemoteKeyEntity?
 }

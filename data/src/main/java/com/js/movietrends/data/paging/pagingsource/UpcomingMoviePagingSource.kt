@@ -8,7 +8,7 @@ import com.js.movietrends.data.dto.MovieResponseDto
 import com.js.movietrends.domain.model.ApiResult
 
 class UpcomingMoviePagingSource(
-    private val remoteDataSource: RemoteDataSource
+    private val remoteDataSource: RemoteDataSource,
 ) : PagingSource<Int, MovieResponseDto>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieResponseDto> {
