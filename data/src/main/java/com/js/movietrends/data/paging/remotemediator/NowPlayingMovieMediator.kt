@@ -42,7 +42,6 @@ class NowPlayingMovieMediator(
                 }
 
                 is ApiResult.Loading -> {
-                    // 이 케이스는 이론상 발생하지 않지만, 안전하게 처리 가능
                     MediatorResult.Success(endOfPaginationReached = false)
                 }
             }

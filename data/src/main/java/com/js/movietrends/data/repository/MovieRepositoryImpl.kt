@@ -29,19 +29,22 @@ class MovieRepositoryImpl(
 
     override fun getWeeklySpotlightedMovie(): Flow<ApiResult<Movie>> = flow {
         emit(ApiResult.Loading)
-        when (val result = remoteDataSource.getWeeklySpotlightedMovie()) {
-            is ApiResult.Success -> {
-                try {
-                    val bestRatedMovie = result.data.results!![0]
-                    emit(ApiResult.Success(ModelMapper.mapMovieResponseToDomain(bestRatedMovie)))
-                } catch (e: Exception) {
-                    Log.e(TAG, e.message ?: "", e)
-                    emit(ApiResult.Error(e))
-                }
-            }
 
-            is ApiResult.Error -> emit(result)
-            is ApiResult.Loading -> {} // 이미 emit 했으니 무시
+        val result = remoteDataSource.getWeeklySpotlightedMovie()
+        if (result is ApiResult.Success) {
+            try {
+                val bestRatedMovie = result.data.results?.firstOrNull()
+                if (bestRatedMovie != null) {
+                    emit(ApiResult.Success(ModelMapper.mapMovieResponseToDomain(bestRatedMovie)))
+                } else {
+                    emit(ApiResult.Error(IllegalStateException("No movies found in response.")))
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, e.message ?: "", e)
+                emit(ApiResult.Error(e))
+            }
+        } else if (result is ApiResult.Error) {
+            emit(result)
         }
     }
 
