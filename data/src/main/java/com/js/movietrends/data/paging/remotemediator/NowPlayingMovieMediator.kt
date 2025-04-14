@@ -1,5 +1,6 @@
 package com.js.movietrends.data.paging.remotemediator
 
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
@@ -8,13 +9,17 @@ import com.js.movietrends.data.database.entity.MovieEntity
 import com.js.movietrends.data.database.entity.MovieRemoteKeyEntity
 import com.js.movietrends.data.datasource.LocalDataSource
 import com.js.movietrends.data.datasource.RemoteDataSource
-import com.js.movietrends.domain.model.ApiResult
+import com.js.movietrends.data.utils.ErrorMessages
 
 @OptIn(ExperimentalPagingApi::class)
 class NowPlayingMovieMediator(
     private val remoteDataSource: RemoteDataSource,
     private val localDataSource: LocalDataSource,
 ) : RemoteMediator<Int, MovieEntity>() {
+
+    companion object {
+        private const val TAG = "NowPlayingMovieMediator"
+    }
 
     override suspend fun load(
         loadType: LoadType,
@@ -31,28 +36,19 @@ class NowPlayingMovieMediator(
                 }
             }
 
-            when (val result = remoteDataSource.getNowPlayingMovies(page)) {
-                is ApiResult.Success -> {
-                    localDataSource.saveNowPlayingMovies(loadType, result.data)
-                    MediatorResult.Success(endOfPaginationReached = result.data.results.isNullOrEmpty())
-                }
-
-                is ApiResult.Error -> {
-                    MediatorResult.Error(result.exception)
-                }
-
-                is ApiResult.Loading -> {
-                    MediatorResult.Success(endOfPaginationReached = false)
-                }
+            val response = remoteDataSource.getNowPlayingMovies(page)
+            if (response.results.isNullOrEmpty()) {
+                return MediatorResult.Success(endOfPaginationReached = true)
             }
+
+            localDataSource.saveNowPlayingMovies(loadType, response)
+            MediatorResult.Success(endOfPaginationReached = response.results.isEmpty())
         } catch (e: Exception) {
+            Log.e(TAG, e.message ?: ErrorMessages.UNEXPECTED_ERROR, e)
             MediatorResult.Error(e)
         }
     }
 
-    /**
-     * 페이징 데이터 마지막 아이템의 remoteKeyEntity 가져오기
-     */
     private suspend fun getRemoteKeyEntityOfLastItem(state: PagingState<Int, MovieEntity>): MovieRemoteKeyEntity? {
         val lastPageWithData = state.pages.lastOrNull { it.data.isNotEmpty() }
         val lastMovie = lastPageWithData?.data?.lastOrNull()

@@ -4,9 +4,8 @@ import android.util.Log
 import com.js.movietrends.data.BuildConfig
 import com.js.movietrends.data.api.MovieApi
 import com.js.movietrends.data.dto.MovieListResponseDto
-import com.js.movietrends.data.utils.ApiResponseHandler
+import com.js.movietrends.data.utils.ErrorMessages
 import com.js.movietrends.domain.core.AppInfoManager
-import com.js.movietrends.domain.model.ApiResult
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -16,7 +15,7 @@ class RemoteDataSourceImpl(private val movieApi: MovieApi) : RemoteDataSource {
         private const val TAG = "RemoteDataSourceImpl"
     }
 
-    override suspend fun getWeeklySpotlightedMovie(): ApiResult<MovieListResponseDto> {
+    override suspend fun getWeeklySpotlightedMovie(): MovieListResponseDto {
         return try {
             val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
             val oneWeekAgo = LocalDate.now().minusWeeks(1).format(formatter)
@@ -29,39 +28,52 @@ class RemoteDataSourceImpl(private val movieApi: MovieApi) : RemoteDataSource {
                 primaryReleaseDateGte = twoWeeksAgo,
                 primaryReleaseDateLte = oneWeekAgo,
             )
-            ApiResponseHandler.handleApiResponse(response)
+
+            if (response.isSuccessful) {
+                response.body() ?: throw Exception(ErrorMessages.EMPTY_RESPONSE_BODY)
+            } else {
+                throw Exception(String.format(ErrorMessages.API_CALL_FAILED, response.message()))
+            }
         } catch (e: Exception) {
-            Log.e(TAG, e.message ?: "", e)
-            ApiResult.Error(e)
+            // TODO: 응답 코드에 따른 예외처리 추가하기 위해, Throwable 상속한 sealed class 필요 (예: 401 → Unauthorized)
+            Log.e(TAG, e.message ?: ErrorMessages.UNEXPECTED_ERROR, e)
+            throw e
         }
     }
 
-    override suspend fun getNowPlayingMovies(page: Int): ApiResult<MovieListResponseDto> {
+    override suspend fun getNowPlayingMovies(page: Int): MovieListResponseDto {
         return try {
             val response = movieApi.getNowPlayingMovies(
                 apiKey = BuildConfig.TMDB_API_KEY,
                 language = AppInfoManager.localeCode,
                 page = page
             )
-            ApiResponseHandler.handleApiResponse(response)
+            if (response.isSuccessful) {
+                response.body() ?: throw Exception(ErrorMessages.EMPTY_RESPONSE_BODY)
+            } else {
+                throw Exception(String.format(ErrorMessages.API_CALL_FAILED, response.message()))
+            }
         } catch (e: Exception) {
-            ApiResult.Error(e)
+            Log.e(TAG, e.message ?: ErrorMessages.UNEXPECTED_ERROR, e)
+            throw e
         }
     }
 
-    override suspend fun getUpcomingMovies(page: Int): ApiResult<MovieListResponseDto> {
+    override suspend fun getUpcomingMovies(page: Int): MovieListResponseDto {
         return try {
             val response = movieApi.getUpcomingMovies(
                 apiKey = BuildConfig.TMDB_API_KEY,
                 language = AppInfoManager.localeCode,
                 page = page
             )
-            ApiResponseHandler.handleApiResponse(response)
+            if (response.isSuccessful) {
+                response.body() ?: throw Exception(ErrorMessages.EMPTY_RESPONSE_BODY)
+            } else {
+                throw Exception(String.format(ErrorMessages.API_CALL_FAILED, response.message()))
+            }
         } catch (e: Exception) {
-            Log.e(TAG, e.message ?: "", e)
-            ApiResult.Error(e)
+            Log.e(TAG, e.message ?: ErrorMessages.UNEXPECTED_ERROR, e)
+            throw e
         }
     }
-
-
 }

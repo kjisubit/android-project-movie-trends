@@ -24,34 +24,24 @@ class MovieRepositoryImpl(
 ) : MovieRepository {
 
     companion object {
-        private const val TAG = "MovieRepository"
+        private const val TAG = "NowPlayingMovieMediator"
     }
 
     override fun getWeeklySpotlightedMovie(): Flow<ApiResult<Movie>> = flow {
         emit(ApiResult.Loading)
-
-        val result = remoteDataSource.getWeeklySpotlightedMovie()
-        if (result is ApiResult.Success) {
-            try {
-                val bestRatedMovie = result.data.results?.firstOrNull()
-                if (bestRatedMovie != null) {
-                    emit(ApiResult.Success(ModelMapper.mapMovieResponseToDomain(bestRatedMovie)))
-                } else {
-                    emit(ApiResult.Error(IllegalStateException("No movies found in response.")))
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, e.message ?: "", e)
-                emit(ApiResult.Error(e))
-            }
-        } else if (result is ApiResult.Error) {
-            emit(result)
+        try {
+            val dto = remoteDataSource.getWeeklySpotlightedMovie()
+            val movie = dto.results?.firstOrNull()!!
+            emit(ApiResult.Success(ModelMapper.mapMovieResponseToDomain(movie)))
+        } catch (e: Exception) {
+            Log.e(TAG, e.message ?: "", e)
+            emit(ApiResult.Error(e))
         }
     }
 
     @OptIn(ExperimentalPagingApi::class)
     override fun getNowPlayingMovies(): Flow<PagingData<Movie>> {
         val pagingSourceFactory = { localDataSource.getAllMovies() }
-
         return Pager(
             config = PagingConfig(pageSize = 20),
             remoteMediator = NowPlayingMovieMediator(remoteDataSource, localDataSource),
@@ -64,10 +54,11 @@ class MovieRepositoryImpl(
     override fun getUpcomingMovies(): Flow<PagingData<Movie>> {
         return Pager(
             config = PagingConfig(pageSize = 20),
-            pagingSourceFactory = { UpcomingMoviePagingSource(remoteDataSource) }
+            pagingSourceFactory = {
+                UpcomingMoviePagingSource(remoteDataSource)
+            }
         ).flow.map { pagingData ->
             pagingData.map { dto -> ModelMapper.mapMovieResponseToDomain(dto) }
         }
     }
-
 }
