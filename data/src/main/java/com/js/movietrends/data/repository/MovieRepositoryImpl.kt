@@ -10,7 +10,7 @@ import com.js.movietrends.data.datasource.LocalDataSource
 import com.js.movietrends.data.datasource.RemoteDataSource
 import com.js.movietrends.data.paging.pagingsource.UpcomingMoviePagingSource
 import com.js.movietrends.data.paging.remotemediator.NowPlayingMovieMediator
-import com.js.movietrends.data.utils.ModelMapper
+import com.js.movietrends.data.mapper.ModelMapper
 import com.js.movietrends.domain.model.ApiResult
 import com.js.movietrends.domain.model.Movie
 import com.js.movietrends.domain.repository.MovieRepository

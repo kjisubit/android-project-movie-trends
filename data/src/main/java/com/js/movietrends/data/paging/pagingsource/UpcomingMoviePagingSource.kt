@@ -6,7 +6,7 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.js.movietrends.data.datasource.RemoteDataSource
 import com.js.movietrends.data.dto.MovieResponseDto
-import com.js.movietrends.data.utils.ErrorMessages
+import com.js.movietrends.data.util.ErrorMessages
 
 class UpcomingMoviePagingSource(
     private val remoteDataSource: RemoteDataSource,

@@ -4,7 +4,7 @@ import android.util.Log
 import com.js.movietrends.data.BuildConfig
 import com.js.movietrends.data.api.MovieApi
 import com.js.movietrends.data.dto.MovieListResponseDto
-import com.js.movietrends.data.utils.ErrorMessages
+import com.js.movietrends.data.util.ErrorMessages
 import com.js.movietrends.domain.core.AppInfoManager
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

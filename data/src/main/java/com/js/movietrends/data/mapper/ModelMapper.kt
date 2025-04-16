@@ -1,11 +1,11 @@
-package com.js.movietrends.data.utils
+package com.js.movietrends.data.mapper
 
 import com.js.movietrends.data.database.entity.MovieEntity
 import com.js.movietrends.data.dto.MovieResponseDto
 import com.js.movietrends.domain.model.Movie
 
 object ModelMapper {
-    fun mapMovieResponseToDomain(movieResponseDto: MovieResponseDto): Movie {
+    fun mapMovieResponseDtoToDomain(movieResponseDto: MovieResponseDto): Movie {
         return Movie(
             id = movieResponseDto.id,
             posterPath = movieResponseDto.posterPath,

@@ -1,4 +1,4 @@
-package com.js.movietrends.data.utils
+package com.js.movietrends.data.util
 
 object ErrorMessages {
     const val API_CALL_FAILED = "API 호출 실패: %s"

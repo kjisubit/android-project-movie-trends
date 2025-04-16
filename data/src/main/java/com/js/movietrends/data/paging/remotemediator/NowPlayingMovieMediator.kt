@@ -9,7 +9,7 @@ import com.js.movietrends.data.database.entity.MovieEntity
 import com.js.movietrends.data.database.entity.MovieRemoteKeyEntity
 import com.js.movietrends.data.datasource.LocalDataSource
 import com.js.movietrends.data.datasource.RemoteDataSource
-import com.js.movietrends.data.utils.ErrorMessages
+import com.js.movietrends.data.util.ErrorMessages
 
 @OptIn(ExperimentalPagingApi::class)
 class NowPlayingMovieMediator(
