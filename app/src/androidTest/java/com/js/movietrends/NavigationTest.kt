@@ -13,12 +13,14 @@ import androidx.compose.ui.test.performScrollToNode
 import androidx.paging.testing.asSnapshot
 import com.js.movietrends.domain.model.ApiResult
 import com.js.movietrends.domain.model.Movie
-import com.js.movietrends.domain.repository.MovieRepository
+import com.js.movietrends.domain.usecase.UseCases
 import com.js.movietrends.ui.MainActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -33,14 +35,13 @@ class NavigationTest {
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Inject
-    lateinit var movieRepository: MovieRepository
+    lateinit var useCases: UseCases
 
     @Before
     fun setup() = hiltRule.inject()
 
     private val details by composeTestRule.stringResource(R.string.details)
     private val goToHome by composeTestRule.stringResource(R.string.go_to_home)
-    private val nowPlaying by composeTestRule.stringResource(R.string.now_playing)
     private val weeklySpotlighted by composeTestRule.stringResource(R.string.weekly_spotlight)
     private val upcoming by composeTestRule.stringResource(R.string.upcoming)
 
@@ -64,14 +65,19 @@ class NavigationTest {
     @Test
     fun homeScreen_showWeeklySpotlightedDetails() {
         composeTestRule.apply {
-            // Given: 무비 데이터 변수 준비
+            // Given: 데이터 담을 변수 준비
             var movie: Movie? = null
 
-            // When: 주간 추천 영화 데이터 로드
+            // When: 데이터 로드
             runBlocking {
-                movieRepository.getWeeklySpotlightedMovie().collect { apiResult ->
-                    if (apiResult is ApiResult.Success) {
-                        movie = apiResult.data
+                useCases.getWeeklySpotlightedMovieUseCase().collectLatest { apiResult ->
+                    when (apiResult) {
+                        is ApiResult.Success -> {
+                            movie = apiResult.data
+                        }
+                        else -> {
+                            fail("ApiResult was not Success: $apiResult")
+                        }
                     }
                 }
             }
@@ -108,7 +114,7 @@ class NavigationTest {
 
             // Given: 페이징 데이터 스크롤 하여, 탐색 대상의 id와 title 로드
             val movieSnapshot = runBlocking {
-                val upcomingMovies = movieRepository.getUpcomingMovies()
+                val upcomingMovies = useCases.getUpcomingMoviesUseCase()
                 upcomingMovies.asSnapshot {
                     scrollTo(index = itemIndex)
                 }

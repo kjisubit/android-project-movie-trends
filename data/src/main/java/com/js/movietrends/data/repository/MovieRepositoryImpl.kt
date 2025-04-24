@@ -8,9 +8,9 @@ import androidx.paging.PagingData
 import androidx.paging.map
 import com.js.movietrends.data.datasource.LocalDataSource
 import com.js.movietrends.data.datasource.RemoteDataSource
+import com.js.movietrends.data.mapper.ModelMapper
 import com.js.movietrends.data.paging.pagingsource.UpcomingMoviePagingSource
 import com.js.movietrends.data.paging.remotemediator.NowPlayingMovieMediator
-import com.js.movietrends.data.mapper.ModelMapper
 import com.js.movietrends.domain.model.ApiResult
 import com.js.movietrends.domain.model.Movie
 import com.js.movietrends.domain.repository.MovieRepository
@@ -24,15 +24,17 @@ class MovieRepositoryImpl(
 ) : MovieRepository {
 
     companion object {
-        private const val TAG = "NowPlayingMovieMediator"
+        private const val TAG = "MovieRepositoryImpl"
     }
 
-    override fun getWeeklySpotlightedMovie(): Flow<ApiResult<Movie>> = flow {
-        emit(ApiResult.Loading)
+    override fun getWeeklySpotlightedMovie(
+        startDate: String,
+        endDate: String
+    ): Flow<ApiResult<Movie>> = flow {
         try {
-            val dto = remoteDataSource.getWeeklySpotlightedMovie()
+            val dto = remoteDataSource.getWeeklySpotlightedMovie(startDate, endDate)
             val movie = dto.results?.firstOrNull()!!
-            emit(ApiResult.Success(ModelMapper.mapMovieResponseToDomain(movie)))
+            emit(ApiResult.Success(ModelMapper.mapMovieResponseDtoToDomain(movie)))
         } catch (e: Exception) {
             Log.e(TAG, e.message ?: "", e)
             emit(ApiResult.Error(e))
@@ -58,7 +60,7 @@ class MovieRepositoryImpl(
                 UpcomingMoviePagingSource(remoteDataSource)
             }
         ).flow.map { pagingData ->
-            pagingData.map { dto -> ModelMapper.mapMovieResponseToDomain(dto) }
+            pagingData.map { dto -> ModelMapper.mapMovieResponseDtoToDomain(dto) }
         }
     }
 }

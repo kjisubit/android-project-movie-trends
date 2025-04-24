@@ -3,6 +3,7 @@ package com.js.movietrends.ui.home.weeklyspotlight
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.js.movietrends.domain.model.ApiResult
+import com.js.movietrends.domain.model.ApiResultState
 import com.js.movietrends.domain.model.Movie
 import com.js.movietrends.domain.usecase.UseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -13,19 +14,27 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class WeeklySpotlightViewModel @Inject constructor(private val useCases: UseCases) : ViewModel() {
-    private val _weeklySpotlightUiState = MutableStateFlow<ApiResult<Movie>>(ApiResult.Loading)
-    val weeklySpotlightUiState: StateFlow<ApiResult<Movie>> = _weeklySpotlightUiState
+class WeeklySpotlightViewModel @Inject constructor(
+    private val useCases: UseCases
+) : ViewModel() {
+
+    private val _weeklySpotlightUiState =
+        MutableStateFlow<ApiResultState<Movie>>(ApiResultState.Loading)
+    val weeklySpotlightUiState: StateFlow<ApiResultState<Movie>> = _weeklySpotlightUiState
 
     init {
-        fetchFetchBestRatedMovie()
+        fetchWeeklySpotlightMovie()
     }
 
-    private fun fetchFetchBestRatedMovie() {
+    private fun fetchWeeklySpotlightMovie() {
+        _weeklySpotlightUiState.value = ApiResultState.Loading
         viewModelScope.launch {
             useCases.getWeeklySpotlightedMovieUseCase()
-                .collectLatest {
-                    _weeklySpotlightUiState.value = it
+                .collectLatest { result ->
+                    _weeklySpotlightUiState.value = when (result) {
+                        is ApiResult.Success -> ApiResultState.Success(result.data)
+                        is ApiResult.Error -> ApiResultState.Error(result.exception)
+                    }
                 }
         }
     }

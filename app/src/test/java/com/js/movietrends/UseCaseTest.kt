@@ -7,9 +7,11 @@ import com.js.movietrends.domain.usecase.UseCases
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -39,9 +41,14 @@ class UseCaseTest {
 
         // When: 데이터 로드
         runBlocking {
-            useCases.getWeeklySpotlightedMovieUseCase().collect { apiResult ->
-                if (apiResult is ApiResult.Success) {
-                    movie = apiResult.data
+            useCases.getWeeklySpotlightedMovieUseCase().collectLatest { apiResult ->
+                when (apiResult) {
+                    is ApiResult.Success -> {
+                        movie = apiResult.data
+                    }
+                    else -> {
+                        fail("ApiResult was not Success: $apiResult")
+                    }
                 }
             }
         }

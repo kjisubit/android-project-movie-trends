@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,12 +31,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.SubcomposeAsyncImage
 import com.js.movietrends.R
 import com.js.movietrends.domain.core.Constants
-import com.js.movietrends.domain.model.ApiResult
+import com.js.movietrends.domain.model.ApiResultState
 import com.js.movietrends.domain.model.Movie
 import com.js.movietrends.domain.model.SampleData
 import com.js.movietrends.ui.components.MovieTrendsButton
 import com.js.movietrends.ui.theme.MovieTrendsTheme
-import kotlinx.coroutines.delay
 
 @Composable
 fun WeeklySpotlightScreen(
@@ -45,7 +43,7 @@ fun WeeklySpotlightScreen(
     viewModel: WeeklySpotlightViewModel = hiltViewModel(),
     onNavigationToMovieDetail: (Movie) -> Unit
 ) {
-    val weeklySpotlightUiState: State<ApiResult<Movie>> =
+    val weeklySpotlightUiState: State<ApiResultState<Movie>> =
         viewModel.weeklySpotlightUiState.collectAsStateWithLifecycle()
     WeeklySpotlightScreen(
         modifier = modifier,
@@ -54,27 +52,13 @@ fun WeeklySpotlightScreen(
     )
 }
 
-@Composable
-fun WeeklySpotlightScreen() {
-    var visible by remember { mutableStateOf(false) }
-
-    LaunchedEffect(Unit) {
-        delay(2000)
-        visible = true
-    }
-
-    if (visible) {
-        Text("텍스트")
-    }
-}
-
 /**
  * state hoisting 적용한 screen composable
  */
 @Composable
 fun WeeklySpotlightScreen(
     modifier: Modifier = Modifier,
-    weeklySpotlightUiState: State<ApiResult<Movie>>,
+    weeklySpotlightUiState: State<ApiResultState<Movie>>,
     onNavigationToMovieDetail: (Movie) -> Unit
 ) {
     var isImageLoaded by remember { mutableStateOf(false) }
@@ -83,11 +67,11 @@ fun WeeklySpotlightScreen(
         modifier = modifier.fillMaxSize(),
     ) {
         when (val apiResult = weeklySpotlightUiState.value) {
-            is ApiResult.Loading -> {
+            is ApiResultState.Loading -> {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
 
-            is ApiResult.Error -> {
+            is ApiResultState.Error -> {
                 // todo - 커스텀 텍스트 컴포넌트 대체 필요
                 Text(
                     text = apiResult.exception.message
@@ -102,7 +86,7 @@ fun WeeklySpotlightScreen(
                 )
             }
 
-            is ApiResult.Success -> {
+            is ApiResultState.Success -> {
                 val movieData = apiResult.data
                 WeeklySpotlightContent(
                     modifier = Modifier.fillMaxSize(),
@@ -202,7 +186,7 @@ fun WeeklySpotlightScreenErrorPreview() {
     MovieTrendsTheme {
         WeeklySpotlightScreen(
             modifier = Modifier.fillMaxSize(),
-            weeklySpotlightUiState = remember { mutableStateOf(ApiResult.Error(Exception("Error Message"))) },
+            weeklySpotlightUiState = remember { mutableStateOf(ApiResultState.Error(Exception("Error Message"))) },
             onNavigationToMovieDetail = {},
         )
     }

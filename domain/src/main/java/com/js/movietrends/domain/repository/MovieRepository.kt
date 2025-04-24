@@ -6,7 +6,7 @@ import com.js.movietrends.domain.model.Movie
 import kotlinx.coroutines.flow.Flow
 
 interface MovieRepository {
-    fun getWeeklySpotlightedMovie(): Flow<ApiResult<Movie>>
+    fun getWeeklySpotlightedMovie(startDate: String, endDate: String): Flow<ApiResult<Movie>>
     fun getNowPlayingMovies(): Flow<PagingData<Movie>>
     fun getUpcomingMovies(): Flow<PagingData<Movie>>
 }
