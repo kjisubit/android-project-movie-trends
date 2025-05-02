@@ -11,11 +11,12 @@ class GetWeeklySpotlightedMovieUseCase(
     private val movieRepository: MovieRepository
 ) {
     operator fun invoke(): Flow<ApiResult<Movie>> {
-        return movieRepository.getWeeklySpotlightedMovie(
+        return movieRepository.getDiscoveredMovies(
             startDate = LocalDate.now().minusWeeks(2)
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
             endDate = LocalDate.now().minusWeeks(1)
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+            sortBy = "popularity.desc"
         )
     }
 }

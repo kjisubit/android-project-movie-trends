@@ -27,12 +27,17 @@ class MovieRepositoryImpl(
         private const val TAG = "MovieRepositoryImpl"
     }
 
-    override fun getWeeklySpotlightedMovie(
+    override fun getDiscoveredMovies(
         startDate: String,
-        endDate: String
+        endDate: String,
+        sortBy: String
     ): Flow<ApiResult<Movie>> = flow {
         try {
-            val dto = remoteDataSource.getWeeklySpotlightedMovie(startDate, endDate)
+            val dto = remoteDataSource.getDiscoveredMovies(
+                startDate = startDate,
+                endDate = endDate,
+                sortBy = sortBy
+            )
             val movie = dto.results?.firstOrNull()!!
             emit(ApiResult.Success(ModelMapper.mapMovieResponseDtoToDomain(movie)))
         } catch (e: Exception) {

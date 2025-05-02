@@ -13,9 +13,10 @@ class RemoteDataSourceImpl(private val movieApi: MovieApi) : RemoteDataSource {
         private const val TAG = "RemoteDataSourceImpl"
     }
 
-    override suspend fun getWeeklySpotlightedMovie(
+    override suspend fun getDiscoveredMovies(
         startDate: String,
-        endDate: String
+        endDate: String,
+        sortBy: String
     ): MovieListResponseDto {
         return try {
             val response = movieApi.getDiscoveredMovies(
@@ -24,6 +25,7 @@ class RemoteDataSourceImpl(private val movieApi: MovieApi) : RemoteDataSource {
                 page = 1,
                 primaryReleaseDateGte = startDate,
                 primaryReleaseDateLte = endDate,
+                sortBy = sortBy
             )
             if (response.isSuccessful) {
                 response.body() ?: throw Exception(ErrorMessages.EMPTY_RESPONSE_BODY)

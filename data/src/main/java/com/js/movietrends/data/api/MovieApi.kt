@@ -10,7 +10,7 @@ interface MovieApi {
     suspend fun getNowPlayingMovies(
         @Query("api_key") apiKey: String,
         @Query("language") language: String,
-        @Query("page") page: Int = 1,
+        @Query("page") page: Int = 1
     ): Response<MovieListResponseDto>
 
     @GET("discover/movie")
@@ -20,12 +20,13 @@ interface MovieApi {
         @Query("page") page: Int = 1,
         @Query("primary_release_date.gte") primaryReleaseDateGte: String,
         @Query("primary_release_date.lte") primaryReleaseDateLte: String,
+        @Query("sort_by") sortBy: String = "popularity.desc"
     ): Response<MovieListResponseDto>
 
     @GET("movie/upcoming")
     suspend fun getUpcomingMovies(
         @Query("api_key") apiKey: String,
         @Query("language") language: String,
-        @Query("page") page: Int = 1,
+        @Query("page") page: Int = 1
     ): Response<MovieListResponseDto>
 }
