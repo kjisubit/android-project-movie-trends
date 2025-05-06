@@ -4,8 +4,6 @@
 > Clean Architecture 기반으로 설계되었으며, UI는 Jetpack Compose로 구현했습니다.  
 > TMDB API를 사용해 상영 중인 영화와 개봉 예정인 영화 데이터를 불러옵니다.  
 
----
-
 ## 🦾 Tech Stack
 
 - **Kotlin**: 안드로이드 앱 개발에 사용되는 공식 언어입니다.
@@ -24,18 +22,14 @@
 - **Integration Test**: 여러 컴포넌트가 함께 동작하는 시나리오의 흐름을 검증합니다.
 - **Robolectric**: 디바이스 없이 JVM에서 UI 관련 테스트를 실행할 수 있게 합니다.
 
----
-
 ## 🛠️ Architecture
 ![Architecture Diagram](docs/Architecture.png)
-
----
 
 ## ✅ Features
 
 - **주간 추천 영화**
   - 한 주 동안 가장 많은 인기(Popularity) 점수의 평균값을 획득한 영화를 보여줍니다.
-  - 커스텀으로 구현한 Composable인 도넛 차트(AnimatedDonutChart)를 통해 영화의 평점을 애니메이션으로 나타냅니다. 
+  - 커스텀 Composable인 도넛 차트(AnimatedDonutChart)를 통해 영화의 평점을 애니메이션으로 나타냅니다. 
 - **상영 중인 영화**
   - 현재 상영 중인 영화 목록을 교차형 그리드(Staggered Grid) 형태로 보여줍니다.
   - Paging3의 RemoteMediator를 적용하여, 오프라인 환경에서도 캐시에 저장된 영화 데이터를 불러올 수 있도록 했습니다.
@@ -54,5 +48,5 @@
   - 디스플레이 설정에 맞춰 라이트/다크 모드를 적용합니다.
   - @Preview를 통해 라이트/다크 모드에 해당하는 각 UI 상태를 즉시 확인할 수 있습니다.
 - **테스트**
-  - 간단한 시나리오 테스트를 통해 네비게이션, 그리고 API 요청에 따른 응답이 화면에 반영이 되기까지의 과정을 확인할 수 있습니다.
+  - 네비게이션을 사용한 화면 이동, 그리고 API 요청에 따른 응답이 화면에 반영이 되기까지의 과정을 확인할 수 있습니다.
   - Robolectric을 사용해 디바이스가 없는 환경에서도 테스트를 진행할 수 있도록 했습니다.
