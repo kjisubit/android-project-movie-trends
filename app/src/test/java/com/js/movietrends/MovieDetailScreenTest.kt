@@ -5,7 +5,6 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import com.js.movietrends.domain.model.SampleData
-import com.js.movietrends.domain.repository.MovieRepository
 import com.js.movietrends.ui.detail.MovieDetailScreen
 import com.js.movietrends.ui.theme.MovieTrendsTheme
 import com.js.movietrends.uitesthiltmanifest.HiltComponentActivity
@@ -18,7 +17,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-import javax.inject.Inject
 
 @HiltAndroidTest
 @Config(application = HiltTestApplication::class)
@@ -29,9 +27,6 @@ class MovieDetailScreenTest {
 
     @get:Rule(order = 1)
     val composeTestRule = createAndroidComposeRule<HiltComponentActivity>()
-
-    @Inject
-    lateinit var movieRepository: MovieRepository
 
     @Before
     fun setup() = hiltRule.inject()
