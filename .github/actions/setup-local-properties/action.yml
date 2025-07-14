@@ -1,0 +1,14 @@
+name: Setup Local Properties
+description: Create local.properties file for Android builds
+
+inputs:
+  tmdb-api-key:
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Create local.properties
+      shell: bash
+      run: |
+        echo "TMDB_API_KEY=\"${{ inputs.tmdb-api-key }}\"" > local.properties

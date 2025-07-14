@@ -1,0 +1,185 @@
+name: Android CI/CD Pipeline
+
+run-name: ${{ github.actor }} triggered Android CI/CD pipeline
+
+on:
+  pull_request:
+    branches:
+      - master
+      - develop
+  push:
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Lint job triggered by a ${{ github.event_name }} event."
+
+      - run: echo "Running on ${{ runner.os }}"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup local.properties
+        uses: ./.github/actions/setup-local-properties
+        with:
+          tmdb-api-key: ${{ secrets.TMDB_API_KEY }}
+
+      - name: Setup Java
+        uses: ./.github/actions/setup-java
+
+      - name: Cache Gradle
+        uses: ./.github/actions/gradle-cache
+
+      - name: Run Lint
+        run: ./gradlew lint
+
+      - name: Upload Lint Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-report
+          path: app/build/reports/lint-results-debug.html
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - run: echo "Build job triggered after successful lint."
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup local.properties
+        uses: ./.github/actions/setup-local-properties
+        with:
+          tmdb-api-key: ${{ secrets.TMDB_API_KEY }}
+
+      - name: Setup Java
+        uses: ./.github/actions/setup-java
+
+      - name: Cache Gradle
+        uses: ./.github/actions/gradle-cache
+
+      - run: echo "Starting build..."
+
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+
+  unit-test:
+    name: Unit Test
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - run: echo "Unit Test triggered after successful build."
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup local.properties
+        uses: ./.github/actions/setup-local-properties
+        with:
+          tmdb-api-key: ${{ secrets.TMDB_API_KEY }}
+
+      - name: Setup Java
+        uses: ./.github/actions/setup-java
+
+      - name: Cache Gradle
+        uses: ./.github/actions/gradle-cache
+
+      - run: echo "Running unit tests..."
+
+      - name: Run Unit Tests
+        run: ./gradlew testDebugUnitTest
+
+      - name: Upload Unit Test Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: unit-test-report
+          path: app/build/test-results/testDebugUnitTest/
+
+  instrumentation-test:
+    name: Instrumentation Test
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - run: echo "Instrumentation Test triggered after successful build."
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup local.properties
+        uses: ./.github/actions/setup-local-properties
+        with:
+          tmdb-api-key: ${{ secrets.TMDB_API_KEY }}
+
+      - name: Setup Java
+        uses: ./.github/actions/setup-java
+
+      - name: Cache Gradle
+        uses: ./.github/actions/gradle-cache
+
+      - run: echo "Enabling KVM for Android Emulator..."
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - run: echo "Running instrumentation tests..."
+
+      - name: Run Instrumentation Tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35-ext15
+          target: playstore
+          arch: x86_64
+          profile: pixel_5
+          script: ./gradlew connectedCheck
+
+      - name: Upload Instrumentation Test Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: instrumentation-test-report
+          path: app/build/reports/androidTests/connected/
+
+  deploy:
+    name: Deploy to Firebase
+    runs-on: ubuntu-latest
+    needs: [unit-test, instrumentation-test]
+    steps:
+      - run: echo "Deploy job triggered after successful unit and instrumentation tests."
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup local.properties
+        uses: ./.github/actions/setup-local-properties
+        with:
+          tmdb-api-key: ${{ secrets.TMDB_API_KEY }}
+
+      - name: Download APK Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: app-debug-apk
+          path: app/build/outputs/apk/debug
+
+      - run: echo "APK artifact downloaded. Preparing for deployment..."
+
+      - run: ls -al app/build/outputs/apk/debug
+
+      - name: Deploy to Firebase
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+          groups: group01
+          file: app/build/outputs/apk/debug/app-debug.apk
