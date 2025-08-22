@@ -92,6 +92,10 @@ fun MovieTrendsTheme(
 ) {
     val colors = if (darkTheme) DarkColorPalette else LightColorPalette
 
+    /**
+     * [debugColors]를 사용해 [MaterialTheme.colorScheme]의 모든 색상을 한 가지 컬러로 통일
+     * [MaterialTheme.colorScheme] 사용을 의도적으로 막고 [MovieTrendsTheme.colors]을 사용하도록 유도
+     */
     ProvideMovieTrendsColors(colors) {
         MaterialTheme(
             colorScheme = debugColors(darkTheme),
@@ -156,10 +160,6 @@ private val LocalMovieTrendsColors = staticCompositionLocalOf<MovieTrendsColors>
     error("No MovieTrendsColorPalette provided")
 }
 
-/**
- * 모든 색상을 debugColor로 설정하여 디버그 모드임을 인식하도록 유도
- * [MaterialTheme.colorScheme]의 사용을 지양하고 [MovieTrendsTheme.colors]의 사용을 권장하도록 설계
- */
 fun debugColors(
     darkTheme: Boolean,
     debugColor: Color = Color.Magenta

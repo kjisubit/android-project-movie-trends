@@ -10,8 +10,8 @@ import androidx.compose.ui.graphics.Shape
 import com.js.movietrends.ui.theme.MovieTrendsTheme
 
 @Composable
-fun MovieTrendsSnackbar(
-    snackbarData: SnackbarData,
+fun MovieTrendsSnackBar(
+    snackBarData: SnackbarData,
     modifier: Modifier = Modifier,
     actionOnNewLine: Boolean = false,
     shape: Shape = MaterialTheme.shapes.small,
@@ -20,7 +20,7 @@ fun MovieTrendsSnackbar(
     actionColor: Color = MovieTrendsTheme.colors.brand
 ) {
     Snackbar(
-        snackbarData = snackbarData,
+        snackbarData = snackBarData,
         modifier = modifier,
         actionOnNewLine = actionOnNewLine,
         shape = shape,

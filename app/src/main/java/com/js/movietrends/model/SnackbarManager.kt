@@ -10,9 +10,9 @@ import java.util.UUID
 data class Message(val id: Long, @StringRes val messageId: Int)
 
 /**
- * 화면에 노출할 Snackbar 메시지 관리하는 클래스
+ * 화면에 노출할 SnackBar 메시지 관리하는 클래스
  */
-object SnackbarManager {
+object SnackBarManager {
     private val _messages: MutableStateFlow<List<Message>> = MutableStateFlow(emptyList())
     val messages: StateFlow<List<Message>> get() = _messages.asStateFlow()
 

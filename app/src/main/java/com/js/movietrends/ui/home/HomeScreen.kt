@@ -4,6 +4,7 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
@@ -28,6 +29,7 @@ import com.js.movietrends.ui.home.nowplaying.NowPlayingScreen
 import com.js.movietrends.ui.home.upcoming.UpcomingScreen
 import com.js.movietrends.ui.home.weeklyspotlight.WeeklySpotlightScreen
 import com.js.movietrends.ui.theme.MovieTrendsTheme
+import com.js.movietrends.ui.theme.debugColors
 
 @Composable
 fun HomeScreen(onNavigationToMovieDetail: (Movie) -> Unit) {
@@ -37,6 +39,11 @@ fun HomeScreen(onNavigationToMovieDetail: (Movie) -> Unit) {
     val navBackStackEntry by bottomNavController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination?.route
     val navigationItems = getBottomNavigationItems(context)
+
+    /**
+     * currentDestination 인덱스 탐색
+     * 바텀 네비게이션에서 해당 인덱스가 가리키는 항목 활성화하기 위함
+     */
     val navigationSelectedItem = navigationItems
         .indexOfFirst { it.screenRoute == currentDestination }
         .takeIf { it != -1 } ?: 0

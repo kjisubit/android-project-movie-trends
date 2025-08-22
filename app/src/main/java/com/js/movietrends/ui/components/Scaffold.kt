@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import com.js.movietrends.model.SnackbarManager
+import com.js.movietrends.model.SnackBarManager
 import com.js.movietrends.ui.theme.MovieTrendsTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -29,7 +29,7 @@ fun MovieTrendsScaffold(
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
     topBar: @Composable (() -> Unit) = {},
     bottomBar: @Composable (() -> Unit) = {},
-    snackbarHost: @Composable (SnackbarHostState) -> Unit = { SnackbarHost(it) },
+    snackBarHost: @Composable (SnackbarHostState) -> Unit = { SnackbarHost(it) },
     floatingActionButton: @Composable (() -> Unit) = {},
     floatingActionButtonPosition: FabPosition = FabPosition.End,
     backgroundColor: Color = MovieTrendsTheme.colors.uiBackground,
@@ -41,7 +41,7 @@ fun MovieTrendsScaffold(
         topBar = topBar,
         bottomBar = bottomBar,
         snackbarHost = {
-            snackbarHost(snackBarHostState)
+            snackBarHost(snackBarHostState)
         },
         floatingActionButton = floatingActionButton,
         floatingActionButtonPosition = floatingActionButtonPosition,
@@ -57,12 +57,12 @@ fun MovieTrendsScaffold(
 @Composable
 fun rememberMovieTrendsScaffoldState(
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
-    snackbarManager: SnackbarManager = SnackbarManager,
+    snackBarManager: SnackBarManager = SnackBarManager,
     resources: Resources = resources(),
     coroutineScope: CoroutineScope = rememberCoroutineScope()
 ): MovieTrendsScaffoldState =
-    remember(snackBarHostState, snackbarManager, resources, coroutineScope) {
-        MovieTrendsScaffoldState(snackBarHostState, snackbarManager, resources, coroutineScope)
+    remember(snackBarHostState, snackBarManager, resources, coroutineScope) {
+        MovieTrendsScaffoldState(snackBarHostState, snackBarManager, resources, coroutineScope)
     }
 
 /**
@@ -70,18 +70,18 @@ fun rememberMovieTrendsScaffoldState(
  */
 @Stable
 class MovieTrendsScaffoldState(
-    val snackBarHostState: SnackbarHostState,
-    private val snackbarManager: SnackbarManager,
+    private val snackBarHostState: SnackbarHostState,
+    private val snackBarManager: SnackBarManager,
     private val resources: Resources,
     coroutineScope: CoroutineScope
 ) {
     init {
         coroutineScope.launch {
-            snackbarManager.messages.collect { currentMessages ->
+            snackBarManager.messages.collect { currentMessages ->
                 if (currentMessages.isNotEmpty()) {
                     val message = currentMessages[0]
                     val text = resources.getText(message.messageId)
-                    snackbarManager.setMessageShown(message.id)
+                    snackBarManager.setMessageShown(message.id)
                     snackBarHostState.showSnackbar(text.toString())
                 }
             }
