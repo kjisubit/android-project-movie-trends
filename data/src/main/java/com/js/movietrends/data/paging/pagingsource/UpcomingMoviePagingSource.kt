@@ -8,6 +8,9 @@ import com.js.movietrends.data.datasource.RemoteDataSource
 import com.js.movietrends.data.dto.MovieResponseDto
 import com.js.movietrends.data.util.ErrorMessages
 
+/**
+ * [RemoteDataSource]에서 가져온 데이터를 페이지 단위로 로드할 수 있도록 변환
+ */
 class UpcomingMoviePagingSource(
     private val remoteDataSource: RemoteDataSource,
 ) : PagingSource<Int, MovieResponseDto>() {
@@ -33,6 +36,10 @@ class UpcomingMoviePagingSource(
         }
     }
 
+    /**
+     * 데이터 새로고침 시 현재 앵커 포지션(anchorPosition) 기준으로
+     * 가장 가까운 페이지 키를 탐색한 후, 다시 로드할 시작 페이지 결정
+     */
     override fun getRefreshKey(state: PagingState<Int, MovieResponseDto>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
             val anchorPage = state.closestPageToPosition(anchorPosition)

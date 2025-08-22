@@ -39,9 +39,13 @@ class LocalDataSourceImpl(private val movieDb: MovieDb) : LocalDataSource {
     }
 
     override suspend fun getLastRemoteKey(state: PagingState<Int, MovieEntity>): MovieRemoteKeyEntity? {
-        return state.pages.lastOrNull { it.data.isNotEmpty() }?.data?.lastOrNull()?.let { movie ->
-            movieRemoteKeysDao.getMovieRemoteKeys(movie.id)
-        }
+        return state.pages
+            .lastOrNull { it.data.isNotEmpty() } // 데이터가 존재하는 마지막 페이지
+            ?.data
+            ?.lastOrNull() // 데이터의 마지막 아이템
+            ?.let { movie ->
+                movieRemoteKeysDao.getMovieRemoteKeys(movie.id)
+            }
     }
 
     override suspend fun saveNowPlayingMovies(loadType: LoadType, response: MovieListResponseDto) {
