@@ -25,7 +25,7 @@ pagingCommon = "3.3.6"
 pagingTesting = "3.3.6"
 retrofit = "3.0.0"
 navigationCompose = "2.9.6"
-robolectric = "4.16"
+robolectric = "4.16.1"
 roomRuntime = "2.8.4"
 uiTestJunit4Android = "1.10.0"
 
