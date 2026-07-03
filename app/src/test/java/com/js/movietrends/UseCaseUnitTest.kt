@@ -32,9 +32,6 @@ class UseCaseUnitTest {
 
     @Before
     fun setup() {
-        getWeeklySpotlightedMovieUseCase = mock()
-        getUpcomingMoviesUseCase = mock()
-
         whenever(getWeeklySpotlightedMovieUseCase()).thenReturn(
             flow {
                 emit(
@@ -94,7 +91,7 @@ class UseCaseUnitTest {
         }
 
         // Then: 리스트가 충분한지 확인 후 아이템 검증
-        assertTrue("Movie list is empty", movieSnapshot.isNotEmpty())
+        assertTrue("Movie list should not be empty", movieSnapshot.isNotEmpty())
         assertTrue(
             "Movie list has only ${movieSnapshot.size} items, expected at least ${itemIndex + 1}",
             movieSnapshot.size > itemIndex
