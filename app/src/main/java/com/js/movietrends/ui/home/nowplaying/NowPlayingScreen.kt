@@ -29,8 +29,8 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.js.movietrends.R
 import com.js.movietrends.domain.model.Movie
-import com.js.movietrends.domain.model.SampleData
 import com.js.movietrends.ui.components.MovieGridCell
+import com.js.movietrends.ui.preview.previewMovie
 import com.js.movietrends.ui.theme.MovieTrendsTheme
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlin.random.Random
@@ -149,7 +149,7 @@ fun MovieListStaggeredGrid(
 fun NowPlayingScreenErrorPreview() {
     val size = 20
     val fakeMovies = List(size) {
-        SampleData.createDummyMovie(id = Random.nextInt(0, size))
+        previewMovie(id = Random.nextInt(0, size), title = "Movie #$it")
     }
     val nowPlayingUiState = MutableStateFlow(
         PagingData.from(fakeMovies)
@@ -168,7 +168,7 @@ fun NowPlayingScreenErrorPreview() {
 @Composable
 fun NowPlayingScreenContentPreview() {
     val fakeMovies = List(0) { index ->
-        SampleData.createDummyMovie(id = index)
+        previewMovie(id = index, title = "Movie #$index")
     }
     val nowPlayingUiState = MutableStateFlow(
         PagingData.from(

@@ -28,14 +28,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.SubcomposeAsyncImage
 import com.js.movietrends.R
 import com.js.movietrends.domain.core.Constants
 import com.js.movietrends.domain.model.Movie
-import com.js.movietrends.domain.model.SampleData
 import com.js.movietrends.ui.components.MovieTrendsScaffold
+import com.js.movietrends.ui.preview.MoviePreviewParameterProvider
 import com.js.movietrends.ui.components.MovieTrendsSurface
 import com.js.movietrends.ui.theme.MovieTrendsTheme
 import com.js.movietrends.ui.utils.FormatUtil
@@ -187,10 +188,12 @@ private fun BackButton(modifier: Modifier = Modifier, upPress: () -> Unit) {
 @Preview("dark theme", uiMode = UI_MODE_NIGHT_YES)
 @Preview("large font", fontScale = 2f)
 @Composable
-fun MovieDetailScreenPreview() {
+fun MovieDetailScreenPreview(
+    @PreviewParameter(MoviePreviewParameterProvider::class) movie: Movie
+) {
     MovieTrendsTheme {
         MovieDetailScreen(
-            movie = SampleData.createDummyMovie(),
+            movie = movie,
             upPress = {}
         )
     }

@@ -21,12 +21,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.SubcomposeAsyncImage
 import com.js.movietrends.domain.core.Constants
 import com.js.movietrends.domain.model.Movie
-import com.js.movietrends.domain.model.SampleData
+import com.js.movietrends.ui.preview.MoviePreviewParameterProvider
 import com.js.movietrends.ui.theme.MovieTrendsTheme
 
 @Composable
@@ -71,13 +72,15 @@ fun MovieListCell(
 @Preview("dark theme", uiMode = UI_MODE_NIGHT_YES)
 @Preview("large font", fontScale = 2f)
 @Composable
-fun MovieListCellPreview() {
+fun MovieListCellPreview(
+    @PreviewParameter(MoviePreviewParameterProvider::class) movie: Movie
+) {
     MovieTrendsTheme {
         MovieListCell(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(100.dp),
-            movie = SampleData.createDummyMovie()
+            movie = movie
         )
     }
 }

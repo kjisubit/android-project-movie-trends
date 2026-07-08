@@ -24,6 +24,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -33,8 +34,8 @@ import com.js.movietrends.R
 import com.js.movietrends.domain.core.Constants
 import com.js.movietrends.domain.model.ApiResultState
 import com.js.movietrends.domain.model.Movie
-import com.js.movietrends.domain.model.SampleData
 import com.js.movietrends.ui.components.MovieTrendsButton
+import com.js.movietrends.ui.preview.MoviePreviewParameterProvider
 import com.js.movietrends.ui.theme.MovieTrendsTheme
 
 @Composable
@@ -169,10 +170,12 @@ fun WeeklySpotlightContent(
 
 @Preview(showBackground = true)
 @Composable
-fun WeeklySpotlightScreenContentPreview() {
+fun WeeklySpotlightScreenContentPreview(
+    @PreviewParameter(MoviePreviewParameterProvider::class) movie: Movie
+) {
     MovieTrendsTheme {
         WeeklySpotlightContent(
-            movie = SampleData.createDummyMovie(),
+            movie = movie,
             isImageLoaded = true,
             onImageLoaded = {},
             onNavigationToMovieDetail = {}

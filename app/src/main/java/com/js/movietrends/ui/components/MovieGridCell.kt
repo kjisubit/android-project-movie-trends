@@ -14,11 +14,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import coil3.compose.SubcomposeAsyncImage
 import com.js.movietrends.domain.core.Constants
 import com.js.movietrends.domain.model.Movie
-import com.js.movietrends.domain.model.SampleData
+import com.js.movietrends.ui.preview.MoviePreviewParameterProvider
 import com.js.movietrends.ui.theme.MovieTrendsTheme
 
 @Composable
@@ -48,12 +49,14 @@ fun MovieGridCell(
 @Preview("default")
 @Preview("dark theme", uiMode = UI_MODE_NIGHT_YES)
 @Composable
-fun MovieGridCellPreview() {
+fun MovieGridCellPreview(
+    @PreviewParameter(MoviePreviewParameterProvider::class) movie: Movie
+) {
     MovieTrendsTheme {
-        val movieId = 0
-        val aspectRatioVariant = 5 // 화면비 종류
-        val minAspectRatio = 0.5 // 최소 화면비
-        val maxAspectRatio = 0.7 // 최대 화면비
+        val movieId = movie.id ?: 0
+        val aspectRatioVariant = 5
+        val minAspectRatio = 0.5
+        val maxAspectRatio = 0.7
         val ratioInterval = (maxAspectRatio - minAspectRatio) / aspectRatioVariant
         val aspectRatio = (minAspectRatio + movieId % aspectRatioVariant * ratioInterval).toFloat()
 
@@ -62,7 +65,7 @@ fun MovieGridCellPreview() {
                 .fillMaxWidth()
                 .aspectRatio(aspectRatio)
                 .clickable {},
-            movie = SampleData.createDummyMovie()
+            movie = movie
         )
     }
 }

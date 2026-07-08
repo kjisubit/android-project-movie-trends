@@ -4,7 +4,6 @@ import androidx.paging.PagingData
 import androidx.paging.testing.asSnapshot
 import com.js.movietrends.domain.model.ApiResult
 import com.js.movietrends.domain.model.Movie
-import com.js.movietrends.domain.model.SampleData
 import com.js.movietrends.domain.repository.MovieRepository
 import com.js.movietrends.domain.usecase.GetUpcomingMoviesUseCase
 import com.js.movietrends.domain.usecase.GetWeeklySpotlightedMovieUseCase
@@ -49,10 +48,7 @@ class UseCaseUnitTest {
         )).thenReturn(
             flowOf(
                 ApiResult.Success(
-                    SampleData.createDummyMovie(
-                        id = 123,
-                        title = "Mock Movie"
-                    )
+                    defaultMovie.copy(id = 123, title = "Mock Movie")
                 )
             )
         )
@@ -61,10 +57,7 @@ class UseCaseUnitTest {
             flowOf(
                 PagingData.from(
                     List(100) { index ->
-                        SampleData.createDummyMovie(
-                            id = index,
-                            title = "Movie $index"
-                        )
+                        defaultMovie.copy(id = index, title = "Movie $index")
                     }
                 )
             )

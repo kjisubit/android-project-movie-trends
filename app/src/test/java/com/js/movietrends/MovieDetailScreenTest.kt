@@ -4,7 +4,6 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
-import com.js.movietrends.domain.model.SampleData
 import com.js.movietrends.ui.detail.MovieDetailScreen
 import com.js.movietrends.ui.theme.MovieTrendsTheme
 import com.js.movietrends.uitesthiltmanifest.HiltComponentActivity
@@ -35,7 +34,7 @@ class MovieDetailScreenTest {
     fun detailScreen_showDummyMovieData() {
         composeTestRule.apply {
             // Given: 더미 데이터 준비
-            val dummyMovie = SampleData.createDummyMovie()
+            val dummyMovie = defaultMovie
 
             // When: 더미 데이터로 영화 화면 노출
             setContent {
