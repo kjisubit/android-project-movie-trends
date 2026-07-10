@@ -48,7 +48,7 @@ class UseCaseUnitTest {
         )).thenReturn(
             flowOf(
                 ApiResult.Success(
-                    defaultMovie.copy(id = 123, title = "Mock Movie")
+                    movieSample.copy(id = 123, title = "Mock Movie")
                 )
             )
         )
@@ -57,7 +57,7 @@ class UseCaseUnitTest {
             flowOf(
                 PagingData.from(
                     List(100) { index ->
-                        defaultMovie.copy(id = index, title = "Movie $index")
+                        movieSample.copy(id = index, title = "Movie $index")
                     }
                 )
             )

@@ -2,7 +2,7 @@ package com.js.movietrends
 
 import com.js.movietrends.domain.model.Movie
 
-val defaultMovie = Movie(
+val movieSample = Movie(
     id = 0,
     title = "Sample Movie",
     overview = "This is a sample overview",

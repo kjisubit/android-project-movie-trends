@@ -31,16 +31,13 @@ class MovieDetailScreenTest {
     fun setup() = hiltRule.inject()
 
     @Test
-    fun detailScreen_showDummyMovieData() {
+    fun detailScreen_showSampleMovieData() {
         composeTestRule.apply {
-            // Given: 더미 데이터 준비
-            val dummyMovie = defaultMovie
-
             // When: 더미 데이터로 영화 화면 노출
             setContent {
                 MovieTrendsTheme {
                     MovieDetailScreen(
-                        movie = dummyMovie,
+                        movie = movieSample,
                         upPress = {}
                     )
                 }
@@ -50,8 +47,8 @@ class MovieDetailScreenTest {
             onNodeWithTag("back_button").assertIsDisplayed()
 
             // Then: 더미 데이터 텍스트 노출 확인
-            onNodeWithText(dummyMovie.title.toString()).assertIsDisplayed()
-            onNodeWithText(dummyMovie.overview.toString()).assertIsDisplayed()
+            onNodeWithText(movieSample.title.toString()).assertIsDisplayed()
+            onNodeWithText(movieSample.overview.toString()).assertIsDisplayed()
         }
     }
 }
