@@ -1,5 +1,7 @@
 package com.js.movietrends
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import androidx.compose.ui.semantics.SemanticsActions.ScrollBy
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsSelected
@@ -11,6 +13,10 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollToNode
 import androidx.paging.testing.asSnapshot
+import coil3.ImageLoader
+import coil3.SingletonImageLoader
+import coil3.asImage
+import coil3.test.FakeImageLoaderEngine
 import com.js.movietrends.domain.model.ApiResult
 import com.js.movietrends.domain.model.Movie
 import com.js.movietrends.domain.usecase.UseCases
@@ -40,7 +46,19 @@ class NavigationTest {
     lateinit var useCases: UseCases
 
     @Before
-    fun setup() = hiltRule.inject()
+    fun setup() {
+        hiltRule.inject()
+
+        val engine = FakeImageLoaderEngine.Builder()
+            .default(ColorDrawable(Color.GRAY).asImage())
+            .build()
+
+        SingletonImageLoader.setSafe {
+            ImageLoader.Builder(it)
+                .components { add(engine) }
+                .build()
+        }
+    }
 
     private val details by composeTestRule.stringResource(R.string.details)
     private val goToHome by composeTestRule.stringResource(R.string.go_to_home)
@@ -84,7 +102,7 @@ class NavigationTest {
 
             // Then: 상세 보기 버튼이 표시될 때까지 대기
             waitUntilNodeCount(
-                timeoutMillis = 10_000,
+                timeoutMillis = 5_000,
                 matcher = hasText(details),
                 count = 1
             )
@@ -127,14 +145,14 @@ class NavigationTest {
             onNodeWithText(goToHome).performClick()
 
             // Then: 상세 보기 버튼이 표시될 때까지 대기
-            waitUntilNodeCount(timeoutMillis = 20000, matcher = hasText(details), count = 1)
+            waitUntilNodeCount(timeoutMillis = 5_000, matcher = hasText(details), count = 1)
 
             // When: '개봉 예정' 탭 클릭
             onNodeWithText(upcoming).assertExists().performClick()
 
             // Then: 영화 리스트 노출 확인
             waitUntilNodeCount(
-                timeoutMillis = 10000,
+                timeoutMillis = 5_000,
                 matcher = hasTestTag("upcoming:movies"),
                 count = 1
             )

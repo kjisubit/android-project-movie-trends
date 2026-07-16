@@ -105,6 +105,7 @@ dependencies {
     // coil
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+    androidTestImplementation(libs.coil.test)
 
     // Firebase
     implementation(platform(libs.firebase.bom))
