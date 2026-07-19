@@ -68,13 +68,13 @@ class NavigationTest {
     @Test
     fun homeScreen_isWeeklySpotlighted() {
         composeTestRule.apply {
-            // Given: 인트로 화면 진입 여부 확인
+            // 인트로 화면 진입 여부 확인
             onNodeWithText(goToHome).assertExists()
 
-            // When: 홈 화면 이동 버튼 클릭
+            // 홈 화면 이동 버튼 클릭
             onNodeWithText(goToHome).performClick()
 
-            // Then: 주간 추천 영화 탭이 활성화되어 있는지 확인
+            // 주간 추천 영화 탭이 활성화되어 있는지 확인
             onNodeWithText(weeklySpotlighted).assertIsSelected()
         }
     }
@@ -82,7 +82,7 @@ class NavigationTest {
     @OptIn(ExperimentalTestApi::class)
     @Test
     fun homeScreen_showWeeklySpotlightedDetails() = runTest {
-        // Given: spotlight 영화 정보 가져오기
+        // spotlight 영화 정보 가져오기
         var movie: Movie? = null
         useCases.getWeeklySpotlightedMovieUseCase().collectLatest { apiResult ->
             when (apiResult) {
@@ -94,23 +94,23 @@ class NavigationTest {
         val movieTitle = movie?.title.orEmpty()
 
         composeTestRule.apply {
-            // Given: 인트로 화면 진입 여부 확인
+            // 인트로 화면 진입 여부 확인
             onNodeWithText(goToHome).assertExists()
 
-            // When: 홈 이동 버튼 클릭
+            // 홈 이동 버튼 클릭
             onNodeWithText(goToHome).performClick()
 
-            // Then: 상세 보기 버튼이 표시될 때까지 대기
+            // 상세 보기 버튼이 표시될 때까지 대기
             waitUntilNodeCount(
                 timeoutMillis = 5_000,
                 matcher = hasText(details),
                 count = 1
             )
 
-            // When: 상세 보기 버튼 클릭
+            // 상세 보기 버튼 클릭
             onNodeWithText(details).assertExists().performClick()
 
-            // Then: 디테일 화면에서 영화 제목 확인
+            // 디테일 화면에서 영화 제목 확인
             onNodeWithText(movieTitle).assertExists()
         }
     }
@@ -120,14 +120,14 @@ class NavigationTest {
     fun homeScreen_scrollUpcomingMovieList_navigateToDetail() {
         val itemIndex = 49
 
-        // Given: 페이징 데이터에서 해당 인덱스 영화 정보 확보
+        // 페이징 데이터에서 해당 인덱스 영화 정보 확보
         val (movieId, movieTitle) = runBlocking {
             val upcomingMovies = useCases.getUpcomingMoviesUseCase()
             val snapshot = upcomingMovies.asSnapshot {
                 scrollTo(index = itemIndex)
             }
 
-            // Then: 충분한 데이터가 있는지 확인
+            // 충분한 데이터가 있는지 확인
             assertTrue(
                 "Movie list contains only ${snapshot.size} items, expected at least ${itemIndex + 1}",
                 snapshot.size > itemIndex
@@ -138,26 +138,26 @@ class NavigationTest {
         }
 
         composeTestRule.apply {
-            // Given: 인트로 화면 진입 확인
+            // 인트로 화면 진입 확인
             onNodeWithText(goToHome).assertExists()
 
-            // When: 홈 화면 이동
+            // 홈 화면 이동
             onNodeWithText(goToHome).performClick()
 
-            // Then: 상세 보기 버튼이 표시될 때까지 대기
+            // 상세 보기 버튼이 표시될 때까지 대기
             waitUntilNodeCount(timeoutMillis = 5_000, matcher = hasText(details), count = 1)
 
-            // When: '개봉 예정' 탭 클릭
+            // '개봉 예정' 탭 클릭
             onNodeWithText(upcoming).assertExists().performClick()
 
-            // Then: 영화 리스트 노출 확인
+            // 영화 리스트 노출 확인
             waitUntilNodeCount(
                 timeoutMillis = 5_000,
                 matcher = hasTestTag("upcoming:movies"),
                 count = 1
             )
 
-            // When: 영화 리스트에서 해당 영화까지 스크롤
+            // 영화 리스트에서 해당 영화까지 스크롤
             onNodeWithTag("upcoming:movies")
                 .performScrollToNode(hasTestTag("movieListItem:$movieId"))
                 .fetchSemanticsNode()
@@ -165,20 +165,20 @@ class NavigationTest {
                     val movieListItemNode =
                         onNodeWithTag("movieListItem:$movieId").fetchSemanticsNode()
 
-                    // Then: 아이템 바닥이 보이도록 추가 스크롤
+                    // 아이템 바닥이 보이도록 추가 스크롤
                     config[ScrollBy].action?.invoke(
                         0f,
                         (movieListItemNode.size.height - size.height).coerceAtLeast(0).toFloat()
                     )
                 }
 
-            // Then: 아이템 영화 제목 노출 확인
+            // 아이템 영화 제목 노출 확인
             onNodeWithText(movieTitle).assertExists()
 
-            // When: 해당 영화 아이템 클릭
+            // 해당 영화 아이템 클릭
             onNodeWithText(movieTitle).performClick()
 
-            // Then: 디테일 화면에서도 영화 제목 노출 확인
+            // 디테일 화면에서도 영화 제목 노출 확인
             onNodeWithText(movieTitle).assertExists()
         }
     }

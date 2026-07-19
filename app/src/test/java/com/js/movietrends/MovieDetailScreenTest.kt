@@ -33,7 +33,7 @@ class MovieDetailScreenTest {
     @Test
     fun detailScreen_showSampleMovieData() {
         composeTestRule.apply {
-            // When: 더미 데이터로 영화 화면 노출
+            // 더미 데이터로 영화 화면 노출
             setContent {
                 MovieTrendsTheme {
                     MovieDetailScreen(
@@ -43,10 +43,10 @@ class MovieDetailScreenTest {
                 }
             }
 
-            // Then: 뒤로 가기 버튼 노출 확인
+            // 뒤로 가기 버튼 노출 확인
             onNodeWithTag("back_button").assertIsDisplayed()
 
-            // Then: 더미 데이터 텍스트 노출 확인
+            // 더미 데이터 텍스트 노출 확인
             onNodeWithText(movieSample.title.toString()).assertIsDisplayed()
             onNodeWithText(movieSample.overview.toString()).assertIsDisplayed()
         }

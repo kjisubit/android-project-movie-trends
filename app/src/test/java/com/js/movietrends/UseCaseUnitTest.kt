@@ -66,10 +66,10 @@ class UseCaseUnitTest {
 
     @Test
     fun useCase_weeklySpotlightedMovieExists() = runTest {
-        // Given: spotlighted 영화 정보를 반환하는 유스케이스가 준비됨
+        // spotlighted 영화 정보를 반환하는 유스케이스가 준비됨
         var movie: Movie? = null
 
-        // When: 유스케이스를 호출하여 데이터를 수집함
+        // 유스케이스를 호출하여 데이터를 수집함
         getWeeklySpotlightedMovieUseCase().collect { apiResult ->
             when (apiResult) {
                 is ApiResult.Success -> movie = apiResult.data
@@ -77,11 +77,11 @@ class UseCaseUnitTest {
             }
         }
 
-        // Then: 반환된 영화 정보가 기대한 값과 일치하는지 검증함
+        // 반환된 영화 정보가 기대한 값과 일치하는지 검증함
         assertEquals(123, movie?.id)
         assertEquals("Mock Movie", movie?.title)
 
-        // Then: 올바른 파라미터로 Repository가 호출됐는지 검증함
+        // 올바른 파라미터로 Repository가 호출됐는지 검증함
         @Suppress("UnusedFlow")
         verify(movieRepository).getDiscoveredMovies(
             startDate = expectedStartDate,
@@ -92,15 +92,15 @@ class UseCaseUnitTest {
 
     @Test
     fun useCase_upcomingMovieListAvailable() = runTest {
-        // Given: 무비 리스트에서 찾고자 하는 인덱스 준비
+        // 무비 리스트에서 찾고자 하는 인덱스 준비
         val itemIndex = 49
 
-        // When: 페이징 데이터 스크롤 하여, 탐색 대상의 id와 title 로드
+        // 페이징 데이터 스크롤 하여, 탐색 대상의 id와 title 로드
         val movieSnapshot = getUpcomingMoviesUseCase().asSnapshot {
             scrollTo(index = itemIndex)
         }
 
-        // Then: 리스트가 충분한지 확인 후 아이템 검증
+        // 리스트가 충분한지 확인 후 아이템 검증
         assertTrue("Movie list should not be empty", movieSnapshot.isNotEmpty())
         assertTrue(
             "Movie list has only ${movieSnapshot.size} items, expected at least ${itemIndex + 1}",
