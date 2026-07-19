@@ -2,7 +2,6 @@ package com.js.movietrends
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import androidx.compose.ui.semantics.SemanticsActions.ScrollBy
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.hasTestTag
@@ -160,17 +159,6 @@ class NavigationTest {
             // 영화 리스트에서 해당 영화까지 스크롤
             onNodeWithTag("upcoming:movies")
                 .performScrollToNode(hasTestTag("movieListItem:$movieId"))
-                .fetchSemanticsNode()
-                .apply {
-                    val movieListItemNode =
-                        onNodeWithTag("movieListItem:$movieId").fetchSemanticsNode()
-
-                    // 아이템 바닥이 보이도록 추가 스크롤
-                    config[ScrollBy].action?.invoke(
-                        0f,
-                        (movieListItemNode.size.height - size.height).coerceAtLeast(0).toFloat()
-                    )
-                }
 
             // 아이템 영화 제목 노출 확인
             onNodeWithText(movieTitle).assertExists()
