@@ -24,7 +24,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        testInstrumentationRunner = "com.js.movietrends.CustomTestRunner"
+        testInstrumentationRunner = "com.js.movietrends.runner.CustomTestRunner"
     }
 
     buildTypes {

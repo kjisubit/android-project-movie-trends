@@ -1,4 +1,4 @@
-package com.js.movietrends
+package com.js.movietrends.fixture
 
 import com.js.movietrends.domain.model.Movie
 

@@ -4,6 +4,7 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
+import com.js.movietrends.fixture.movieSample
 import com.js.movietrends.ui.detail.MovieDetailScreen
 import com.js.movietrends.ui.theme.MovieTrendsTheme
 import com.js.movietrends.uitesthiltmanifest.HiltComponentActivity

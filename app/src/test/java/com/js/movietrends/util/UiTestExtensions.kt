@@ -1,4 +1,4 @@
-package com.js.movietrends
+package com.js.movietrends.util
 
 import androidx.annotation.StringRes
 import androidx.compose.ui.test.junit4.AndroidComposeTestRule

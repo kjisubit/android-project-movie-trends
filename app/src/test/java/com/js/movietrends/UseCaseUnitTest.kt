@@ -2,6 +2,7 @@ package com.js.movietrends
 
 import androidx.paging.PagingData
 import androidx.paging.testing.asSnapshot
+import com.js.movietrends.fixture.movieSample
 import com.js.movietrends.domain.model.ApiResult
 import com.js.movietrends.domain.model.Movie
 import com.js.movietrends.domain.repository.MovieRepository

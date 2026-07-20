@@ -1,4 +1,4 @@
-package com.js.movietrends
+package com.js.movietrends.runner
 
 import android.app.Application
 import android.content.Context
