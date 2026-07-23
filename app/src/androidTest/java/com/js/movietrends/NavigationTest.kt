@@ -73,8 +73,13 @@ class NavigationTest {
     @Test
     fun intro_navigatesToHome() {
         composeTestRule.apply {
+            // 인트로 화면 진입 여부 확인
             onNodeWithText(goToHome).assertExists()
+
+            // 홈 화면 이동 버튼 클릭
             onNodeWithText(goToHome).performClick()
+
+            // 주간 추천 영화 탭이 활성화되어 있는지 확인
             onNodeWithText(weeklySpotlighted).assertIsSelected()
         }
     }
@@ -83,9 +88,16 @@ class NavigationTest {
     @Test
     fun weeklySpotlight_navigatesToDetail() {
         composeTestRule.apply {
+            // 홈 화면 이동
             onNodeWithText(goToHome).performClick()
+
+            // 상세 보기 버튼이 표시될 때까지 대기
             waitUntilNodeCount(timeoutMillis = 5_000, matcher = hasText(details), count = 1)
+
+            // 상세 보기 버튼 클릭
             onNodeWithText(details).performClick()
+
+            // 디테일 화면 진입 확인
             onNodeWithTag("back_button").assertIsDisplayed()
         }
     }
@@ -94,14 +106,26 @@ class NavigationTest {
     @Test
     fun upcoming_navigatesToDetail() {
         composeTestRule.apply {
+            // 홈 화면 이동
             onNodeWithText(goToHome).performClick()
-            onNodeWithText(upcoming).assertExists().performClick()
+
+            // 홈 화면 렌더링 완료 대기
+            waitUntilNodeCount(timeoutMillis = 5_000, matcher = hasText(details), count = 1)
+
+            // 개봉 예정 탭 클릭
+            onNodeWithText(upcoming).performClick()
+
+            // 영화 리스트 노출 확인
             waitUntilNodeCount(
                 timeoutMillis = 5_000,
                 matcher = hasTestTag("upcoming:movies"),
                 count = 1
             )
+
+            // 영화 아이템 클릭
             onNodeWithTag("movieListItem:${FakeMovieRepository.MOVIE_ID}").performClick()
+
+            // 디테일 화면 진입 확인
             onNodeWithTag("back_button").assertIsDisplayed()
         }
     }
