@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.js.movietrends.domain.model.ApiResult
 import com.js.movietrends.domain.model.ApiResultState
 import com.js.movietrends.domain.model.Movie
-import com.js.movietrends.domain.usecase.UseCases
+import com.js.movietrends.domain.usecase.GetWeeklySpotlightedMovieUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class WeeklySpotlightViewModel @Inject constructor(
-    private val useCases: UseCases
+    private val getWeeklySpotlightedMovieUseCase: GetWeeklySpotlightedMovieUseCase
 ) : ViewModel() {
 
     private val _weeklySpotlightUiState =
@@ -29,7 +29,7 @@ class WeeklySpotlightViewModel @Inject constructor(
     private fun fetchWeeklySpotlightMovie() {
         _weeklySpotlightUiState.value = ApiResultState.Loading
         viewModelScope.launch {
-            useCases.getWeeklySpotlightedMovieUseCase()
+            getWeeklySpotlightedMovieUseCase()
                 .collectLatest { result ->
                     _weeklySpotlightUiState.value = when (result) {
                         is ApiResult.Success -> ApiResultState.Success(result.data)

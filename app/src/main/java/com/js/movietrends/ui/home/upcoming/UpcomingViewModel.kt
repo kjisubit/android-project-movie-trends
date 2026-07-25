@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.js.movietrends.domain.model.Movie
-import com.js.movietrends.domain.usecase.UseCases
+import com.js.movietrends.domain.usecase.GetUpcomingMoviesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class UpcomingViewModel @Inject constructor(private val useCases: UseCases) : ViewModel() {
+class UpcomingViewModel @Inject constructor(private val getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase) : ViewModel() {
     private val _upcomingUiState = MutableStateFlow<PagingData<Movie>>(PagingData.empty())
     val upcomingUiState: StateFlow<PagingData<Movie>> = _upcomingUiState
 
@@ -24,7 +24,7 @@ class UpcomingViewModel @Inject constructor(private val useCases: UseCases) : Vi
 
     private fun fetchUpcomingMovies() {
         viewModelScope.launch {
-            useCases.getUpcomingMoviesUseCase()
+            getUpcomingMoviesUseCase()
                 .cachedIn(viewModelScope)
                 .collectLatest {
                     _upcomingUiState.value = it

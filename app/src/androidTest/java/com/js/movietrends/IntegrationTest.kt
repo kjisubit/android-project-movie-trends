@@ -19,7 +19,8 @@ import coil3.test.FakeImageLoaderEngine
 import com.js.movietrends.util.stringResource
 import com.js.movietrends.domain.model.ApiResult
 import com.js.movietrends.domain.model.Movie
-import com.js.movietrends.domain.usecase.UseCases
+import com.js.movietrends.domain.usecase.GetUpcomingMoviesUseCase
+import com.js.movietrends.domain.usecase.GetWeeklySpotlightedMovieUseCase
 import com.js.movietrends.ui.MainActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -43,7 +44,10 @@ class IntegrationTest {
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Inject
-    lateinit var useCases: UseCases
+    lateinit var getWeeklySpotlightedMovieUseCase: GetWeeklySpotlightedMovieUseCase
+
+    @Inject
+    lateinit var getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase
 
     @Before
     fun setup() {
@@ -84,7 +88,7 @@ class IntegrationTest {
     fun homeScreen_showWeeklySpotlightedDetails() = runTest {
         // spotlight 영화 정보 가져오기
         var movie: Movie? = null
-        useCases.getWeeklySpotlightedMovieUseCase().collectLatest { apiResult ->
+        getWeeklySpotlightedMovieUseCase().collectLatest { apiResult ->
             when (apiResult) {
                 is ApiResult.Success -> movie = apiResult.data
                 else -> fail("ApiResult was not Success: $apiResult")
@@ -122,7 +126,7 @@ class IntegrationTest {
 
         // 페이징 데이터에서 해당 인덱스 영화 정보 확보
         val (movieId, movieTitle) = runBlocking {
-            val upcomingMovies = useCases.getUpcomingMoviesUseCase()
+            val upcomingMovies = getUpcomingMoviesUseCase()
             val snapshot = upcomingMovies.asSnapshot {
                 scrollTo(index = itemIndex)
             }
