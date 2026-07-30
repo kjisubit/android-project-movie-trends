@@ -1,4 +1,4 @@
-package com.js.movietrends
+package com.js.movietrends.viewmodel
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig

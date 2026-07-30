@@ -1,4 +1,4 @@
-package com.js.movietrends
+package com.js.movietrends.viewmodel
 
 import com.js.movietrends.domain.model.ApiResult
 import com.js.movietrends.domain.model.ApiResultState
