@@ -9,7 +9,7 @@ import com.js.movietrends.domain.model.Movie
 import com.js.movietrends.domain.usecase.GetUpcomingMoviesUseCase
 import com.js.movietrends.fixture.movieSample
 import com.js.movietrends.ui.home.upcoming.UpcomingViewModel
-import com.js.movietrends.util.MainDispatcherRule
+import com.js.movietrends.helper.MainDispatcherRule
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

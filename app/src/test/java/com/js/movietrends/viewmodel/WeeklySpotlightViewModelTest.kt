@@ -5,7 +5,7 @@ import com.js.movietrends.domain.model.ApiResultState
 import com.js.movietrends.domain.usecase.GetWeeklySpotlightedMovieUseCase
 import com.js.movietrends.fixture.movieSample
 import com.js.movietrends.ui.home.weeklyspotlight.WeeklySpotlightViewModel
-import com.js.movietrends.util.MainDispatcherRule
+import com.js.movietrends.helper.MainDispatcherRule
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flowOf
 import org.junit.Assert.assertEquals
