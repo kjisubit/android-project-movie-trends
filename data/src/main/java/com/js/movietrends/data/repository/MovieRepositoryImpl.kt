@@ -27,6 +27,7 @@ class MovieRepositoryImpl(
         private const val TAG = "MovieRepositoryImpl"
     }
 
+    // 페이징 없음, 캐싱 없음 — API 결과를 직접 반환
     override fun getDiscoveredMovies(
         startDate: String,
         endDate: String,
@@ -46,6 +47,7 @@ class MovieRepositoryImpl(
         }
     }
 
+    // 페이징 있음, 캐싱 있음 — RemoteMediator가 API 결과를 Room에 저장하고 로컬 DB에서 페이징
     @OptIn(ExperimentalPagingApi::class)
     override fun getNowPlayingMovies(): Flow<PagingData<Movie>> {
         val pagingSourceFactory = { localDataSource.getAllMovies() }
@@ -58,6 +60,7 @@ class MovieRepositoryImpl(
         }
     }
 
+    // 페이징 있음, 캐싱 없음 — 매번 API에서 직접 페이징
     override fun getUpcomingMovies(): Flow<PagingData<Movie>> {
         return Pager(
             config = PagingConfig(pageSize = 20),

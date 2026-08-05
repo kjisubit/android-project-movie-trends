@@ -50,7 +50,7 @@ class LocalDataSourceImpl(private val movieDb: MovieDb) : LocalDataSource {
 
     override suspend fun saveNowPlayingMovies(loadType: LoadType, response: MovieListResponseDto) {
         val currentPage = response.page
-        val nextPage = currentPage + 1
+        val nextPage = if (currentPage >= (response.totalPages ?: 1)) null else currentPage + 1
         val prevPage: Int? = if (currentPage <= 1) null else currentPage - 1
 
         val remoteKeys = response.results?.map {
