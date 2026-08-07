@@ -48,7 +48,8 @@ class NowPlayingMovieMediator(
 
             // nextPage가 가리키는 데이터 존재할 경우 로컬 db에 저장
             val response = remoteDataSource.getNowPlayingMovies(page)
-            val endOfPagination = response.results.isNullOrEmpty()
+            val endOfPagination = response.results.isNullOrEmpty() ||
+                    response.page >= (response.totalPages ?: 1)
             if (!endOfPagination) localDataSource.saveNowPlayingMovies(loadType, response)
             MediatorResult.Success(endOfPaginationReached = endOfPagination)
         } catch (e: Exception) {

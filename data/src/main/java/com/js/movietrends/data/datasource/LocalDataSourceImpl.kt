@@ -2,7 +2,6 @@ package com.js.movietrends.data.datasource
 
 import androidx.paging.LoadType
 import androidx.paging.PagingSource
-import androidx.paging.PagingState
 import androidx.room.withTransaction
 import com.js.movietrends.data.database.MovieDb
 import com.js.movietrends.data.database.entity.MovieEntity
@@ -36,16 +35,6 @@ class LocalDataSourceImpl(private val movieDb: MovieDb) : LocalDataSource {
 
     override suspend fun addRemoteKeys(keys: List<MovieRemoteKeyEntity>) {
         movieRemoteKeysDao.addAllMovieRemoteKeys(keys)
-    }
-
-    override suspend fun getLastRemoteKey(state: PagingState<Int, MovieEntity>): MovieRemoteKeyEntity? {
-        return state.pages
-            .lastOrNull { it.data.isNotEmpty() } // 데이터가 존재하는 마지막 페이지
-            ?.data
-            ?.lastOrNull() // 데이터의 마지막 아이템
-            ?.let { movie ->
-                movieRemoteKeysDao.getMovieRemoteKeys(movie.id)
-            }
     }
 
     override suspend fun saveNowPlayingMovies(loadType: LoadType, response: MovieListResponseDto) {
