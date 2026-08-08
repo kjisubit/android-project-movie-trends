@@ -50,7 +50,9 @@ class MovieRepositoryImpl(
     // 페이징 있음, 캐싱 있음 — RemoteMediator가 API 결과를 Room에 저장하고 로컬 DB에서 페이징
     @OptIn(ExperimentalPagingApi::class)
     override fun getNowPlayingMovies(): Flow<PagingData<Movie>> {
+        // 온라인/오프라인 환경에 상관 없이 DB에 캐싱된 데이터를 가져오도록 팩토리 선언
         val pagingSourceFactory = { localDataSource.getAllMovies() }
+
         return Pager(
             config = PagingConfig(pageSize = 20),
             remoteMediator = NowPlayingMovieMediator(remoteDataSource, localDataSource),

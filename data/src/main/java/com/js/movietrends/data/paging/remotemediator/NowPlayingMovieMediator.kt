@@ -37,8 +37,9 @@ class NowPlayingMovieMediator(
                 LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
 
                 // 마지막 아이템의 RemoteKey에 저장된 nextPage 확인
-                // RemoteKey == null -> 최초 APPEND 호출 시점에 RemoteKey가 없는 경우 APPEND 트리거 허용
-                // RemoteKey != null && nextPage == null -> 불러올 페이지 없으므로 APPEND 트리거 허용 X
+                // Paging 3는 REFRESH 직후 APPEND를 자동으로 한 번 호출한다.
+                // 첫 APPEND 시점에는 RemoteKey == null 이므로 endOfPaginationReached = false 로드 계속 허용
+                // 이후 마지막 페이지 도달할 시 RemoteKey != null이 되고 endOfPaginationReached == true 가 되면서 APPEND 차단
                 LoadType.APPEND -> {
                     val remoteKeyEntity = getRemoteKeyEntityOfLastItem(state)
                     remoteKeyEntity?.nextPage
@@ -46,11 +47,16 @@ class NowPlayingMovieMediator(
                 }
             }
 
-            // nextPage가 가리키는 데이터 존재할 경우 로컬 db에 저장
+            // nextPage 데이터가 존재하지 않거나 이미 마지막에 도달한 경우, 페이징 종료
             val response = remoteDataSource.getNowPlayingMovies(page)
-            val endOfPagination = response.results.isNullOrEmpty() ||
-                    response.page >= (response.totalPages ?: 1)
-            if (!endOfPagination) localDataSource.saveNowPlayingMovies(loadType, response)
+            val endOfPagination =
+                response.results.isNullOrEmpty() || response.page >= (response.totalPages ?: 1)
+
+            // nextPage가 가리키는 데이터 존재할 경우 로컬 db에 저장
+            if (!response.results.isNullOrEmpty()) {
+                localDataSource.saveNowPlayingMovies(loadType, response)
+            }
+
             MediatorResult.Success(endOfPaginationReached = endOfPagination)
         } catch (e: Exception) {
             Log.e(TAG, e.message ?: ErrorMessages.UNEXPECTED_ERROR, e)
