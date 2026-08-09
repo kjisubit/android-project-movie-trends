@@ -25,10 +25,11 @@ class UpcomingMoviePagingSource(
         return try {
             val response = remoteDataSource.getUpcomingMovies(page)
             val movieList = response.results ?: emptyList()
+            val nextKey = if (movieList.isEmpty() || page >= (response.totalPages ?: 1)) null else page + 1
             LoadResult.Page(
                 data = movieList,
                 prevKey = if (page == 1) null else page - 1,
-                nextKey = if (movieList.isEmpty()) null else page + 1
+                nextKey = nextKey
             )
         } catch (e: Exception) {
             Log.e(TAG, e.message ?: ErrorMessages.UNEXPECTED_ERROR, e)

@@ -13,6 +13,7 @@ interface MovieDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addMovies(movies: List<MovieEntity>)
 
+    // room-paging 의존성에 의해 PagingSource가 자동 생성됨
     @Query("SELECT * FROM movie_entity")
     fun getAllMovies(): PagingSource<Int, MovieEntity>
 
