@@ -32,7 +32,7 @@ class MovieDetailScreenTest {
     fun setup() = hiltRule.inject()
 
     @Test
-    fun detailScreen_showSampleMovieData() {
+    fun detailScreen_withSampleData_showsMovieData() {
         composeTestRule.apply {
             // 더미 데이터로 영화 화면 노출
             setContent {

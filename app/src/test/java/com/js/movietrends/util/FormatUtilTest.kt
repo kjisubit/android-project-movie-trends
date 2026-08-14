@@ -6,7 +6,7 @@ import org.junit.Test
 
 class FormatUtilTest {
     @Test
-    fun format_isOneDecimal() {
+    fun format_validInput_isOneDecimal() {
         assertEquals("3.1", FormatUtil.formatToOneDecimal(3.14f))
         assertEquals("5", FormatUtil.formatToOneDecimal(5.0f))
     }

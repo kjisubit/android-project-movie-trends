@@ -30,7 +30,7 @@ class UpcomingViewModelTest {
     private lateinit var getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase
 
     @Test
-    fun fetchMovies_updatesState() = runTest(mainDispatcherRule.testDispatcher) {
+    fun fetchMovies_success_updatesState() = runTest(mainDispatcherRule.testDispatcher) {
         // UseCase가 데이터를 반환하는 상황 가정
         // cachedIn(viewModelScope)은 완료되지 않고 계속 살아있는 Flow를 요구하므로 Pager.flow로 stubbing
         whenever(getUpcomingMoviesUseCase()).thenReturn(
