@@ -62,11 +62,9 @@ dependencies {
     implementation(libs.material)
     implementation(project(":domain"))
     testImplementation(libs.junit)
-    testImplementation(libs.robolectric)
-    testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation("androidx.test:core:1.6.1")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.kotlinx.coroutines.test)
 
     androidTestImplementation(project(":domain"))
     implementation(libs.androidx.paging.common)
