@@ -1,7 +1,6 @@
 package com.js.movietrends.data.dao
 
 import android.content.Context
-import java.io.IOException
 import androidx.paging.PagingSource
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
@@ -16,6 +15,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
 class MovieDaoTest {
@@ -41,8 +41,24 @@ class MovieDaoTest {
     @Throws(Exception::class)
     fun addMovies_getAllMovies_returnsInsertedData() = runTest {
         val movies = listOf(
-            MovieEntity(id = 1, title = "Movie A", overview = null, popularity = null, posterPath = null, voteAverage = null, voteCount = null),
-            MovieEntity(id = 2, title = "Movie B", overview = null, popularity = null, posterPath = null, voteAverage = null, voteCount = null),
+            MovieEntity(
+                id = 1,
+                title = "Movie A",
+                overview = null,
+                popularity = null,
+                posterPath = null,
+                voteAverage = null,
+                voteCount = null
+            ),
+            MovieEntity(
+                id = 2,
+                title = "Movie B",
+                overview = null,
+                popularity = null,
+                posterPath = null,
+                voteAverage = null,
+                voteCount = null
+            ),
         )
         movieDao.addMovies(movies)
 
@@ -60,12 +76,34 @@ class MovieDaoTest {
     @Throws(Exception::class)
     fun addMovies_duplicatePk_replacesExisting() = runTest {
         // pk를 명시해야 REPLACE 전략이 동작 (pk = 0이면 auto-generate로 신규 row 생성)
-        movieDao.addMovies(listOf(
-            MovieEntity(pk = 1, id = 1, title = "Old Title", overview = null, popularity = null, posterPath = null, voteAverage = null, voteCount = null)
-        ))
-        movieDao.addMovies(listOf(
-            MovieEntity(pk = 1, id = 1, title = "New Title", overview = null, popularity = null, posterPath = null, voteAverage = null, voteCount = null)
-        ))
+        movieDao.addMovies(
+            listOf(
+                MovieEntity(
+                    pk = 1,
+                    id = 1,
+                    title = "Old Title",
+                    overview = null,
+                    popularity = null,
+                    posterPath = null,
+                    voteAverage = null,
+                    voteCount = null
+                )
+            )
+        )
+        movieDao.addMovies(
+            listOf(
+                MovieEntity(
+                    pk = 1,
+                    id = 1,
+                    title = "New Title",
+                    overview = null,
+                    popularity = null,
+                    posterPath = null,
+                    voteAverage = null,
+                    voteCount = null
+                )
+            )
+        )
 
         val result = movieDao.getMovie(1).first()
         assertEquals("New Title", result.title)
@@ -74,9 +112,19 @@ class MovieDaoTest {
     @Test
     @Throws(Exception::class)
     fun deleteAllMovies_clearsTable() = runTest {
-        movieDao.addMovies(listOf(
-            MovieEntity(id = 1, title = "Movie A", overview = null, popularity = null, posterPath = null, voteAverage = null, voteCount = null)
-        ))
+        movieDao.addMovies(
+            listOf(
+                MovieEntity(
+                    id = 1,
+                    title = "Movie A",
+                    overview = null,
+                    popularity = null,
+                    posterPath = null,
+                    voteAverage = null,
+                    voteCount = null
+                )
+            )
+        )
         movieDao.deleteAllMovies()
 
         val result = movieDao.getAllMovies().load(
@@ -90,10 +138,28 @@ class MovieDaoTest {
     @Test
     @Throws(Exception::class)
     fun getMovie_returnsCorrectMovieById() = runTest {
-        movieDao.addMovies(listOf(
-            MovieEntity(id = 1, title = "Movie A", overview = null, popularity = null, posterPath = null, voteAverage = null, voteCount = null),
-            MovieEntity(id = 2, title = "Movie B", overview = null, popularity = null, posterPath = null, voteAverage = null, voteCount = null),
-        ))
+        movieDao.addMovies(
+            listOf(
+                MovieEntity(
+                    id = 1,
+                    title = "Movie A",
+                    overview = null,
+                    popularity = null,
+                    posterPath = null,
+                    voteAverage = null,
+                    voteCount = null
+                ),
+                MovieEntity(
+                    id = 2,
+                    title = "Movie B",
+                    overview = null,
+                    popularity = null,
+                    posterPath = null,
+                    voteAverage = null,
+                    voteCount = null
+                ),
+            )
+        )
 
         val result = movieDao.getMovie(2).first()
         assertEquals(2, result.id)

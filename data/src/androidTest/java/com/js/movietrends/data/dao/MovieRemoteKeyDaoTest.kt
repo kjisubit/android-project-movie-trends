@@ -1,7 +1,6 @@
 package com.js.movietrends.data.dao
 
 import android.content.Context
-import java.io.IOException
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -15,6 +14,7 @@ import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
 class MovieRemoteKeyDaoTest {
@@ -61,9 +61,11 @@ class MovieRemoteKeyDaoTest {
     @Test
     @Throws(Exception::class)
     fun deleteAllMovieRemoteKeys_clearsTable() = runTest {
-        movieRemoteKeyDao.addAllMovieRemoteKeys(listOf(
-            MovieRemoteKeyEntity(id = 1, prevPage = null, nextPage = 2, lastUpdated = 1000L)
-        ))
+        movieRemoteKeyDao.addAllMovieRemoteKeys(
+            listOf(
+                MovieRemoteKeyEntity(id = 1, prevPage = null, nextPage = 2, lastUpdated = 1000L)
+            )
+        )
         movieRemoteKeyDao.deleteAllMovieRemoteKeys()
 
         val result = movieRemoteKeyDao.getMovieRemoteKeys(1)
@@ -73,12 +75,16 @@ class MovieRemoteKeyDaoTest {
     @Test
     @Throws(Exception::class)
     fun addAllMovieRemoteKeys_duplicateId_replacesExisting() = runTest {
-        movieRemoteKeyDao.addAllMovieRemoteKeys(listOf(
-            MovieRemoteKeyEntity(id = 1, prevPage = null, nextPage = 2, lastUpdated = 1000L)
-        ))
-        movieRemoteKeyDao.addAllMovieRemoteKeys(listOf(
-            MovieRemoteKeyEntity(id = 1, prevPage = null, nextPage = 5, lastUpdated = 2000L)
-        ))
+        movieRemoteKeyDao.addAllMovieRemoteKeys(
+            listOf(
+                MovieRemoteKeyEntity(id = 1, prevPage = null, nextPage = 2, lastUpdated = 1000L)
+            )
+        )
+        movieRemoteKeyDao.addAllMovieRemoteKeys(
+            listOf(
+                MovieRemoteKeyEntity(id = 1, prevPage = null, nextPage = 5, lastUpdated = 2000L)
+            )
+        )
 
         val result = movieRemoteKeyDao.getMovieRemoteKeys(1)
         assertEquals(5, result?.nextPage)

@@ -30,6 +30,7 @@ class NowPlayingMovieMediator(
     ): MediatorResult {
         return try {
             val page = when (loadType) {
+
                 // 새로고침 시 첫 페이지 로드
                 LoadType.REFRESH -> 1
 
@@ -37,9 +38,8 @@ class NowPlayingMovieMediator(
                 LoadType.PREPEND -> return MediatorResult.Success(endOfPaginationReached = true)
 
                 // 마지막 아이템의 RemoteKey에 저장된 nextPage 확인
-                // Paging 3는 REFRESH 직후 APPEND를 자동으로 한 번 호출한다.
-                // 첫 APPEND 시점에는 RemoteKey == null 이므로 endOfPaginationReached = false 로드 계속 허용
-                // 이후 마지막 페이지 도달할 시 RemoteKey != null이 되고 endOfPaginationReached == true 가 되면서 APPEND 차단
+                // REFRESH -> PREPEND -> APPEND 순으로 호출되며 APPEND는 스크롤에 따라 반복 호출되는 구조
+                // RemoteKey != null && nextPage == null -> 마지막 페이지 도달 -> endOfPaginationReached = true로 APPEND 차단
                 LoadType.APPEND -> {
                     val remoteKeyEntity = getRemoteKeyEntityOfLastItem(state)
                     remoteKeyEntity?.nextPage
