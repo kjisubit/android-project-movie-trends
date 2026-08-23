@@ -1,6 +1,7 @@
 package com.js.movietrends.data.dao
 
 import android.content.Context
+import java.io.IOException
 import androidx.paging.PagingSource
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
@@ -25,18 +26,19 @@ class MovieDaoTest {
     @Before
     fun setUp() {
         val context = ApplicationProvider.getApplicationContext<Context>()
-        db = Room.inMemoryDatabaseBuilder(context, MovieDb::class.java)
-            .allowMainThreadQueries()
-            .build()
+        db = Room.inMemoryDatabaseBuilder(context, MovieDb::class.java).build()
         movieDao = db.movieDao()
     }
 
     @After
+    // Java에서 이 메서드를 호출할 때 IOException 처리를 강제하기 위한 선언 (Kotlin 단독 사용 시 불필요)
+    @Throws(IOException::class)
     fun tearDown() {
         db.close()
     }
 
     @Test
+    @Throws(Exception::class)
     fun addMovies_getAllMovies_returnsInsertedData() = runTest {
         val movies = listOf(
             MovieEntity(id = 1, title = "Movie A", overview = null, popularity = null, posterPath = null, voteAverage = null, voteCount = null),
@@ -55,6 +57,7 @@ class MovieDaoTest {
     }
 
     @Test
+    @Throws(Exception::class)
     fun addMovies_duplicatePk_replacesExisting() = runTest {
         // pk를 명시해야 REPLACE 전략이 동작 (pk = 0이면 auto-generate로 신규 row 생성)
         movieDao.addMovies(listOf(
@@ -69,6 +72,7 @@ class MovieDaoTest {
     }
 
     @Test
+    @Throws(Exception::class)
     fun deleteAllMovies_clearsTable() = runTest {
         movieDao.addMovies(listOf(
             MovieEntity(id = 1, title = "Movie A", overview = null, popularity = null, posterPath = null, voteAverage = null, voteCount = null)
@@ -84,6 +88,7 @@ class MovieDaoTest {
     }
 
     @Test
+    @Throws(Exception::class)
     fun getMovie_returnsCorrectMovieById() = runTest {
         movieDao.addMovies(listOf(
             MovieEntity(id = 1, title = "Movie A", overview = null, popularity = null, posterPath = null, voteAverage = null, voteCount = null),
