@@ -1,13 +1,12 @@
-name: Android CI/CD Pipeline
+name: Android CI
 
-run-name: ${{ github.actor }} triggered Android CI/CD pipeline
+run-name: ${{ github.actor }} triggered Android CI
 
 on:
   pull_request:
     branches:
       - master
       - develop
-  push:
 
 jobs:
   lint:
@@ -86,7 +85,7 @@ jobs:
       - name: Setup local.properties
         uses: ./.github/actions/setup-local-properties
         with:
-          tmdb-api-key: ${{ secrets.TMDB_API_KEY }}
+          local-properties-contents: ${{ secrets.LOCAL_PROPERTIES_CONTENTS }}
 
       - name: Setup Java
         uses: ./.github/actions/setup-java
@@ -103,7 +102,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: unit-test-report
-          path: app/build/test-results/testDebugUnitTest/
+          path: |
+            app/build/test-results/testDebugUnitTest/
+            data/build/test-results/testDebugUnitTest/
 
   instrumentation-test:
     name: Instrumentation Test
@@ -149,37 +150,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: instrumentation-test-report
-          path: app/build/reports/androidTests/connected/
-
-  deploy:
-    name: Deploy to Firebase
-    runs-on: ubuntu-latest
-    needs: [unit-test, instrumentation-test]
-    steps:
-      - run: echo "Deploy job triggered after successful unit and instrumentation tests."
-
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup local.properties
-        uses: ./.github/actions/setup-local-properties
-        with:
-          tmdb-api-key: ${{ secrets.TMDB_API_KEY }}
-
-      - name: Download APK Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: app-debug-apk
-          path: app/build/outputs/apk/debug
-
-      - run: echo "APK artifact downloaded. Preparing for deployment..."
-
-      - run: ls -al app/build/outputs/apk/debug
-
-      - name: Deploy to Firebase
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          appId: ${{ secrets.FIREBASE_APP_ID }}
-          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-          groups: group01
-          file: app/build/outputs/apk/debug/app-debug.apk
+          path: |
+            app/build/reports/androidTests/connected/
+            data/build/reports/androidTests/connected/
