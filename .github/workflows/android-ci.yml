@@ -85,7 +85,7 @@ jobs:
       - name: Setup local.properties
         uses: ./.github/actions/setup-local-properties
         with:
-          local-properties-contents: ${{ secrets.LOCAL_PROPERTIES_CONTENTS }}
+          tmdb-api-key: ${{ secrets.TMDB_API_KEY }}
 
       - name: Setup Java
         uses: ./.github/actions/setup-java
@@ -96,7 +96,7 @@ jobs:
       - run: echo "Running unit tests..."
 
       - name: Run Unit Tests
-        run: ./gradlew testDebugUnitTest
+        run: ./gradlew :domain:test :data:testDebugUnitTest :app:testDebugUnitTest
 
       - name: Upload Unit Test Report
         uses: actions/upload-artifact@v4
@@ -105,6 +105,7 @@ jobs:
           path: |
             app/build/test-results/testDebugUnitTest/
             data/build/test-results/testDebugUnitTest/
+            domain/build/test-results/test/
 
   instrumentation-test:
     name: Instrumentation Test
