@@ -1,0 +1,84 @@
+name: Android CD
+
+run-name: ${{ github.actor }} triggered Android CD
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy-firebase:
+    name: Deploy to Firebase
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Deploy job triggered."
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup local.properties
+        uses: ./.github/actions/setup-local-properties
+        with:
+          tmdb-api-key: ${{ secrets.TMDB_API_KEY }}
+
+      - name: Setup Java
+        uses: ./.github/actions/setup-java
+
+      - name: Cache Gradle
+        uses: ./.github/actions/gradle-cache
+
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug
+
+      - run: echo "APK build complete. Preparing for deployment..."
+
+      - run: ls -al app/build/outputs/apk/debug
+
+      - name: Deploy to Firebase
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID }}
+          serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
+          groups: group01
+          file: app/build/outputs/apk/debug/app-debug.apk
+
+  # TODO: 실제 Play Store 배포를 위해 다음의 시크릿 등록 필요
+  # SIGNING_KEY_BASE64, KEY_ALIAS, KEY_STORE_PASSWORD, KEY_PASSWORD, SERVICE_ACCOUNT_JSON
+  deploy-playstore:
+    name: Deploy to Play Store
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Deploy to Play Store triggered."
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup local.properties
+        uses: ./.github/actions/setup-local-properties
+        with:
+          tmdb-api-key: ${{ secrets.TMDB_API_KEY }}
+
+      - name: Setup Java
+        uses: ./.github/actions/setup-java
+
+      - name: Cache Gradle
+        uses: ./.github/actions/gradle-cache
+
+      - name: Build Release AAB
+        run: ./gradlew bundleRelease
+
+      - name: Sign AAB
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: app/build/outputs/bundle/release
+          signingKeyBase64: ${{ secrets.SIGNING_KEY_BASE64 }}
+          alias: ${{ secrets.KEY_ALIAS }}
+          keyStorePassword: ${{ secrets.KEY_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Deploy to Play Store
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          packageName: com.js.movietrends
+          releaseFiles: app/build/outputs/bundle/release/*.aab
+          track: internal
