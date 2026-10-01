@@ -22,6 +22,11 @@ class UpcomingMoviePagingSource(
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, MovieResponseDto> {
         val page = params.key ?: 1
 
+//        return when (params) {
+//            is LoadParams.Refresh -> { ... }
+//            is LoadParams.Prepend -> { ... }
+//            is LoadParams.Append -> { ... }
+//
         return try {
             val response = remoteDataSource.getUpcomingMovies(page)
             val movieList = response.results ?: emptyList()
