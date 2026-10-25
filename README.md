@@ -11,7 +11,6 @@
 - **Coroutines**: Kotlin의 비동기 작업을 처리합니다.
 - **Flow**: 플랫폼에 종속적인 LiveData의 사용을 피하고, StateFlow와의 연동을 수월하게 합니다.
 - **ViewModel**: UI 렌더링 시 필요한 상태 데이터를 관리하고 보관합니다.
-- **UDF**: 상태는 아래로, 이벤트는 위로 향하도록 Unidirectional Data Flow 패턴을 적용해 UI의 데이터 소스를 하나로 유지하고 테스트를 수월하게 합니다.
 - **Room**: 쿼리를 직접 작성하는 대신 객체를 통해 로컬 데이터를 관리하도록 합니다.
 - **Paging3**: 데이터를 페이지 단위로 로드하며, 캐시 기능을 활용해 오프라인 환경에서의 사용성을 개선합니다.
 - **Clean Architecture**: 앱을 계층별로 분리하여 확장에 유연하면서도 테스트하기 쉬운 구조를 만듭니다.
@@ -19,9 +18,15 @@
   - **Data Layer**: 네트워크, 로컬 데이터베이스 등의 외부 소스로부터 데이터를 가져옵니다.
   - **App Layer**: 사용자 입력을 처리하고, UI에 상태를 반영합니다.
 - **Hilt**: 의존성을 자동으로 주입해 테스트 가능한 구조의 코드를 구현합니다.
-- **Unit Test**: 작은 단위의 코드를 독립적으로 검증합니다.
-- **Integration Test**: 여러 컴포넌트가 함께 동작하는 시나리오의 흐름을 검증합니다.
-- **Robolectric**: 디바이스 없이 JVM에서 UI 관련 테스트를 실행할 수 있게 합니다.
+- **Testing**
+  - **JUnit4, Mockito**: 외부 의존성을 Mock으로 대체함으로써 각 계층의 로직을 독립적으로 검증합니다.
+  - **Coroutines Test**: runTest와 MainDispatcherRule를 사용해 코루틴 기반의 코드를 테스트합니다.
+  - **Paging Testing**: asSnapshot으로 PagingData가 실제로 방출하는 아이템 목록을 검증합니다.
+  - **Robolectric**: 디바이스 없이 JVM 환경에서 Compose 화면 렌더링을 테스트합니다.
+  - **Room In-Memory DB**: 기기 환경에서 DAO 쿼리 동작을 검증합니다.
+  - **Hilt Testing**: 테스트 환경에서 Fake Repository를 주입해 네트워크 없이 정해진 데이터로 테스트를 진행합니다.
+  - **Compose UI Test**: 인트로 → 홈 → 상세로 이어지는 화면 이동과 데이터 노출을 검사합니다.
+- **GitHub Actions**: PR 발생 시 Lint → Build → Unit/Instrumentation Test를 자동 실행하고, Firebase App Distribution으로 테스트 빌드를 배포합니다.
 
 ## 🛠️ Architecture
 ![Architecture Diagram](docs/Architecture.png)
@@ -49,5 +54,7 @@
   - 디스플레이 설정에 맞춰 라이트/다크 모드를 적용합니다.
   - @Preview를 통해 라이트/다크 모드에 해당하는 각 UI 상태를 즉시 확인할 수 있습니다.
 - **테스트**
-  - 네비게이션을 사용한 화면 이동, 그리고 API 요청에 따른 응답이 화면에 반영이 되기까지의 과정을 확인할 수 있습니다.
-  - Robolectric을 사용해 디바이스가 없는 환경에서도 테스트를 진행할 수 있도록 했습니다.
+  - domain(UseCase), data(PagingSource, RemoteMediator, DAO), app(ViewModel, 화면) 각 모듈에 계층별 테스트를 작성했습니다.
+  - Hilt로 Fake Repository를 주입해 네비게이션을 사용한 화면 이동, 그리고 응답이 화면에 반영되기까지의 흐름을 검사합니다.
+  - Robolectric을 사용해 디바이스가 없는 환경에서도 Compose UI 테스트를 진행할 수 있도록 했습니다.
+  - GitHub Actions에서 PR마다 전체 테스트가 자동으로 실행됩니다.
