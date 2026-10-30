@@ -1,7 +1,7 @@
 package com.js.movietrends.viewmodel
 
 import com.js.movietrends.domain.model.ApiResult
-import com.js.movietrends.domain.model.ApiResultState
+import com.js.movietrends.ui.model.UiState
 import com.js.movietrends.domain.usecase.GetWeeklySpotlightedMovieUseCase
 import com.js.movietrends.fixture.movieSample
 import com.js.movietrends.ui.home.weeklyspotlight.WeeklySpotlightViewModel
@@ -33,7 +33,7 @@ class WeeklySpotlightViewModelTest {
         val viewModel = WeeklySpotlightViewModel(getWeeklySpotlightedMovieUseCase)
 
         // 초기 상태가 Loading인지 검증
-        assertEquals(ApiResultState.Loading, viewModel.weeklySpotlightUiState.value)
+        assertEquals(UiState.Loading, viewModel.weeklySpotlightUiState.value)
     }
 
     @Test
@@ -46,7 +46,7 @@ class WeeklySpotlightViewModelTest {
         val viewModel = WeeklySpotlightViewModel(getWeeklySpotlightedMovieUseCase)
 
         // 상태가 Success로 업데이트되는지 검증
-        assertEquals(ApiResultState.Success(movieSample), viewModel.weeklySpotlightUiState.value)
+        assertEquals(UiState.Success(movieSample), viewModel.weeklySpotlightUiState.value)
     }
 
     @Test
@@ -60,6 +60,6 @@ class WeeklySpotlightViewModelTest {
         val viewModel = WeeklySpotlightViewModel(getWeeklySpotlightedMovieUseCase)
 
         // 상태가 Error로 업데이트되는지 검증
-        assertEquals(ApiResultState.Error(exception), viewModel.weeklySpotlightUiState.value)
+        assertEquals(UiState.Error(exception), viewModel.weeklySpotlightUiState.value)
     }
 }

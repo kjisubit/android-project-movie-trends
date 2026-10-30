@@ -32,7 +32,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.SubcomposeAsyncImage
 import com.js.movietrends.R
 import com.js.movietrends.domain.core.Constants
-import com.js.movietrends.domain.model.ApiResultState
+import com.js.movietrends.ui.model.UiState
 import com.js.movietrends.domain.model.Movie
 import com.js.movietrends.ui.components.MovieTrendsButton
 import com.js.movietrends.ui.preview.MoviePreviewParameterProvider
@@ -44,7 +44,7 @@ fun WeeklySpotlightScreen(
     viewModel: WeeklySpotlightViewModel = hiltViewModel(),
     onNavigationToMovieDetail: (Movie) -> Unit
 ) {
-    val weeklySpotlightUiState: State<ApiResultState<Movie>> =
+    val weeklySpotlightUiState: State<UiState<Movie>> =
         viewModel.weeklySpotlightUiState.collectAsStateWithLifecycle()
     WeeklySpotlightScreen(
         modifier = modifier,
@@ -59,7 +59,7 @@ fun WeeklySpotlightScreen(
 @Composable
 fun WeeklySpotlightScreen(
     modifier: Modifier = Modifier,
-    weeklySpotlightUiState: State<ApiResultState<Movie>>,
+    weeklySpotlightUiState: State<UiState<Movie>>,
     onNavigationToMovieDetail: (Movie) -> Unit
 ) {
     var isImageLoaded by remember { mutableStateOf(false) }
@@ -68,11 +68,11 @@ fun WeeklySpotlightScreen(
         modifier = modifier.fillMaxSize(),
     ) {
         when (val apiResult = weeklySpotlightUiState.value) {
-            is ApiResultState.Loading -> {
+            is UiState.Loading -> {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
 
-            is ApiResultState.Error -> {
+            is UiState.Error -> {
                 // todo - 커스텀 텍스트 컴포넌트 대체 필요
                 Text(
                     text = apiResult.exception.message
@@ -87,7 +87,7 @@ fun WeeklySpotlightScreen(
                 )
             }
 
-            is ApiResultState.Success -> {
+            is UiState.Success -> {
                 val movieData = apiResult.data
                 WeeklySpotlightContent(
                     modifier = Modifier.fillMaxSize(),
@@ -189,7 +189,7 @@ fun WeeklySpotlightScreenErrorPreview() {
     MovieTrendsTheme {
         WeeklySpotlightScreen(
             modifier = Modifier.fillMaxSize(),
-            weeklySpotlightUiState = remember { mutableStateOf(ApiResultState.Error(Exception("Error Message"))) },
+            weeklySpotlightUiState = remember { mutableStateOf(UiState.Error(Exception("Error Message"))) },
             onNavigationToMovieDetail = {},
         )
     }
