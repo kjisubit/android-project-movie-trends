@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.room.Room
 import com.js.movietrends.data.database.MovieDb
 import com.js.movietrends.data.database.dao.MovieDao
+import com.js.movietrends.data.database.migration.ALL_MIGRATIONS
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,7 +19,8 @@ object DatabaseModule {
     @Singleton
     fun provideDatabase(app: Application): MovieDb =
         Room.databaseBuilder(app, MovieDb::class.java, "movie_database")
-            .fallbackToDestructiveMigration(true).build()
+            .addMigrations(*ALL_MIGRATIONS)
+            .build()
 
     @Provides
     @Singleton

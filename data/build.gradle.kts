@@ -48,6 +48,11 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
+    // MigrationTestHelper가 내보낸 스키마를 읽을 수 있도록 androidTest assets에 포함
+    sourceSets {
+        getByName("androidTest").assets.srcDir("$projectDir/schemas")
+    }
+
     testOptions {
         unitTests {
             isReturnDefaultValues = true
@@ -75,6 +80,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.kotlinx.coroutines.test)
+    androidTestImplementation(libs.androidx.room.testing)
 
     androidTestImplementation(project(":domain"))
     implementation(libs.androidx.paging.common)
@@ -90,6 +96,11 @@ dependencies {
     // hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+}
+
+// Room 스키마를 JSON으로 내보내 버전별 변경 이력을 관리하고, 마이그레이션 테스트에서 사용
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 // Allow references to generated code
