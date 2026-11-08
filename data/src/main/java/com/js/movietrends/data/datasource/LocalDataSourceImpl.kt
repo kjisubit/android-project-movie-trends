@@ -6,12 +6,22 @@ import androidx.room.withTransaction
 import com.js.movietrends.data.database.MovieDb
 import com.js.movietrends.data.database.entity.MovieEntity
 import com.js.movietrends.data.database.entity.MovieRemoteKeyEntity
+import com.js.movietrends.data.database.entity.WeeklySpotlightEntity
 import com.js.movietrends.data.dto.MovieListResponseDto
 
 class LocalDataSourceImpl(private val movieDb: MovieDb) : LocalDataSource {
 
     private val movieDao = movieDb.movieDao()
     private val movieRemoteKeysDao = movieDb.movieRemoteKeysDao()
+    private val weeklySpotlightDao = movieDb.weeklySpotlightDao()
+
+    override suspend fun getWeeklySpotlight(): WeeklySpotlightEntity? {
+        return weeklySpotlightDao.getWeeklySpotlight()
+    }
+
+    override suspend fun replaceWeeklySpotlight(entity: WeeklySpotlightEntity) {
+        weeklySpotlightDao.replaceWeeklySpotlight(entity)
+    }
 
     override fun getAllMovies(): PagingSource<Int, MovieEntity> {
         return movieDao.getAllMovies()

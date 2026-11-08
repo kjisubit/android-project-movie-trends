@@ -11,6 +11,7 @@ import com.js.movietrends.data.datasource.RemoteDataSource
 import com.js.movietrends.data.mapper.ModelMapper
 import com.js.movietrends.data.paging.pagingsource.UpcomingMoviePagingSource
 import com.js.movietrends.data.paging.remotemediator.NowPlayingMovieMediator
+import com.js.movietrends.data.util.ErrorMessages
 import com.js.movietrends.domain.model.ApiResult
 import com.js.movietrends.domain.model.Movie
 import com.js.movietrends.domain.repository.MovieRepository
@@ -27,23 +28,49 @@ class MovieRepositoryImpl(
         private const val TAG = "MovieRepositoryImpl"
     }
 
-    // 페이징 없음, 캐싱 없음 — API 결과를 직접 반환
+    // 페이징 없음, 캐싱 있음 - Room을 SSOT로 사용
     override fun getDiscoveredMovies(
         startDate: String,
         endDate: String,
         sortBy: String
     ): Flow<ApiResult<Movie>> = flow {
+        val queryKey = "$startDate|$endDate|$sortBy"
+        val cached = localDataSource.getWeeklySpotlight()
+
+        if (cached?.queryKey == queryKey) {
+            emit(ApiResult.Success(ModelMapper.mapWeeklySpotlightEntityToDomain(cached)))
+            return@flow
+        }
+
         try {
             val dto = remoteDataSource.getDiscoveredMovies(
                 startDate = startDate,
                 endDate = endDate,
                 sortBy = sortBy
             )
-            val movie = dto.results?.firstOrNull()!!
-            emit(ApiResult.Success(ModelMapper.mapMovieResponseDtoToDomain(movie)))
+            val movie = dto.results?.firstOrNull()
+                ?: throw NoSuchElementException(ErrorMessages.NO_DISCOVERED_MOVIE)
+            localDataSource.replaceWeeklySpotlight(
+                ModelMapper.mapMovieResponseDtoToWeeklySpotlightEntity(
+                    movieResponseDto = movie,
+                    queryKey = queryKey,
+                    cachedAt = System.currentTimeMillis()
+                )
+            )
         } catch (e: Exception) {
             Log.e(TAG, e.message ?: "", e)
-            emit(ApiResult.Error(e))
+            if (cached == null) {
+                emit(ApiResult.Error(e))
+                return@flow
+            }
+        }
+
+        // 저장에 성공했으면 새 캐시를, 실패했으면 이전 캐시 emit
+        val entity = localDataSource.getWeeklySpotlight()
+        if (entity != null) {
+            emit(ApiResult.Success(ModelMapper.mapWeeklySpotlightEntityToDomain(entity)))
+        } else {
+            emit(ApiResult.Error(IllegalStateException(ErrorMessages.UNEXPECTED_ERROR)))
         }
     }
 

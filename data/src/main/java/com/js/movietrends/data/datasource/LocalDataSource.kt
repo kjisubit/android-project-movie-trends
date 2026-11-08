@@ -2,12 +2,15 @@ package com.js.movietrends.data.datasource
 
 import androidx.paging.LoadType
 import androidx.paging.PagingSource
-import androidx.paging.PagingState
 import com.js.movietrends.data.database.entity.MovieEntity
 import com.js.movietrends.data.database.entity.MovieRemoteKeyEntity
+import com.js.movietrends.data.database.entity.WeeklySpotlightEntity
 import com.js.movietrends.data.dto.MovieListResponseDto
 
 interface LocalDataSource {
+    suspend fun getWeeklySpotlight(): WeeklySpotlightEntity?
+    suspend fun replaceWeeklySpotlight(entity: WeeklySpotlightEntity)
+
     fun getAllMovies(): PagingSource<Int, MovieEntity>
     suspend fun getMovieRemoteKeys(movieId: Int): MovieRemoteKeyEntity?
     suspend fun deleteAllMovies()
