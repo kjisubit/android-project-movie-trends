@@ -31,7 +31,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.SubcomposeAsyncImage
 import com.js.movietrends.R
-import com.js.movietrends.domain.core.Constants
+import com.js.movietrends.ui.utils.PosterSize
+import com.js.movietrends.ui.utils.posterUrl
 import com.js.movietrends.ui.model.UiState
 import com.js.movietrends.domain.model.Movie
 import com.js.movietrends.ui.components.MovieTrendsButton
@@ -117,8 +118,7 @@ fun WeeklySpotlightContent(
         modifier = modifier,
     ) {
         SubcomposeAsyncImage(
-            model = movie.posterPath
-                ?.let { "${Constants.POSTER_URL}${Constants.POSTER_FULL}$it" },
+            model = posterUrl(movie.posterPath, PosterSize.FULL),
             contentDescription = movie.title,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop,

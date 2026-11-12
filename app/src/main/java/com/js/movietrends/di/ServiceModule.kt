@@ -1,7 +1,6 @@
 package com.js.movietrends.di
 
 import com.js.movietrends.data.api.MovieApi
-import com.js.movietrends.domain.core.Constants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -31,7 +30,7 @@ object ServiceModule {
     @Singleton
     fun provideRetrofitInstance(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(Constants.BASIC_URL)
+            .baseUrl(MovieApi.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

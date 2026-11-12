@@ -8,7 +8,6 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.js.movietrends.R
-import com.js.movietrends.domain.core.Constants
 
 data class BottomNavigationItem(
     val title: String = "",
@@ -37,12 +36,12 @@ fun getBottomNavigationItems(context: Context): List<BottomNavigationItem> {
 }
 
 /**
- * Constants 문자열 상수만 가지고 navigation 구현할 시,
+ * 문자열 상수만 가지고 navigation 구현할 시,
  * 해당 문자열 상수의 사용처가 명확하지 않을 수 있고, when 표현식의 완전성 검사 또한 불가한 이슈 발생.
  * 별도의 NavigationScreens 타입을 정의하여 개선
  */
 sealed class NavigationScreens(val screenRoute: String) {
-    data object WeeklySpotlight : NavigationScreens(Constants.WEEKLY_SPOTLIGHT_ROUTE)
-    data object NowPlaying : NavigationScreens(Constants.NOW_PLAYING_ROUTE)
-    data object Upcoming : NavigationScreens(Constants.UPCOMING_ROUTE)
+    data object WeeklySpotlight : NavigationScreens("weekly_spotlight_route")
+    data object NowPlaying : NavigationScreens("now_playing_route")
+    data object Upcoming : NavigationScreens("upcoming_route")
 }

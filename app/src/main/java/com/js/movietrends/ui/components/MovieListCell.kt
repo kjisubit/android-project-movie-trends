@@ -25,7 +25,8 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.SubcomposeAsyncImage
-import com.js.movietrends.domain.core.Constants
+import com.js.movietrends.ui.utils.PosterSize
+import com.js.movietrends.ui.utils.posterUrl
 import com.js.movietrends.domain.model.Movie
 import com.js.movietrends.ui.preview.MoviePreviewParameterProvider
 import com.js.movietrends.ui.theme.MovieTrendsTheme
@@ -41,7 +42,7 @@ fun MovieListCell(
             modifier = Modifier.padding(vertical = 3.dp)
         ) {
             SubcomposeAsyncImage(
-                model = movie.posterPath?.let { "${Constants.POSTER_URL}${Constants.POSTER_XLARGE}$it" },
+                model = posterUrl(movie.posterPath, PosterSize.XLARGE),
                 contentDescription = movie.title,
                 modifier = Modifier
                     .fillMaxHeight()

@@ -33,7 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.SubcomposeAsyncImage
 import com.js.movietrends.R
-import com.js.movietrends.domain.core.Constants
+import com.js.movietrends.ui.utils.PosterSize
+import com.js.movietrends.ui.utils.posterUrl
 import com.js.movietrends.domain.model.Movie
 import com.js.movietrends.ui.components.MovieTrendsScaffold
 import com.js.movietrends.ui.preview.MoviePreviewParameterProvider
@@ -105,7 +106,7 @@ private fun Header(
             .aspectRatio(1f),
     ) {
         SubcomposeAsyncImage(
-            model = movie.posterPath?.let { "${Constants.POSTER_URL}${Constants.POSTER_XXLARGE}$it" },
+            model = posterUrl(movie.posterPath, PosterSize.XXLARGE),
             contentDescription = movie.title,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop,
