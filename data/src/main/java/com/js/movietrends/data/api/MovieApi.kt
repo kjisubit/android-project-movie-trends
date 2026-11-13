@@ -12,15 +12,11 @@ interface MovieApi {
 
     @GET("movie/now_playing")
     suspend fun getNowPlayingMovies(
-        @Query("api_key") apiKey: String,
-        @Query("language") language: String,
         @Query("page") page: Int = 1
     ): Response<MovieListResponseDto>
 
     @GET("discover/movie")
     suspend fun getDiscoveredMovies(
-        @Query("api_key") apiKey: String,
-        @Query("language") language: String,
         @Query("page") page: Int = 1,
         @Query("primary_release_date.gte") primaryReleaseDateGte: String,
         @Query("primary_release_date.lte") primaryReleaseDateLte: String,
@@ -29,8 +25,6 @@ interface MovieApi {
 
     @GET("movie/upcoming")
     suspend fun getUpcomingMovies(
-        @Query("api_key") apiKey: String,
-        @Query("language") language: String,
         @Query("page") page: Int = 1
     ): Response<MovieListResponseDto>
 }

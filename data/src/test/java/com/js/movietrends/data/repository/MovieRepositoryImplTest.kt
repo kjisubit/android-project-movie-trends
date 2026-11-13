@@ -84,7 +84,7 @@ class MovieRepositoryImplTest {
             )
 
         val result = collect()
-        
+
         verify(localDataSource).replaceWeeklySpotlight(argThat { this.queryKey == this@MovieRepositoryImplTest.queryKey && id == 2 })
         assertEquals(2, (result.single() as ApiResult.Success).data.id)
     }
