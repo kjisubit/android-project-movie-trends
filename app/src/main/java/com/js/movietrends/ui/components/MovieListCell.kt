@@ -52,11 +52,8 @@ fun MovieListCell(
                 loading = {
                     Box(modifier = Modifier.background(Color.LightGray))
                 },
-                error = { error ->
+                error = {
                     Box(modifier = Modifier.background(Color.Black))
-                    error.result.throwable.message?.let {
-                        Text(it)
-                    }
                 }
             )
             Spacer(modifier = Modifier.width(16.dp))

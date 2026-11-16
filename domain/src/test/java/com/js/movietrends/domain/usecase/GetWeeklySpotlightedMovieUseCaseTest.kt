@@ -2,6 +2,7 @@ package com.js.movietrends.domain.usecase
 
 import com.js.movietrends.domain.fixture.movieSample
 import com.js.movietrends.domain.model.ApiResult
+import com.js.movietrends.domain.model.ErrorType
 import com.js.movietrends.domain.repository.MovieRepository
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
@@ -56,19 +57,17 @@ class GetWeeklySpotlightedMovieUseCaseTest {
     @Test
     fun invoke_error_propagatesError() = runTest {
         // Repository가 에러를 반환하는 상황 가정
-        val exception = RuntimeException("Network error")
         whenever(
             movieRepository.getDiscoveredMovies(
                 startDate = startDate,
                 endDate = endDate,
                 sortBy = "popularity.desc"
             )
-        ).thenReturn(flowOf(ApiResult.Error(exception)))
+        ).thenReturn(flowOf(ApiResult.Error(ErrorType.NETWORK)))
 
         val result = useCase().first()
 
         // 에러가 그대로 전달되는지 검증
-        assertTrue(result is ApiResult.Error)
-        assertEquals(exception, (result as ApiResult.Error).exception)
+        assertEquals(ApiResult.Error(ErrorType.NETWORK), result)
     }
 }

@@ -6,10 +6,10 @@ import com.js.movietrends.data.datasource.RemoteDataSource
 import com.js.movietrends.data.dto.MovieListResponseDto
 import com.js.movietrends.data.dto.MovieResponseDto
 import com.js.movietrends.domain.model.ApiResult
+import com.js.movietrends.domain.model.ErrorType
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -21,6 +21,10 @@ import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
+import okhttp3.ResponseBody.Companion.toResponseBody
+import retrofit2.HttpException
+import retrofit2.Response
+import java.io.IOException
 
 @RunWith(MockitoJUnitRunner::class)
 class MovieRepositoryImplTest {
@@ -123,26 +127,47 @@ class MovieRepositoryImplTest {
     }
 
     @Test
-    fun getDiscoveredMovies_apiErrorWithoutCache_returnsError() = runTest {
+    fun getDiscoveredMovies_networkErrorWithoutCache_returnsNetworkError() = runTest {
         whenever(localDataSource.getWeeklySpotlight()).thenReturn(null)
         whenever(remoteDataSource.getDiscoveredMovies(startDate, endDate, sortBy))
-            .thenThrow(RuntimeException("Network error"))
+            .thenAnswer { throw IOException("Network error") }
 
         val result = collect()
 
-        assertTrue(result.single() is ApiResult.Error)
+        assertEquals(ApiResult.Error(ErrorType.NETWORK), result.single())
     }
 
     @Test
-    fun getDiscoveredMovies_emptyResults_returnsError() = runTest {
+    fun getDiscoveredMovies_httpErrorWithoutCache_returnsServerError() = runTest {
+        whenever(localDataSource.getWeeklySpotlight()).thenReturn(null)
+        whenever(remoteDataSource.getDiscoveredMovies(startDate, endDate, sortBy))
+            .thenThrow(HttpException(Response.error<Any>(500, "".toResponseBody())))
+
+        val result = collect()
+
+        assertEquals(ApiResult.Error(ErrorType.SERVER), result.single())
+    }
+
+    @Test
+    fun getDiscoveredMovies_unexpectedErrorWithoutCache_returnsUnknownError() = runTest {
+        whenever(localDataSource.getWeeklySpotlight()).thenReturn(null)
+        whenever(remoteDataSource.getDiscoveredMovies(startDate, endDate, sortBy))
+            .thenThrow(RuntimeException("Unexpected"))
+
+        val result = collect()
+
+        assertEquals(ApiResult.Error(ErrorType.UNKNOWN), result.single())
+    }
+
+    @Test
+    fun getDiscoveredMovies_emptyResults_returnsNoMovieError() = runTest {
         whenever(localDataSource.getWeeklySpotlight()).thenReturn(null)
         whenever(remoteDataSource.getDiscoveredMovies(startDate, endDate, sortBy))
             .thenReturn(MovieListResponseDto(page = 1, totalPages = 1, results = emptyList()))
 
         val result = collect()
 
-        val error = result.single() as ApiResult.Error
-        assertTrue(error.exception is NoSuchElementException)
+        assertEquals(ApiResult.Error(ErrorType.NO_MOVIE), result.single())
         verify(localDataSource, never()).replaceWeeklySpotlight(any())
     }
 }

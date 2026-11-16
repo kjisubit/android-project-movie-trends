@@ -33,7 +33,7 @@ class WeeklySpotlightViewModel @Inject constructor(
                 .collectLatest { result ->
                     _weeklySpotlightUiState.value = when (result) {
                         is ApiResult.Success -> UiState.Success(result.data)
-                        is ApiResult.Error -> UiState.Error(result.exception)
+                        is ApiResult.Error -> UiState.Error(result.type)
                     }
                 }
         }

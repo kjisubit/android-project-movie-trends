@@ -11,13 +11,15 @@ import com.js.movietrends.data.datasource.RemoteDataSource
 import com.js.movietrends.data.mapper.ModelMapper
 import com.js.movietrends.data.paging.pagingsource.UpcomingMoviePagingSource
 import com.js.movietrends.data.paging.remotemediator.NowPlayingMovieMediator
-import com.js.movietrends.data.util.ErrorMessages
 import com.js.movietrends.domain.model.ApiResult
+import com.js.movietrends.domain.model.ErrorType
 import com.js.movietrends.domain.model.Movie
 import com.js.movietrends.domain.repository.MovieRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import retrofit2.HttpException
+import java.io.IOException
 
 class MovieRepositoryImpl(
     private val remoteDataSource: RemoteDataSource,
@@ -49,7 +51,7 @@ class MovieRepositoryImpl(
                 sortBy = sortBy
             )
             val movie = dto.results?.firstOrNull()
-                ?: throw NoSuchElementException(ErrorMessages.NO_DISCOVERED_MOVIE)
+                ?: throw NoSuchElementException("No movie found for $queryKey")
             localDataSource.replaceWeeklySpotlight(
                 ModelMapper.mapMovieResponseDtoToWeeklySpotlightEntity(
                     movieResponseDto = movie,
@@ -58,9 +60,9 @@ class MovieRepositoryImpl(
                 )
             )
         } catch (e: Exception) {
-            Log.e(TAG, e.message ?: "", e)
+            Log.e(TAG, "Failed to fetch weekly spotlight", e)
             if (cached == null) {
-                emit(ApiResult.Error(e))
+                emit(ApiResult.Error(e.toErrorType()))
                 return@flow
             }
         }
@@ -70,8 +72,15 @@ class MovieRepositoryImpl(
         if (entity != null) {
             emit(ApiResult.Success(ModelMapper.mapWeeklySpotlightEntityToDomain(entity)))
         } else {
-            emit(ApiResult.Error(IllegalStateException(ErrorMessages.UNEXPECTED_ERROR)))
+            emit(ApiResult.Error(ErrorType.UNKNOWN))
         }
+    }
+
+    private fun Exception.toErrorType(): ErrorType = when (this) {
+        is IOException -> ErrorType.NETWORK
+        is HttpException -> ErrorType.SERVER
+        is NoSuchElementException -> ErrorType.NO_MOVIE
+        else -> ErrorType.UNKNOWN
     }
 
     // 페이징 있음, 캐싱 있음 — RemoteMediator가 API 결과를 Room에 저장하고 로컬 DB에서 페이징

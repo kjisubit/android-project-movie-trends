@@ -115,13 +115,10 @@ private fun Header(
                     modifier = Modifier.background(Color.LightGray)
                 )
             },
-            error = { error ->
+            error = {
                 Box(
                     modifier = Modifier.background(Color.Black)
                 )
-                error.result.throwable.message?.let {
-                    Text(it)
-                }
             }
         )
         BackButton(

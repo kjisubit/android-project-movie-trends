@@ -1,6 +1,7 @@
 package com.js.movietrends.viewmodel
 
 import com.js.movietrends.domain.model.ApiResult
+import com.js.movietrends.domain.model.ErrorType
 import com.js.movietrends.ui.model.UiState
 import com.js.movietrends.domain.usecase.GetWeeklySpotlightedMovieUseCase
 import com.js.movietrends.fixture.movieSample
@@ -52,14 +53,13 @@ class WeeklySpotlightViewModelTest {
     @Test
     fun fetchMovie_error_updatesState() {
         // UseCase가 에러를 반환하는 상황 가정
-        val exception = RuntimeException("Network error")
         whenever(getWeeklySpotlightedMovieUseCase()).thenReturn(
-            flowOf(ApiResult.Error(exception))
+            flowOf(ApiResult.Error(ErrorType.NETWORK))
         )
 
         val viewModel = WeeklySpotlightViewModel(getWeeklySpotlightedMovieUseCase)
 
         // 상태가 Error로 업데이트되는지 검증
-        assertEquals(UiState.Error(exception), viewModel.weeklySpotlightUiState.value)
+        assertEquals(UiState.Error(ErrorType.NETWORK), viewModel.weeklySpotlightUiState.value)
     }
 }

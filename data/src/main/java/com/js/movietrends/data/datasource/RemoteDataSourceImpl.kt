@@ -3,7 +3,7 @@ package com.js.movietrends.data.datasource
 import android.util.Log
 import com.js.movietrends.data.api.MovieApi
 import com.js.movietrends.data.dto.MovieListResponseDto
-import com.js.movietrends.data.util.ErrorMessages
+import retrofit2.HttpException
 
 class RemoteDataSourceImpl(private val movieApi: MovieApi) : RemoteDataSource {
 
@@ -24,12 +24,12 @@ class RemoteDataSourceImpl(private val movieApi: MovieApi) : RemoteDataSource {
                 sortBy = sortBy
             )
             if (response.isSuccessful) {
-                response.body() ?: throw Exception(ErrorMessages.EMPTY_RESPONSE_BODY)
+                response.body() ?: throw IllegalStateException("Empty response body")
             } else {
-                throw Exception(String.format(ErrorMessages.API_CALL_FAILED, response.message()))
+                throw HttpException(response)
             }
         } catch (e: Exception) {
-            Log.e(TAG, e.message ?: ErrorMessages.UNEXPECTED_ERROR, e)
+            Log.e(TAG, "API call failed", e)
             throw e
         }
     }
@@ -40,12 +40,12 @@ class RemoteDataSourceImpl(private val movieApi: MovieApi) : RemoteDataSource {
                 page = page
             )
             if (response.isSuccessful) {
-                response.body() ?: throw Exception(ErrorMessages.EMPTY_RESPONSE_BODY)
+                response.body() ?: throw IllegalStateException("Empty response body")
             } else {
-                throw Exception(String.format(ErrorMessages.API_CALL_FAILED, response.message()))
+                throw HttpException(response)
             }
         } catch (e: Exception) {
-            Log.e(TAG, e.message ?: ErrorMessages.UNEXPECTED_ERROR, e)
+            Log.e(TAG, "API call failed", e)
             throw e
         }
     }
@@ -56,12 +56,12 @@ class RemoteDataSourceImpl(private val movieApi: MovieApi) : RemoteDataSource {
                 page = page
             )
             if (response.isSuccessful) {
-                response.body() ?: throw Exception(ErrorMessages.EMPTY_RESPONSE_BODY)
+                response.body() ?: throw IllegalStateException("Empty response body")
             } else {
-                throw Exception(String.format(ErrorMessages.API_CALL_FAILED, response.message()))
+                throw HttpException(response)
             }
         } catch (e: Exception) {
-            Log.e(TAG, e.message ?: ErrorMessages.UNEXPECTED_ERROR, e)
+            Log.e(TAG, "API call failed", e)
             throw e
         }
     }

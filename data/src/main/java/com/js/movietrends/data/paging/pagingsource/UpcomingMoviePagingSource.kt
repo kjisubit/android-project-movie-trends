@@ -6,7 +6,6 @@ import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.js.movietrends.data.datasource.RemoteDataSource
 import com.js.movietrends.data.dto.MovieResponseDto
-import com.js.movietrends.data.util.ErrorMessages
 
 /**
  * [RemoteDataSource]에서 가져온 데이터를 페이지 단위로 로드할 수 있도록 변환
@@ -37,7 +36,7 @@ class UpcomingMoviePagingSource(
                 nextKey = nextKey
             )
         } catch (e: Exception) {
-            Log.e(TAG, e.message ?: ErrorMessages.UNEXPECTED_ERROR, e)
+            Log.e(TAG, "Failed to load upcoming movies", e)
             LoadResult.Error(e)
         }
     }

@@ -9,7 +9,6 @@ import com.js.movietrends.data.database.entity.MovieEntity
 import com.js.movietrends.data.database.entity.MovieRemoteKeyEntity
 import com.js.movietrends.data.datasource.LocalDataSource
 import com.js.movietrends.data.datasource.RemoteDataSource
-import com.js.movietrends.data.util.ErrorMessages
 
 /**
  * [RemoteDataSource], [LocalDataSource]에서 가져온 데이터를 페이지 단위로 로드할 수 있도록 변환
@@ -59,7 +58,7 @@ class NowPlayingMovieMediator(
 
             MediatorResult.Success(endOfPaginationReached = endOfPagination)
         } catch (e: Exception) {
-            Log.e(TAG, e.message ?: ErrorMessages.UNEXPECTED_ERROR, e)
+            Log.e(TAG, "Failed to load now playing movies", e)
             MediatorResult.Error(e)
         }
     }

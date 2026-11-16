@@ -33,7 +33,9 @@ import coil3.compose.SubcomposeAsyncImage
 import com.js.movietrends.R
 import com.js.movietrends.ui.utils.PosterSize
 import com.js.movietrends.ui.utils.posterUrl
+import com.js.movietrends.ui.utils.toMessageRes
 import com.js.movietrends.ui.model.UiState
+import com.js.movietrends.domain.model.ErrorType
 import com.js.movietrends.domain.model.Movie
 import com.js.movietrends.ui.components.MovieTrendsButton
 import com.js.movietrends.ui.preview.MoviePreviewParameterProvider
@@ -76,8 +78,7 @@ fun WeeklySpotlightScreen(
             is UiState.Error -> {
                 // todo - 커스텀 텍스트 컴포넌트 대체 필요
                 Text(
-                    text = apiResult.exception.message
-                        ?: stringResource(id = R.string.error_unknown),
+                    text = stringResource(id = apiResult.type.toMessageRes()),
                     color = Color.White,
                     fontSize = 20.sp,
                     modifier = Modifier
@@ -127,13 +128,10 @@ fun WeeklySpotlightContent(
                     modifier = Modifier.background(Color.LightGray)
                 )
             },
-            error = { error ->
+            error = {
                 Box(
                     modifier = Modifier.background(Color.Black)
                 )
-                error.result.throwable.message?.let {
-                    Text(it)
-                }
                 onImageLoaded(false)
             },
             onSuccess = {
@@ -189,7 +187,7 @@ fun WeeklySpotlightScreenErrorPreview() {
     MovieTrendsTheme {
         WeeklySpotlightScreen(
             modifier = Modifier.fillMaxSize(),
-            weeklySpotlightUiState = remember { mutableStateOf(UiState.Error(Exception("Error Message"))) },
+            weeklySpotlightUiState = remember { mutableStateOf(UiState.Error(ErrorType.NETWORK)) },
             onNavigationToMovieDetail = {},
         )
     }

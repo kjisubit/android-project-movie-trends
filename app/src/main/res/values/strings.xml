@@ -10,5 +10,8 @@
     <string name="weekly_spotlight">주간 추천 영화</string>
 
     <!--message-->
-    <string name="error_unknown">Unknown Error</string>
+    <string name="error_network">Please check your network connection.</string>
+    <string name="error_server">The server is not responding. Please try again later.</string>
+    <string name="error_no_movie">No movies were released during this period.</string>
+    <string name="error_unknown">An unknown error occurred.</string>
 </resources>
