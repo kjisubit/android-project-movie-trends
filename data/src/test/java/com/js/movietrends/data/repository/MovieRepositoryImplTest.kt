@@ -60,10 +60,10 @@ class MovieRepositoryImplTest {
     )
 
     private suspend fun collect() =
-        repository.getDiscoveredMovies(startDate, endDate, sortBy).toList()
+        repository.getWeeklySpotlight(startDate, endDate, sortBy).toList()
 
     @Test
-    fun getDiscoveredMovies_cacheHit_returnsCacheWithoutApiCall() = runTest {
+    fun getWeeklySpotlight_cacheHit_returnsCacheWithoutApiCall() = runTest {
         whenever(localDataSource.getWeeklySpotlight()).thenReturn(entity(queryKey, id = 1))
 
         val result = collect()
@@ -74,7 +74,7 @@ class MovieRepositoryImplTest {
     }
 
     @Test
-    fun getDiscoveredMovies_cacheMiss_fetchesSavesAndReturnsFromDb() = runTest {
+    fun getWeeklySpotlight_cacheMiss_fetchesSavesAndReturnsFromDb() = runTest {
         whenever(localDataSource.getWeeklySpotlight())
             .thenReturn(null)
             .thenReturn(entity(queryKey, id = 2))
@@ -94,7 +94,7 @@ class MovieRepositoryImplTest {
     }
 
     @Test
-    fun getDiscoveredMovies_staleCache_refetchesWithNewQuery() = runTest {
+    fun getWeeklySpotlight_staleCache_refetchesWithNewQuery() = runTest {
         val stale = entity("old|query|key", id = 1)
         whenever(localDataSource.getWeeklySpotlight())
             .thenReturn(stale)
@@ -115,7 +115,7 @@ class MovieRepositoryImplTest {
     }
 
     @Test
-    fun getDiscoveredMovies_apiErrorWithStaleCache_returnsStaleCache() = runTest {
+    fun getWeeklySpotlight_apiErrorWithStaleCache_returnsStaleCache() = runTest {
         whenever(localDataSource.getWeeklySpotlight()).thenReturn(entity("old|query|key", id = 1))
         whenever(remoteDataSource.getDiscoveredMovies(startDate, endDate, sortBy))
             .thenThrow(RuntimeException("Network error"))
@@ -127,7 +127,7 @@ class MovieRepositoryImplTest {
     }
 
     @Test
-    fun getDiscoveredMovies_networkErrorWithoutCache_returnsNetworkError() = runTest {
+    fun getWeeklySpotlight_networkErrorWithoutCache_returnsNetworkError() = runTest {
         whenever(localDataSource.getWeeklySpotlight()).thenReturn(null)
         whenever(remoteDataSource.getDiscoveredMovies(startDate, endDate, sortBy))
             .thenAnswer { throw IOException("Network error") }
@@ -138,7 +138,7 @@ class MovieRepositoryImplTest {
     }
 
     @Test
-    fun getDiscoveredMovies_httpErrorWithoutCache_returnsServerError() = runTest {
+    fun getWeeklySpotlight_httpErrorWithoutCache_returnsServerError() = runTest {
         whenever(localDataSource.getWeeklySpotlight()).thenReturn(null)
         whenever(remoteDataSource.getDiscoveredMovies(startDate, endDate, sortBy))
             .thenThrow(HttpException(Response.error<Any>(500, "".toResponseBody())))
@@ -149,7 +149,7 @@ class MovieRepositoryImplTest {
     }
 
     @Test
-    fun getDiscoveredMovies_unexpectedErrorWithoutCache_returnsUnknownError() = runTest {
+    fun getWeeklySpotlight_unexpectedErrorWithoutCache_returnsUnknownError() = runTest {
         whenever(localDataSource.getWeeklySpotlight()).thenReturn(null)
         whenever(remoteDataSource.getDiscoveredMovies(startDate, endDate, sortBy))
             .thenThrow(RuntimeException("Unexpected"))
@@ -160,7 +160,7 @@ class MovieRepositoryImplTest {
     }
 
     @Test
-    fun getDiscoveredMovies_emptyResults_returnsNoMovieError() = runTest {
+    fun getWeeklySpotlight_emptyResults_returnsNoMovieError() = runTest {
         whenever(localDataSource.getWeeklySpotlight()).thenReturn(null)
         whenever(remoteDataSource.getDiscoveredMovies(startDate, endDate, sortBy))
             .thenReturn(MovieListResponseDto(page = 1, totalPages = 1, results = emptyList()))

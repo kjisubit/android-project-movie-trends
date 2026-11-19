@@ -28,7 +28,7 @@ class FakeMovieRepository : MovieRepository {
         voteCount = 100
     )
 
-    override fun getDiscoveredMovies(
+    override fun getWeeklySpotlight(
         startDate: String,
         endDate: String,
         sortBy: String

@@ -7,11 +7,11 @@ import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class GetWeeklySpotlightedMovieUseCase(
+class GetWeeklySpotlightUseCase(
     private val movieRepository: MovieRepository
 ) {
     operator fun invoke(): Flow<ApiResult<Movie>> {
-        return movieRepository.getDiscoveredMovies(
+        return movieRepository.getWeeklySpotlight(
             startDate = LocalDate.now().minusWeeks(2)
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
             endDate = LocalDate.now().minusWeeks(1)

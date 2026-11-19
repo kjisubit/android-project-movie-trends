@@ -19,12 +19,12 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @RunWith(MockitoJUnitRunner::class)
-class GetWeeklySpotlightedMovieUseCaseTest {
+class GetWeeklySpotlightUseCaseTest {
 
     @Mock
     private lateinit var movieRepository: MovieRepository
 
-    private lateinit var useCase: GetWeeklySpotlightedMovieUseCase
+    private lateinit var useCase: GetWeeklySpotlightUseCase
 
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     private val startDate = LocalDate.now().minusWeeks(2).format(dateFormatter)
@@ -32,14 +32,14 @@ class GetWeeklySpotlightedMovieUseCaseTest {
 
     @Before
     fun setup() {
-        useCase = GetWeeklySpotlightedMovieUseCase(movieRepository)
+        useCase = GetWeeklySpotlightUseCase(movieRepository)
     }
 
     @Test
     fun invoke_success_returnsMovie() = runTest {
         // 지난 2주 ~ 1주 사이 인기 영화를 반환하는 상황 가정
         whenever(
-            movieRepository.getDiscoveredMovies(
+            movieRepository.getWeeklySpotlight(
                 startDate = startDate,
                 endDate = endDate,
                 sortBy = "popularity.desc"
@@ -58,7 +58,7 @@ class GetWeeklySpotlightedMovieUseCaseTest {
     fun invoke_error_propagatesError() = runTest {
         // Repository가 에러를 반환하는 상황 가정
         whenever(
-            movieRepository.getDiscoveredMovies(
+            movieRepository.getWeeklySpotlight(
                 startDate = startDate,
                 endDate = endDate,
                 sortBy = "popularity.desc"

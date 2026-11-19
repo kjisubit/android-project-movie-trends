@@ -6,7 +6,7 @@ import com.js.movietrends.domain.model.Movie
 import kotlinx.coroutines.flow.Flow
 
 interface MovieRepository {
-    fun getDiscoveredMovies(
+    fun getWeeklySpotlight(
         startDate: String,
         endDate: String,
         sortBy: String

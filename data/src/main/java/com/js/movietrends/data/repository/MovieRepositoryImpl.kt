@@ -31,7 +31,7 @@ class MovieRepositoryImpl(
     }
 
     // 페이징 없음, 캐싱 있음 - Room을 SSOT로 사용
-    override fun getDiscoveredMovies(
+    override fun getWeeklySpotlight(
         startDate: String,
         endDate: String,
         sortBy: String

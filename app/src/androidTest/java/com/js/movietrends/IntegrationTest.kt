@@ -20,7 +20,7 @@ import com.js.movietrends.util.stringResource
 import com.js.movietrends.domain.model.ApiResult
 import com.js.movietrends.domain.model.Movie
 import com.js.movietrends.domain.usecase.GetUpcomingMoviesUseCase
-import com.js.movietrends.domain.usecase.GetWeeklySpotlightedMovieUseCase
+import com.js.movietrends.domain.usecase.GetWeeklySpotlightUseCase
 import com.js.movietrends.ui.MainActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -44,7 +44,7 @@ class IntegrationTest {
     val composeTestRule = createAndroidComposeRule<MainActivity>()
 
     @Inject
-    lateinit var getWeeklySpotlightedMovieUseCase: GetWeeklySpotlightedMovieUseCase
+    lateinit var getWeeklySpotlightUseCase: GetWeeklySpotlightUseCase
 
     @Inject
     lateinit var getUpcomingMoviesUseCase: GetUpcomingMoviesUseCase
@@ -88,7 +88,7 @@ class IntegrationTest {
     fun homeScreen_showWeeklySpotlightedDetails() = runTest {
         // spotlight 영화 정보 가져오기
         var movie: Movie? = null
-        getWeeklySpotlightedMovieUseCase().collectLatest { apiResult ->
+        getWeeklySpotlightUseCase().collectLatest { apiResult ->
             when (apiResult) {
                 is ApiResult.Success -> movie = apiResult.data
                 else -> fail("ApiResult was not Success: $apiResult")
