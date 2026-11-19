@@ -1,13 +1,13 @@
 <resources>
     <!--commonly used-->
-    <string name="app_name">MovieTrends</string>
+    <string name="app_name" translatable="false">MovieTrends</string>
     <string name="label_back">Back</string>
-    <string name="go_to_home">홈으로 이동</string>
-    <string name="details">상세 보기</string>
-    <string name="no_description_available">요약 정보가 존재하지 않습니다.</string>
-    <string name="now_playing">상영 중</string>
-    <string name="upcoming">개봉 예정</string>
-    <string name="weekly_spotlight">주간 추천 영화</string>
+    <string name="go_to_home">Go to Home</string>
+    <string name="details">Details</string>
+    <string name="no_description_available">No overview available.</string>
+    <string name="now_playing">Now Playing</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="weekly_spotlight">Weekly Spotlight</string>
 
     <!--message-->
     <string name="error_network">Please check your network connection.</string>
