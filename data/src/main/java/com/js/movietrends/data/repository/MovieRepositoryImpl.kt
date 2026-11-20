@@ -9,6 +9,7 @@ import androidx.paging.map
 import com.js.movietrends.data.datasource.LocalDataSource
 import com.js.movietrends.data.datasource.RemoteDataSource
 import com.js.movietrends.data.mapper.ModelMapper
+import com.js.movietrends.data.mapper.toErrorType
 import com.js.movietrends.data.paging.pagingsource.UpcomingMoviePagingSource
 import com.js.movietrends.data.paging.remotemediator.NowPlayingMovieMediator
 import com.js.movietrends.domain.model.ApiResult
@@ -18,8 +19,6 @@ import com.js.movietrends.domain.repository.MovieRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import retrofit2.HttpException
-import java.io.IOException
 
 class MovieRepositoryImpl(
     private val remoteDataSource: RemoteDataSource,
@@ -74,13 +73,6 @@ class MovieRepositoryImpl(
         } else {
             emit(ApiResult.Error(ErrorType.UNKNOWN))
         }
-    }
-
-    private fun Exception.toErrorType(): ErrorType = when (this) {
-        is IOException -> ErrorType.NETWORK
-        is HttpException -> ErrorType.SERVER
-        is NoSuchElementException -> ErrorType.NO_MOVIE
-        else -> ErrorType.UNKNOWN
     }
 
     // 페이징 있음, 캐싱 있음 — RemoteMediator가 API 결과를 Room에 저장하고 로컬 DB에서 페이징

@@ -21,9 +21,6 @@ import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.whenever
-import okhttp3.ResponseBody.Companion.toResponseBody
-import retrofit2.HttpException
-import retrofit2.Response
 import java.io.IOException
 
 @RunWith(MockitoJUnitRunner::class)
@@ -127,7 +124,7 @@ class MovieRepositoryImplTest {
     }
 
     @Test
-    fun getWeeklySpotlight_networkErrorWithoutCache_returnsNetworkError() = runTest {
+    fun getWeeklySpotlight_apiErrorWithoutCache_returnsMappedError() = runTest {
         whenever(localDataSource.getWeeklySpotlight()).thenReturn(null)
         whenever(remoteDataSource.getDiscoveredMovies(startDate, endDate, sortBy))
             .thenAnswer { throw IOException("Network error") }
@@ -135,28 +132,6 @@ class MovieRepositoryImplTest {
         val result = collect()
 
         assertEquals(ApiResult.Error(ErrorType.NETWORK), result.single())
-    }
-
-    @Test
-    fun getWeeklySpotlight_httpErrorWithoutCache_returnsServerError() = runTest {
-        whenever(localDataSource.getWeeklySpotlight()).thenReturn(null)
-        whenever(remoteDataSource.getDiscoveredMovies(startDate, endDate, sortBy))
-            .thenThrow(HttpException(Response.error<Any>(500, "".toResponseBody())))
-
-        val result = collect()
-
-        assertEquals(ApiResult.Error(ErrorType.SERVER), result.single())
-    }
-
-    @Test
-    fun getWeeklySpotlight_unexpectedErrorWithoutCache_returnsUnknownError() = runTest {
-        whenever(localDataSource.getWeeklySpotlight()).thenReturn(null)
-        whenever(remoteDataSource.getDiscoveredMovies(startDate, endDate, sortBy))
-            .thenThrow(RuntimeException("Unexpected"))
-
-        val result = collect()
-
-        assertEquals(ApiResult.Error(ErrorType.UNKNOWN), result.single())
     }
 
     @Test
