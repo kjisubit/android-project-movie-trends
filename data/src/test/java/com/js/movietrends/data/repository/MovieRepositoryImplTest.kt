@@ -7,9 +7,10 @@ import com.js.movietrends.data.dto.MovieListResponseDto
 import com.js.movietrends.data.dto.MovieResponseDto
 import com.js.movietrends.domain.model.ApiResult
 import com.js.movietrends.domain.model.ErrorType
-import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -56,59 +57,44 @@ class MovieRepositoryImplTest {
         cachedAt = 1000L
     )
 
-    private suspend fun collect() =
-        repository.getWeeklySpotlight(startDate, endDate, sortBy).toList()
+    private fun response(vararg ids: Int) = MovieListResponseDto(
+        page = 1,
+        totalPages = 1,
+        results = ids.map { MovieResponseDto(id = it, title = "Movie $it") }
+    )
+
+    private suspend fun load() = repository.getWeeklySpotlight(startDate, endDate, sortBy)
 
     @Test
     fun getWeeklySpotlight_cacheHit_returnsCacheWithoutApiCall() = runTest {
         whenever(localDataSource.getWeeklySpotlight()).thenReturn(entity(queryKey, id = 1))
 
-        val result = collect()
+        val result = load()
 
-        assertEquals(1, result.size)
-        assertEquals(1, (result[0] as ApiResult.Success).data.id)
+        assertEquals(1, (result as ApiResult.Success).data.id)
         verifyNoInteractions(remoteDataSource)
     }
 
     @Test
-    fun getWeeklySpotlight_cacheMiss_fetchesSavesAndReturnsFromDb() = runTest {
-        whenever(localDataSource.getWeeklySpotlight())
-            .thenReturn(null)
-            .thenReturn(entity(queryKey, id = 2))
-        whenever(remoteDataSource.getDiscoveredMovies(startDate, endDate, sortBy))
-            .thenReturn(
-                MovieListResponseDto(
-                    page = 1,
-                    totalPages = 1,
-                    results = listOf(MovieResponseDto(id = 2))
-                )
-            )
+    fun getWeeklySpotlight_cacheMiss_savesAndReturnsFetchedMovie() = runTest {
+        whenever(localDataSource.getWeeklySpotlight()).thenReturn(null)
+        whenever(remoteDataSource.getDiscoveredMovies(startDate, endDate, sortBy)).thenReturn(response(2))
 
-        val result = collect()
+        val result = load()
 
         verify(localDataSource).replaceWeeklySpotlight(argThat { this.queryKey == this@MovieRepositoryImplTest.queryKey && id == 2 })
-        assertEquals(2, (result.single() as ApiResult.Success).data.id)
+        assertEquals(2, (result as ApiResult.Success).data.id)
     }
 
     @Test
-    fun getWeeklySpotlight_staleCache_refetchesWithNewQuery() = runTest {
-        val stale = entity("old|query|key", id = 1)
-        whenever(localDataSource.getWeeklySpotlight())
-            .thenReturn(stale)
-            .thenReturn(entity(queryKey, id = 2))
-        whenever(remoteDataSource.getDiscoveredMovies(startDate, endDate, sortBy))
-            .thenReturn(
-                MovieListResponseDto(
-                    page = 1,
-                    totalPages = 1,
-                    results = listOf(MovieResponseDto(id = 2))
-                )
-            )
+    fun getWeeklySpotlight_staleCache_refetchesAndReplacesCache() = runTest {
+        whenever(localDataSource.getWeeklySpotlight()).thenReturn(entity("old|query|key", id = 1))
+        whenever(remoteDataSource.getDiscoveredMovies(startDate, endDate, sortBy)).thenReturn(response(2))
 
-        val result = collect()
+        val result = load()
 
-        verify(remoteDataSource).getDiscoveredMovies(startDate, endDate, sortBy)
-        assertEquals(2, (result.single() as ApiResult.Success).data.id)
+        verify(localDataSource).replaceWeeklySpotlight(argThat { this.queryKey == this@MovieRepositoryImplTest.queryKey && id == 2 })
+        assertEquals(2, (result as ApiResult.Success).data.id)
     }
 
     @Test
@@ -117,9 +103,9 @@ class MovieRepositoryImplTest {
         whenever(remoteDataSource.getDiscoveredMovies(startDate, endDate, sortBy))
             .thenThrow(RuntimeException("Network error"))
 
-        val result = collect()
+        val result = load()
 
-        assertEquals(1, (result.single() as ApiResult.Success).data.id)
+        assertEquals(1, (result as ApiResult.Success).data.id)
         verify(localDataSource, never()).replaceWeeklySpotlight(any())
     }
 
@@ -129,20 +115,55 @@ class MovieRepositoryImplTest {
         whenever(remoteDataSource.getDiscoveredMovies(startDate, endDate, sortBy))
             .thenAnswer { throw IOException("Network error") }
 
-        val result = collect()
+        val result = load()
 
-        assertEquals(ApiResult.Error(ErrorType.NETWORK), result.single())
+        assertEquals(ApiResult.Error(ErrorType.NETWORK), result)
     }
 
     @Test
     fun getWeeklySpotlight_emptyResults_returnsNoMovieError() = runTest {
         whenever(localDataSource.getWeeklySpotlight()).thenReturn(null)
-        whenever(remoteDataSource.getDiscoveredMovies(startDate, endDate, sortBy))
-            .thenReturn(MovieListResponseDto(page = 1, totalPages = 1, results = emptyList()))
+        whenever(remoteDataSource.getDiscoveredMovies(startDate, endDate, sortBy)).thenReturn(response())
 
-        val result = collect()
+        val result = load()
 
-        assertEquals(ApiResult.Error(ErrorType.NO_MOVIE), result.single())
+        assertEquals(ApiResult.Error(ErrorType.NO_MOVIE), result)
         verify(localDataSource, never()).replaceWeeklySpotlight(any())
+    }
+
+    @Test
+    fun getWeeklySpotlight_cacheReadFails_returnsErrorInsteadOfThrowing() = runTest {
+        whenever(localDataSource.getWeeklySpotlight()).thenThrow(RuntimeException("DB read error"))
+
+        val result = load()
+
+        assertEquals(ApiResult.Error(ErrorType.UNKNOWN), result)
+    }
+
+    @Test
+    fun getWeeklySpotlight_cacheSaveFails_returnsFetchedMovie() = runTest {
+        whenever(localDataSource.getWeeklySpotlight()).thenReturn(null)
+        whenever(remoteDataSource.getDiscoveredMovies(startDate, endDate, sortBy)).thenReturn(response(2))
+        whenever(localDataSource.replaceWeeklySpotlight(any())).thenThrow(RuntimeException("DB write error"))
+
+        val result = load()
+
+        assertEquals(2, (result as ApiResult.Success).data.id)
+    }
+
+    @Test
+    fun getWeeklySpotlight_cancelled_rethrowsCancellation() = runTest {
+        whenever(localDataSource.getWeeklySpotlight()).thenReturn(entity("old|query|key", id = 1))
+        whenever(remoteDataSource.getDiscoveredMovies(startDate, endDate, sortBy))
+            .thenThrow(CancellationException("Cancelled"))
+
+        val thrown = try {
+            load()
+            null
+        } catch (e: CancellationException) {
+            e
+        }
+
+        assertTrue(thrown is CancellationException)
     }
 }

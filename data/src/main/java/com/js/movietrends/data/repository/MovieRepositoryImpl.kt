@@ -13,11 +13,10 @@ import com.js.movietrends.data.mapper.toErrorType
 import com.js.movietrends.data.paging.pagingsource.UpcomingMoviePagingSource
 import com.js.movietrends.data.paging.remotemediator.NowPlayingMovieMediator
 import com.js.movietrends.domain.model.ApiResult
-import com.js.movietrends.domain.model.ErrorType
 import com.js.movietrends.domain.model.Movie
 import com.js.movietrends.domain.repository.MovieRepository
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 class MovieRepositoryImpl(
@@ -29,49 +28,54 @@ class MovieRepositoryImpl(
         private const val TAG = "MovieRepositoryImpl"
     }
 
-    // 페이징 없음, 캐싱 있음 - Room을 SSOT로 사용
-    override fun getWeeklySpotlight(
+    // 페이징 없음, 캐싱 있음 - queryKey가 같으면 캐시 사용, 다르면 API 호출 후 캐시 교체
+    override suspend fun getWeeklySpotlight(
         startDate: String,
         endDate: String,
         sortBy: String
-    ): Flow<ApiResult<Movie>> = flow {
+    ): ApiResult<Movie> {
         val queryKey = "$startDate|$endDate|$sortBy"
-        val cached = localDataSource.getWeeklySpotlight()
-
-        if (cached?.queryKey == queryKey) {
-            emit(ApiResult.Success(ModelMapper.mapWeeklySpotlightEntityToDomain(cached)))
-            return@flow
-        }
-
-        try {
-            val dto = remoteDataSource.getDiscoveredMovies(
-                startDate = startDate,
-                endDate = endDate,
-                sortBy = sortBy
-            )
-            val movie = dto.results?.firstOrNull()
-                ?: throw NoSuchElementException("No movie found for $queryKey")
-            localDataSource.replaceWeeklySpotlight(
-                ModelMapper.mapMovieResponseDtoToWeeklySpotlightEntity(
-                    movieResponseDto = movie,
-                    queryKey = queryKey,
-                    cachedAt = System.currentTimeMillis()
-                )
-            )
-        } catch (e: Exception) {
-            Log.e(TAG, "Failed to fetch weekly spotlight", e)
-            if (cached == null) {
-                emit(ApiResult.Error(e.toErrorType()))
-                return@flow
+        return try {
+            val cached = localDataSource.getWeeklySpotlight()
+            if (cached?.queryKey == queryKey) {
+                return ApiResult.Success(ModelMapper.mapWeeklySpotlightEntityToDomain(cached))
             }
-        }
 
-        // 저장에 성공했으면 새 캐시를, 실패했으면 이전 캐시 emit
-        val entity = localDataSource.getWeeklySpotlight()
-        if (entity != null) {
-            emit(ApiResult.Success(ModelMapper.mapWeeklySpotlightEntityToDomain(entity)))
-        } else {
-            emit(ApiResult.Error(ErrorType.UNKNOWN))
+            // API 실패 시, 캐시가 있으면 반환하고 없으면 catch에서 Error 처리
+            val movie = try {
+                remoteDataSource.getDiscoveredMovies(
+                    startDate = startDate,
+                    endDate = endDate,
+                    sortBy = sortBy
+                ).results?.firstOrNull()
+                    ?: throw NoSuchElementException("No movie found for $queryKey")
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                if (cached == null) throw e
+                Log.e(TAG, "Fetch failed, using stale cache", e)
+                return ApiResult.Success(ModelMapper.mapWeeklySpotlightEntityToDomain(cached))
+            }
+
+            // DB 저장에 실패하더라도 api에서 받아 온 영화는 리턴
+            val entity = ModelMapper.mapMovieResponseDtoToWeeklySpotlightEntity(
+                movieResponseDto = movie,
+                queryKey = queryKey,
+                cachedAt = System.currentTimeMillis()
+            )
+            try {
+                localDataSource.replaceWeeklySpotlight(entity)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to cache weekly spotlight", e)
+            }
+            ApiResult.Success(ModelMapper.mapWeeklySpotlightEntityToDomain(entity))
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to load weekly spotlight", e)
+            ApiResult.Error(e.toErrorType())
         }
     }
 

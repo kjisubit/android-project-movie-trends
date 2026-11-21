@@ -7,15 +7,15 @@ import com.js.movietrends.domain.usecase.GetWeeklySpotlightUseCase
 import com.js.movietrends.fixture.movieSample
 import com.js.movietrends.ui.home.weeklyspotlight.WeeklySpotlightViewModel
 import com.js.movietrends.helper.MainDispatcherRule
-import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.awaitCancellation
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.whenever
+import org.mockito.kotlin.doSuspendableAnswer
+import org.mockito.kotlin.wheneverBlocking
 
 @RunWith(MockitoJUnitRunner::class)
 class WeeklySpotlightViewModelTest {
@@ -28,8 +28,8 @@ class WeeklySpotlightViewModelTest {
 
     @Test
     fun fetchMovie_loading_initialState() {
-        // UseCase가 아무것도 반환하지 않는 상황 가정
-        whenever(getWeeklySpotlightUseCase()).thenReturn(emptyFlow())
+        // UseCase가 결과를 반환하지 않고 계속 대기하는 상황 가정
+        wheneverBlocking { getWeeklySpotlightUseCase() }.doSuspendableAnswer { awaitCancellation() }
 
         val viewModel = WeeklySpotlightViewModel(getWeeklySpotlightUseCase)
 
@@ -40,9 +40,7 @@ class WeeklySpotlightViewModelTest {
     @Test
     fun fetchMovie_success_updatesState() {
         // UseCase가 성공 결과를 반환하는 상황 가정
-        whenever(getWeeklySpotlightUseCase()).thenReturn(
-            flowOf(ApiResult.Success(movieSample))
-        )
+        wheneverBlocking { getWeeklySpotlightUseCase() }.thenReturn(ApiResult.Success(movieSample))
 
         val viewModel = WeeklySpotlightViewModel(getWeeklySpotlightUseCase)
 
@@ -53,9 +51,7 @@ class WeeklySpotlightViewModelTest {
     @Test
     fun fetchMovie_error_updatesState() {
         // UseCase가 에러를 반환하는 상황 가정
-        whenever(getWeeklySpotlightUseCase()).thenReturn(
-            flowOf(ApiResult.Error(ErrorType.NETWORK))
-        )
+        wheneverBlocking { getWeeklySpotlightUseCase() }.thenReturn(ApiResult.Error(ErrorType.NETWORK))
 
         val viewModel = WeeklySpotlightViewModel(getWeeklySpotlightUseCase)
 

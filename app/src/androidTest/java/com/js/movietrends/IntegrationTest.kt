@@ -18,18 +18,14 @@ import coil3.asImage
 import coil3.test.FakeImageLoaderEngine
 import com.js.movietrends.util.stringResource
 import com.js.movietrends.domain.model.ApiResult
-import com.js.movietrends.domain.model.Movie
 import com.js.movietrends.domain.usecase.GetUpcomingMoviesUseCase
 import com.js.movietrends.domain.usecase.GetWeeklySpotlightUseCase
 import com.js.movietrends.ui.MainActivity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
-import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -87,15 +83,11 @@ class IntegrationTest {
     @Test
     fun homeScreen_showWeeklySpotlightedDetails() = runTest {
         // spotlight 영화 정보 가져오기
-        var movie: Movie? = null
-        getWeeklySpotlightUseCase().collectLatest { apiResult ->
-            when (apiResult) {
-                is ApiResult.Success -> movie = apiResult.data
-                else -> fail("ApiResult was not Success: $apiResult")
-            }
+        val movie = when (val apiResult = getWeeklySpotlightUseCase()) {
+            is ApiResult.Success -> apiResult.data
+            else -> throw AssertionError("ApiResult was not Success: $apiResult")
         }
-        assertNotNull("Spotlighted movie should not be null", movie)
-        val movieTitle = movie?.title.orEmpty()
+        val movieTitle = movie.title.orEmpty()
 
         composeTestRule.apply {
             // 인트로 화면 진입 여부 확인

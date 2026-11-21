@@ -4,8 +4,6 @@ import com.js.movietrends.domain.fixture.movieSample
 import com.js.movietrends.domain.model.ApiResult
 import com.js.movietrends.domain.model.ErrorType
 import com.js.movietrends.domain.repository.MovieRepository
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -44,9 +42,9 @@ class GetWeeklySpotlightUseCaseTest {
                 endDate = endDate,
                 sortBy = "popularity.desc"
             )
-        ).thenReturn(flowOf(ApiResult.Success(movieSample)))
+        ).thenReturn(ApiResult.Success(movieSample))
 
-        val result = useCase().first()
+        val result = useCase()
 
         // 성공 결과와 영화 데이터가 올바르게 전달되는지 검증
         assertTrue(result is ApiResult.Success)
@@ -63,9 +61,9 @@ class GetWeeklySpotlightUseCaseTest {
                 endDate = endDate,
                 sortBy = "popularity.desc"
             )
-        ).thenReturn(flowOf(ApiResult.Error(ErrorType.NETWORK)))
+        ).thenReturn(ApiResult.Error(ErrorType.NETWORK))
 
-        val result = useCase().first()
+        val result = useCase()
 
         // 에러가 그대로 전달되는지 검증
         assertEquals(ApiResult.Error(ErrorType.NETWORK), result)

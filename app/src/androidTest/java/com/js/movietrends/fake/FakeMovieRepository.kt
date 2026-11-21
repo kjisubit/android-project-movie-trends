@@ -9,7 +9,6 @@ import com.js.movietrends.domain.model.ApiResult
 import com.js.movietrends.domain.model.Movie
 import com.js.movietrends.domain.repository.MovieRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOf
 
 class FakeMovieRepository : MovieRepository {
 
@@ -28,11 +27,11 @@ class FakeMovieRepository : MovieRepository {
         voteCount = 100
     )
 
-    override fun getWeeklySpotlight(
+    override suspend fun getWeeklySpotlight(
         startDate: String,
         endDate: String,
         sortBy: String
-    ): Flow<ApiResult<Movie>> = flowOf(ApiResult.Success(movie))
+    ): ApiResult<Movie> = ApiResult.Success(movie)
 
     override fun getNowPlayingMovies(): Flow<PagingData<Movie>> = fakePager()
 
