@@ -11,11 +11,11 @@ interface LocalDataSource {
     suspend fun getWeeklySpotlight(): WeeklySpotlightEntity?
     suspend fun replaceWeeklySpotlight(entity: WeeklySpotlightEntity)
 
-    fun getAllMovies(): PagingSource<Int, MovieEntity>
+    fun getNowPlayingMovies(): PagingSource<Int, MovieEntity>
     suspend fun getMovieRemoteKeys(movieId: Int): MovieRemoteKeyEntity?
-    suspend fun deleteAllMovies()
+    suspend fun deleteAllNowPlayingMovies()
     suspend fun deleteAllMovieRemoteKeys()
-    suspend fun addMovies(movies: List<MovieEntity>)
+    suspend fun addNowPlayingMovies(movies: List<MovieEntity>)
     suspend fun addRemoteKeys(keys: List<MovieRemoteKeyEntity>)
     suspend fun saveNowPlayingMovies(loadType: LoadType, response: MovieListResponseDto)
 }

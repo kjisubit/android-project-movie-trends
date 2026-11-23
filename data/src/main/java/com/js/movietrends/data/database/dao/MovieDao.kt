@@ -11,15 +11,16 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface MovieDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addMovies(movies: List<MovieEntity>)
+    suspend fun addNowPlayingMovies(movies: List<MovieEntity>)
 
     // room-paging 의존성에 의해 PagingSource가 자동 생성됨
-    @Query("SELECT * FROM movie_entity")
-    fun getAllMovies(): PagingSource<Int, MovieEntity>
+    // LIMIT/OFFSET 페이징은 순서가 고정되어야 하므로 저장 순서(pk)로 정렬
+    @Query("SELECT * FROM movie_entity ORDER BY pk")
+    fun getNowPlayingMovies(): PagingSource<Int, MovieEntity>
 
     @Query("SELECT * FROM movie_entity WHERE id = :movieId")
     fun getMovie(movieId: Int): Flow<MovieEntity>
 
     @Query("DELETE FROM movie_entity")
-    suspend fun deleteAllMovies()
+    suspend fun deleteAllNowPlayingMovies()
 }

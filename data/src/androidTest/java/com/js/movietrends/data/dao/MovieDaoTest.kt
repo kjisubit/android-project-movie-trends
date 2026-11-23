@@ -39,7 +39,7 @@ class MovieDaoTest {
 
     @Test
     @Throws(Exception::class)
-    fun addMovies_getAllMovies_returnsInsertedData() = runTest {
+    fun addNowPlayingMovies_getNowPlayingMovies_returnsInsertedData() = runTest {
         val movies = listOf(
             MovieEntity(
                 id = 1,
@@ -60,9 +60,9 @@ class MovieDaoTest {
                 voteCount = null
             ),
         )
-        movieDao.addMovies(movies)
+        movieDao.addNowPlayingMovies(movies)
 
-        val result = movieDao.getAllMovies().load(
+        val result = movieDao.getNowPlayingMovies().load(
             PagingSource.LoadParams.Refresh(key = null, loadSize = 10, placeholdersEnabled = false)
         )
 
@@ -74,9 +74,9 @@ class MovieDaoTest {
 
     @Test
     @Throws(Exception::class)
-    fun addMovies_duplicatePk_replacesExisting() = runTest {
+    fun addNowPlayingMovies_duplicatePk_replacesExisting() = runTest {
         // pk를 명시해야 REPLACE 전략이 동작 (pk = 0이면 auto-generate로 신규 row 생성)
-        movieDao.addMovies(
+        movieDao.addNowPlayingMovies(
             listOf(
                 MovieEntity(
                     pk = 1,
@@ -90,7 +90,7 @@ class MovieDaoTest {
                 )
             )
         )
-        movieDao.addMovies(
+        movieDao.addNowPlayingMovies(
             listOf(
                 MovieEntity(
                     pk = 1,
@@ -111,8 +111,8 @@ class MovieDaoTest {
 
     @Test
     @Throws(Exception::class)
-    fun deleteAllMovies_clearsTable() = runTest {
-        movieDao.addMovies(
+    fun deleteAllNowPlayingMovies_clearsTable() = runTest {
+        movieDao.addNowPlayingMovies(
             listOf(
                 MovieEntity(
                     id = 1,
@@ -125,9 +125,9 @@ class MovieDaoTest {
                 )
             )
         )
-        movieDao.deleteAllMovies()
+        movieDao.deleteAllNowPlayingMovies()
 
-        val result = movieDao.getAllMovies().load(
+        val result = movieDao.getNowPlayingMovies().load(
             PagingSource.LoadParams.Refresh(key = null, loadSize = 10, placeholdersEnabled = false)
         )
 
@@ -138,7 +138,7 @@ class MovieDaoTest {
     @Test
     @Throws(Exception::class)
     fun getMovie_returnsCorrectMovieById() = runTest {
-        movieDao.addMovies(
+        movieDao.addNowPlayingMovies(
             listOf(
                 MovieEntity(
                     id = 1,

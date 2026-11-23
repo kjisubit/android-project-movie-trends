@@ -83,7 +83,7 @@ class MovieRepositoryImpl(
     @OptIn(ExperimentalPagingApi::class)
     override fun getNowPlayingMovies(): Flow<PagingData<Movie>> {
         // 온라인/오프라인 환경에 상관 없이 DB에 캐싱된 데이터를 가져오도록 팩토리 선언
-        val pagingSourceFactory = { localDataSource.getAllMovies() }
+        val pagingSourceFactory = { localDataSource.getNowPlayingMovies() }
 
         return Pager(
             config = PagingConfig(pageSize = 20),
