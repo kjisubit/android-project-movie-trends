@@ -5,7 +5,7 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.LoadType
 import androidx.paging.PagingState
 import androidx.paging.RemoteMediator
-import com.js.movietrends.data.database.entity.MovieEntity
+import com.js.movietrends.data.database.entity.NowPlayingMovieEntity
 import com.js.movietrends.data.database.entity.MovieRemoteKeyEntity
 import com.js.movietrends.data.datasource.LocalDataSource
 import com.js.movietrends.data.datasource.RemoteDataSource
@@ -17,7 +17,7 @@ import com.js.movietrends.data.datasource.RemoteDataSource
 class NowPlayingMovieMediator(
     private val remoteDataSource: RemoteDataSource,
     private val localDataSource: LocalDataSource,
-) : RemoteMediator<Int, MovieEntity>() {
+) : RemoteMediator<Int, NowPlayingMovieEntity>() {
 
     companion object {
         private const val TAG = "NowPlayingMovieMediator"
@@ -25,7 +25,7 @@ class NowPlayingMovieMediator(
 
     override suspend fun load(
         loadType: LoadType,
-        state: PagingState<Int, MovieEntity>,
+        state: PagingState<Int, NowPlayingMovieEntity>,
     ): MediatorResult {
         return try {
             val page = when (loadType) {
@@ -63,7 +63,7 @@ class NowPlayingMovieMediator(
         }
     }
 
-    private suspend fun getRemoteKeyEntityOfLastItem(state: PagingState<Int, MovieEntity>): MovieRemoteKeyEntity? {
+    private suspend fun getRemoteKeyEntityOfLastItem(state: PagingState<Int, NowPlayingMovieEntity>): MovieRemoteKeyEntity? {
         val lastPageWithData = state.pages.lastOrNull { it.data.isNotEmpty() }
         val lastMovie = lastPageWithData?.data?.lastOrNull()
         val movieId = lastMovie?.id ?: return null

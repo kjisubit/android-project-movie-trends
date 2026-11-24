@@ -1,6 +1,6 @@
 package com.js.movietrends.data.mapper
 
-import com.js.movietrends.data.database.entity.MovieEntity
+import com.js.movietrends.data.database.entity.NowPlayingMovieEntity
 import com.js.movietrends.data.database.entity.WeeklySpotlightEntity
 import com.js.movietrends.data.dto.MovieResponseDto
 import com.js.movietrends.domain.model.Movie
@@ -18,15 +18,15 @@ object ModelMapper {
         )
     }
 
-    fun mapMovieEntityToDomain(movieEntity: MovieEntity): Movie {
+    fun mapNowPlayingMovieEntityToDomain(nowPlayingMovieEntity: NowPlayingMovieEntity): Movie {
         return Movie(
-            id = movieEntity.id,
-            posterPath = movieEntity.posterPath,
-            title = movieEntity.title,
-            overview = movieEntity.overview,
-            popularity = movieEntity.popularity,
-            voteAverage = movieEntity.voteAverage,
-            voteCount = movieEntity.voteCount
+            id = nowPlayingMovieEntity.id,
+            posterPath = nowPlayingMovieEntity.posterPath,
+            title = nowPlayingMovieEntity.title,
+            overview = nowPlayingMovieEntity.overview,
+            popularity = nowPlayingMovieEntity.popularity,
+            voteAverage = nowPlayingMovieEntity.voteAverage,
+            voteCount = nowPlayingMovieEntity.voteCount
         )
     }
 

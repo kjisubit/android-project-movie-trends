@@ -25,4 +25,11 @@ val MIGRATION_1_2 = object : Migration(1, 2) {
     }
 }
 
-val ALL_MIGRATIONS = arrayOf(MIGRATION_1_2)
+// v2 → v3: NowPlaying 전용 테이블임을 드러내도록 movie_entity 이름 변경 (데이터 유지)
+val MIGRATION_2_3 = object : Migration(2, 3) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("ALTER TABLE `movie_entity` RENAME TO `now_playing_movie_entity`")
+    }
+}
+
+val ALL_MIGRATIONS = arrayOf(MIGRATION_1_2, MIGRATION_2_3)

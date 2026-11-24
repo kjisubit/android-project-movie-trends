@@ -7,6 +7,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.js.movietrends.data.database.MovieDb
 import com.js.movietrends.data.database.migration.ALL_MIGRATIONS
 import com.js.movietrends.data.database.migration.MIGRATION_1_2
+import com.js.movietrends.data.database.migration.MIGRATION_2_3
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -35,6 +36,23 @@ class MigrationTest {
         val db = helper.runMigrationsAndValidate(testDb, 2, true, MIGRATION_1_2)
 
         db.query("SELECT title FROM movie_entity WHERE id = 100").use { cursor ->
+            cursor.moveToFirst()
+            assertEquals("Old Movie", cursor.getString(0))
+        }
+    }
+
+    @Test
+    fun migrate2To3_renamesTableAndKeepsMovies() {
+        helper.createDatabase(testDb, 2).apply {
+            execSQL(
+                "INSERT INTO movie_entity (pk, id, title) VALUES (1, 100, 'Old Movie')"
+            )
+            close()
+        }
+
+        val db = helper.runMigrationsAndValidate(testDb, 3, true, MIGRATION_2_3)
+
+        db.query("SELECT title FROM now_playing_movie_entity WHERE id = 100").use { cursor ->
             cursor.moveToFirst()
             assertEquals("Old Movie", cursor.getString(0))
         }

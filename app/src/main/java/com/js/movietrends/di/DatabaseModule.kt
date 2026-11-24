@@ -3,7 +3,7 @@ package com.js.movietrends.di
 import android.app.Application
 import androidx.room.Room
 import com.js.movietrends.data.database.MovieDb
-import com.js.movietrends.data.database.dao.MovieDao
+import com.js.movietrends.data.database.dao.NowPlayingMovieDao
 import com.js.movietrends.data.database.migration.ALL_MIGRATIONS
 import dagger.Module
 import dagger.Provides
@@ -24,5 +24,5 @@ object DatabaseModule {
 
     @Provides
     @Singleton
-    fun provideMovieDao(movieDB: MovieDb): MovieDao = movieDB.movieDao()
+    fun provideNowPlayingMovieDao(movieDB: MovieDb): NowPlayingMovieDao = movieDB.nowPlayingMovieDao()
 }

@@ -4,14 +4,14 @@ import androidx.paging.LoadType
 import androidx.paging.PagingSource
 import androidx.room.withTransaction
 import com.js.movietrends.data.database.MovieDb
-import com.js.movietrends.data.database.entity.MovieEntity
+import com.js.movietrends.data.database.entity.NowPlayingMovieEntity
 import com.js.movietrends.data.database.entity.MovieRemoteKeyEntity
 import com.js.movietrends.data.database.entity.WeeklySpotlightEntity
 import com.js.movietrends.data.dto.MovieListResponseDto
 
 class LocalDataSourceImpl(private val movieDb: MovieDb) : LocalDataSource {
 
-    private val movieDao = movieDb.movieDao()
+    private val nowPlayingMovieDao = movieDb.nowPlayingMovieDao()
     private val movieRemoteKeysDao = movieDb.movieRemoteKeysDao()
     private val weeklySpotlightDao = movieDb.weeklySpotlightDao()
 
@@ -23,8 +23,8 @@ class LocalDataSourceImpl(private val movieDb: MovieDb) : LocalDataSource {
         weeklySpotlightDao.replaceWeeklySpotlight(entity)
     }
 
-    override fun getNowPlayingMovies(): PagingSource<Int, MovieEntity> {
-        return movieDao.getNowPlayingMovies()
+    override fun getNowPlayingMovies(): PagingSource<Int, NowPlayingMovieEntity> {
+        return nowPlayingMovieDao.getNowPlayingMovies()
     }
 
     override suspend fun getMovieRemoteKeys(movieId: Int): MovieRemoteKeyEntity? {
@@ -32,15 +32,15 @@ class LocalDataSourceImpl(private val movieDb: MovieDb) : LocalDataSource {
     }
 
     override suspend fun deleteAllNowPlayingMovies() {
-        movieDao.deleteAllNowPlayingMovies()
+        nowPlayingMovieDao.deleteAllNowPlayingMovies()
     }
 
     override suspend fun deleteAllMovieRemoteKeys() {
         movieRemoteKeysDao.deleteAllMovieRemoteKeys()
     }
 
-    override suspend fun addNowPlayingMovies(movies: List<MovieEntity>) {
-        movieDao.addNowPlayingMovies(movies)
+    override suspend fun addNowPlayingMovies(movies: List<NowPlayingMovieEntity>) {
+        nowPlayingMovieDao.addNowPlayingMovies(movies)
     }
 
     override suspend fun addRemoteKeys(keys: List<MovieRemoteKeyEntity>) {
@@ -62,7 +62,7 @@ class LocalDataSourceImpl(private val movieDb: MovieDb) : LocalDataSource {
         }
 
         val movieEntities = response.results?.map {
-            MovieEntity(
+            NowPlayingMovieEntity(
                 id = it.id,
                 posterPath = it.posterPath,
                 title = it.title,

@@ -90,7 +90,7 @@ class MovieRepositoryImpl(
             remoteMediator = NowPlayingMovieMediator(remoteDataSource, localDataSource),
             pagingSourceFactory = pagingSourceFactory
         ).flow.map { pagingData ->
-            pagingData.map { entity -> ModelMapper.mapMovieEntityToDomain(entity) }
+            pagingData.map { entity -> ModelMapper.mapNowPlayingMovieEntityToDomain(entity) }
         }
     }
 

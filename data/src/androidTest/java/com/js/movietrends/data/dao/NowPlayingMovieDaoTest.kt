@@ -6,8 +6,8 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.js.movietrends.data.database.MovieDb
-import com.js.movietrends.data.database.dao.MovieDao
-import com.js.movietrends.data.database.entity.MovieEntity
+import com.js.movietrends.data.database.dao.NowPlayingMovieDao
+import com.js.movietrends.data.database.entity.NowPlayingMovieEntity
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -18,16 +18,16 @@ import org.junit.runner.RunWith
 import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
-class MovieDaoTest {
+class NowPlayingMovieDaoTest {
 
     private lateinit var db: MovieDb
-    private lateinit var movieDao: MovieDao
+    private lateinit var nowPlayingMovieDao: NowPlayingMovieDao
 
     @Before
     fun setUp() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         db = Room.inMemoryDatabaseBuilder(context, MovieDb::class.java).build()
-        movieDao = db.movieDao()
+        nowPlayingMovieDao = db.nowPlayingMovieDao()
     }
 
     @After
@@ -41,7 +41,7 @@ class MovieDaoTest {
     @Throws(Exception::class)
     fun addNowPlayingMovies_getNowPlayingMovies_returnsInsertedData() = runTest {
         val movies = listOf(
-            MovieEntity(
+            NowPlayingMovieEntity(
                 id = 1,
                 title = "Movie A",
                 overview = null,
@@ -50,7 +50,7 @@ class MovieDaoTest {
                 voteAverage = null,
                 voteCount = null
             ),
-            MovieEntity(
+            NowPlayingMovieEntity(
                 id = 2,
                 title = "Movie B",
                 overview = null,
@@ -60,9 +60,9 @@ class MovieDaoTest {
                 voteCount = null
             ),
         )
-        movieDao.addNowPlayingMovies(movies)
+        nowPlayingMovieDao.addNowPlayingMovies(movies)
 
-        val result = movieDao.getNowPlayingMovies().load(
+        val result = nowPlayingMovieDao.getNowPlayingMovies().load(
             PagingSource.LoadParams.Refresh(key = null, loadSize = 10, placeholdersEnabled = false)
         )
 
@@ -76,9 +76,9 @@ class MovieDaoTest {
     @Throws(Exception::class)
     fun addNowPlayingMovies_duplicatePk_replacesExisting() = runTest {
         // pk를 명시해야 REPLACE 전략이 동작 (pk = 0이면 auto-generate로 신규 row 생성)
-        movieDao.addNowPlayingMovies(
+        nowPlayingMovieDao.addNowPlayingMovies(
             listOf(
-                MovieEntity(
+                NowPlayingMovieEntity(
                     pk = 1,
                     id = 1,
                     title = "Old Title",
@@ -90,9 +90,9 @@ class MovieDaoTest {
                 )
             )
         )
-        movieDao.addNowPlayingMovies(
+        nowPlayingMovieDao.addNowPlayingMovies(
             listOf(
-                MovieEntity(
+                NowPlayingMovieEntity(
                     pk = 1,
                     id = 1,
                     title = "New Title",
@@ -105,16 +105,16 @@ class MovieDaoTest {
             )
         )
 
-        val result = movieDao.getMovie(1).first()
+        val result = nowPlayingMovieDao.getMovie(1).first()
         assertEquals("New Title", result.title)
     }
 
     @Test
     @Throws(Exception::class)
     fun deleteAllNowPlayingMovies_clearsTable() = runTest {
-        movieDao.addNowPlayingMovies(
+        nowPlayingMovieDao.addNowPlayingMovies(
             listOf(
-                MovieEntity(
+                NowPlayingMovieEntity(
                     id = 1,
                     title = "Movie A",
                     overview = null,
@@ -125,9 +125,9 @@ class MovieDaoTest {
                 )
             )
         )
-        movieDao.deleteAllNowPlayingMovies()
+        nowPlayingMovieDao.deleteAllNowPlayingMovies()
 
-        val result = movieDao.getNowPlayingMovies().load(
+        val result = nowPlayingMovieDao.getNowPlayingMovies().load(
             PagingSource.LoadParams.Refresh(key = null, loadSize = 10, placeholdersEnabled = false)
         )
 
@@ -138,9 +138,9 @@ class MovieDaoTest {
     @Test
     @Throws(Exception::class)
     fun getMovie_returnsCorrectMovieById() = runTest {
-        movieDao.addNowPlayingMovies(
+        nowPlayingMovieDao.addNowPlayingMovies(
             listOf(
-                MovieEntity(
+                NowPlayingMovieEntity(
                     id = 1,
                     title = "Movie A",
                     overview = null,
@@ -149,7 +149,7 @@ class MovieDaoTest {
                     voteAverage = null,
                     voteCount = null
                 ),
-                MovieEntity(
+                NowPlayingMovieEntity(
                     id = 2,
                     title = "Movie B",
                     overview = null,
@@ -161,7 +161,7 @@ class MovieDaoTest {
             )
         )
 
-        val result = movieDao.getMovie(2).first()
+        val result = nowPlayingMovieDao.getMovie(2).first()
         assertEquals(2, result.id)
         assertEquals("Movie B", result.title)
     }

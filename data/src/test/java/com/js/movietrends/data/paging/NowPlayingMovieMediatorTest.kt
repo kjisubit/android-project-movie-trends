@@ -6,7 +6,7 @@ import androidx.paging.RemoteMediator.MediatorResult
 import androidx.paging.PagingConfig
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.js.movietrends.data.database.entity.MovieEntity
+import com.js.movietrends.data.database.entity.NowPlayingMovieEntity
 import com.js.movietrends.data.database.entity.MovieRemoteKeyEntity
 import com.js.movietrends.data.datasource.LocalDataSource
 import com.js.movietrends.data.datasource.RemoteDataSource
@@ -42,7 +42,7 @@ class NowPlayingMovieMediatorTest {
         mediator = NowPlayingMovieMediator(remoteDataSource, localDataSource)
     }
 
-    private fun emptyPagingState() = PagingState<Int, MovieEntity>(
+    private fun emptyPagingState() = PagingState<Int, NowPlayingMovieEntity>(
         pages = emptyList(),
         anchorPosition = null,
         config = PagingConfig(pageSize = 20),
@@ -52,7 +52,7 @@ class NowPlayingMovieMediatorTest {
     private fun pagingStateWithLastItem(movieId: Int) = PagingState(
         pages = listOf(
             PagingSource.LoadResult.Page(
-                data = listOf(MovieEntity(id = movieId, title = null, overview = null, popularity = null, posterPath = null, voteAverage = null, voteCount = null)),
+                data = listOf(NowPlayingMovieEntity(id = movieId, title = null, overview = null, popularity = null, posterPath = null, voteAverage = null, voteCount = null)),
                 prevKey = null,
                 nextKey = 2
             )

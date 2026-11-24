@@ -3,8 +3,8 @@ package com.js.movietrends.data.database.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "movie_entity")
-data class MovieEntity(
+@Entity(tableName = "now_playing_movie_entity")
+data class NowPlayingMovieEntity(
     @PrimaryKey(autoGenerate = true)
     var pk: Long = 0,
     val id: Int,
