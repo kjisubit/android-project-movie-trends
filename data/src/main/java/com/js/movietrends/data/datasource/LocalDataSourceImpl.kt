@@ -15,6 +15,7 @@ class LocalDataSourceImpl(private val movieDb: MovieDb) : LocalDataSource {
     private val movieRemoteKeysDao = movieDb.movieRemoteKeysDao()
     private val weeklySpotlightDao = movieDb.weeklySpotlightDao()
 
+    // Weekly Spotlight
     override suspend fun getWeeklySpotlight(): WeeklySpotlightEntity? {
         return weeklySpotlightDao.getWeeklySpotlight()
     }
@@ -23,30 +24,33 @@ class LocalDataSourceImpl(private val movieDb: MovieDb) : LocalDataSource {
         weeklySpotlightDao.replaceWeeklySpotlight(entity)
     }
 
+    // Now Playing - 영화
     override fun getNowPlayingMovies(): PagingSource<Int, NowPlayingMovieEntity> {
         return nowPlayingMovieDao.getNowPlayingMovies()
-    }
-
-    override suspend fun getMovieRemoteKeys(movieId: Int): MovieRemoteKeyEntity? {
-        return movieRemoteKeysDao.getMovieRemoteKeys(movieId)
-    }
-
-    override suspend fun deleteAllNowPlayingMovies() {
-        nowPlayingMovieDao.deleteAllNowPlayingMovies()
-    }
-
-    override suspend fun deleteAllMovieRemoteKeys() {
-        movieRemoteKeysDao.deleteAllMovieRemoteKeys()
     }
 
     override suspend fun addNowPlayingMovies(movies: List<NowPlayingMovieEntity>) {
         nowPlayingMovieDao.addNowPlayingMovies(movies)
     }
 
+    override suspend fun deleteAllNowPlayingMovies() {
+        nowPlayingMovieDao.deleteAllNowPlayingMovies()
+    }
+
+    // Now Playing - RemoteKey
+    override suspend fun getMovieRemoteKeys(movieId: Int): MovieRemoteKeyEntity? {
+        return movieRemoteKeysDao.getMovieRemoteKeys(movieId)
+    }
+
     override suspend fun addRemoteKeys(keys: List<MovieRemoteKeyEntity>) {
         movieRemoteKeysDao.addAllMovieRemoteKeys(keys)
     }
 
+    override suspend fun deleteAllMovieRemoteKeys() {
+        movieRemoteKeysDao.deleteAllMovieRemoteKeys()
+    }
+
+    // Now Playing - Mediator 저장 (위 함수들을 트랜잭션으로 묶음)
     override suspend fun saveNowPlayingMovies(loadType: LoadType, response: MovieListResponseDto) {
         val currentPage = response.page
         val nextPage = if (currentPage >= (response.totalPages ?: 1)) null else currentPage + 1

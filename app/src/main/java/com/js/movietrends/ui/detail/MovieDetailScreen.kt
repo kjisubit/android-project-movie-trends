@@ -157,7 +157,7 @@ private fun Body(movie: Movie) {
             )
             Spacer(modifier = Modifier.height(10.dp))
             Text(
-                text = movie.overview ?: stringResource(R.string.no_description_available),
+                text = movie.overview?.takeIf { it.isNotBlank() } ?: stringResource(R.string.no_description_available),
                 fontSize = 20.sp,
                 modifier = Modifier
                     .fillMaxWidth()

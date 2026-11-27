@@ -11,7 +11,8 @@ import com.js.movietrends.data.datasource.LocalDataSource
 import com.js.movietrends.data.datasource.RemoteDataSource
 
 /**
- * [RemoteDataSource], [LocalDataSource]에서 가져온 데이터를 페이지 단위로 로드할 수 있도록 변환
+ * [RemoteDataSource]에서 Now Playing 영화를 페이지 단위로 받아 [LocalDataSource]에 저장
+ * UI에 보여줄 데이터는 Room이 생성한 PagingSource가 DB에서 읽는다
  */
 @OptIn(ExperimentalPagingApi::class)
 class NowPlayingMovieMediator(
